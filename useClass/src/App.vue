@@ -1,5 +1,6 @@
 <script setup lang="ts">
 // import HelloWorld from './components/HelloWorld.vue';
+import ConcurrentRequest from './components/concurrent-request.vue';
 import selectBox from './components/select-box.vue';
 </script>
 
@@ -8,6 +9,7 @@ import selectBox from './components/select-box.vue';
   <select-box></select-box>
   <select-box></select-box>
   <select-box></select-box>
+  <concurrent-request></concurrent-request>
 </template>
 
 <style scoped>
