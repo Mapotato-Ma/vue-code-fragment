@@ -1,7 +1,7 @@
 <template></template>
 
 <script lang="ts" setup>
-import { catchError, forkJoin, from, retry } from 'rxjs';
+import { forkJoin, from, retry } from 'rxjs';
 
 const promise1 = async () => {
   const res = await fetch('data/1.json');
