@@ -9,8 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@xstate/vue": "^3.0.0",
     "rxjs": "^7.8.1",
-    "vue": "^3.3.4"
+    "vue": "^3.3.4",
+    "xstate": "^5.2.1"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.2.3",
