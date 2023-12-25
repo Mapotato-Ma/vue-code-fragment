@@ -14,8 +14,10 @@
         {{ right }}
       </span>
     </div>
-    <div class="selected">
-      <i v-for="item in stateClassSet" :key="item">{{ item }}</i>
+    <div class="data-show">
+      <div v-for="(row, i) in map" :key="i" class="data-row">
+        <div v-for="(item, j) in row" :key="j" class="data-col">{{ item }}</div>
+      </div>
     </div>
   </div>
 </template>
@@ -28,6 +30,9 @@ const selectDomList = ref<HTMLElement>();
 const selectedDomList = ref<HTMLElement>();
 const stateClassSet = ref<Set<string>>(new Set());
 const currentLeft = ref<number | undefined>(undefined);
+const map = ref(new Array(6).fill('').map(_ => {
+  return new Array(6).fill('');
+}));
 
 function selectLeft(num: number) {
   if (currentLeft.value === num) {
@@ -42,6 +47,8 @@ function selectRight(right: number) {
     return;
   }
   stateClassSet.value.add(`${currentLeft.value}-${right}`);
+  map.value[currentLeft.value - 1][right - 1] = '1';
+  console.log(map.value);
   currentLeft.value = undefined;
 }
 
@@ -141,6 +148,31 @@ function getWidth(left: number, right: number) {
 
   .selected span:active {
     box-shadow: 0 0 10px 5px #904cbc;
+  }
+
+  .data-show {
+    width: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+
+    .data-row {
+      width: 100%;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+
+      .data-col {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 1;
+        height: 100%;
+        border: 1px solid #ccc;
+      }
+    }
   }
 }
 </style>
