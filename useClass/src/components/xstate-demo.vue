@@ -16,19 +16,19 @@ const toggleMachine = createMachine({
   },
   states: {
     inactive: {
-      on: { TOGGLE: 'active' },
+      on: { TOGGLE: 'active' }
     },
     active: {
       on: { TOGGLE: 'hello' },
       always: {
         target: 'hello',
         actions: () => {
-          console.log('say hello')
+          console.log('say hello');
         }
       }
     },
     hello: {
-      on: { TOGGLE: 'inactive' },
+      on: { TOGGLE: 'inactive' }
     }
   }
 });
@@ -36,9 +36,7 @@ const toggleMachine = createMachine({
 const { actorRef, send, snapshot } = useMachine(toggleMachine);
 actorRef.subscribe((v) => {
   console.log('🚀 ~ stateChange ~ 25行', v.value);
-})
+});
 </script>
-
-
 
 <style lang="less" scoped></style>

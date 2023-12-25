@@ -6,36 +6,36 @@ const data = ref([
     id: 1,
     title: 'Vue 3.0 正式发布',
     content: '橘子',
-    author: 'Jeffrey',
+    author: 'Jeffrey'
   },
   {
     id: 2,
     title: 'Vue 3.0 正式发布',
     content: '香蕉',
-    author: 'Jeffrey',
+    author: 'Jeffrey'
   },
   {
     id: 3,
     title: 'Vue 3.0 正式发布',
     content: '苹果',
-    author: 'Jeffrey',
+    author: 'Jeffrey'
   },
   {
     id: 4,
     title: 'Vue 3.0 正式发布',
     content: '橙子',
-    author: 'Jeffrey',
+    author: 'Jeffrey'
   },
   {
     id: 5,
     title: 'Vue 3.0 正式发布',
     content: '下一个是什么',
-    author: 'Jeffrey',
+    author: 'Jeffrey'
   },
   {
     id: 6,
-    title: 'Vue 3.0 正式发布',
-  },
+    title: 'Vue 3.0 正式发布'
+  }
 ]);
 </script>
 
@@ -49,7 +49,7 @@ const data = ref([
         :class="[
           'hello-world-item',
           `hello-world-item-row${(index + 1) % 2 === 0 ? (index + 1) / 2 : (index + 1 + 1) / 2}`,
-          `hello-world-item-col${index % 2 === 0 ? '1' : '2'}`,
+          `hello-world-item-col${index % 2 === 0 ? '1' : '2'}`
         ]"
       >
         <h2>{{ title }}</h2>
