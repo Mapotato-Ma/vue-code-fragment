@@ -4,14 +4,14 @@
 import { createMachine } from 'xstate';
 
 export const myRequest = (requests: Array<() => Promise<unknown>>, retryCount = 3) => {
-  requests.forEach((fn) => {
+  requests.forEach((_) => {
     const machine = createMachine({
       // 初始 state
       initial: 'callFn',
       context: {
         retryCount,
         successList: [],
-        failureList: [],
+        failureList: []
       },
       // States
       states: {
@@ -23,27 +23,28 @@ export const myRequest = (requests: Array<() => Promise<unknown>>, retryCount = 
               actions: (context) => {
                 // 成功
                 console.log('success', context.context.successList);
-              },
+              }
             },
             onError: {
               target: 'failure',
               actions: (context) => {
                 // 失败
                 console.log('failure', context.context.failureList);
-              },
-            },
-          },
+              }
+            }
+          }
         },
         success: {
-          type: 'final',
+          type: 'final'
         },
         failure: {
           on: {
-            RETRY: { target: 'finished' },
-          },
+            RETRY: { target: 'finished' }
+          }
         },
-        finished: {},
-      },
+        finished: {}
+      }
     });
+    console.log(machine);
   });
 };
