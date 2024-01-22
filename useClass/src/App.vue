@@ -37,10 +37,6 @@ onMounted(() => {
 .t-layout {
   width: 100%;
   height: 100%;
-  background: url(./assets/content-bg.svg) no-repeat center;
-  background-position: center;
-  background-size: cover;
-  backdrop-filter: blur(8px);
   .t-menu__logo a {
     text-decoration: none;
     color: #fff;
@@ -51,11 +47,9 @@ onMounted(() => {
     display: flex;
     align-items: center;
     justify-content: center;
-    backdrop-filter: brightness(0.4);
   }
   &__footer {
     text-align: center;
-    backdrop-filter: brightness(0.4);
   }
 }
 </style>
