@@ -13,6 +13,7 @@
     "rxjs": "^7.8.1",
     "tdesign-vue-next": "^1.8.0",
     "vue": "^3.3.4",
+    "vue-draggable-plus": "^0.3.5",
     "vue-router": "^4.2.5",
     "xstate": "^5.2.1"
   },

@@ -5,12 +5,9 @@
         <template #logo>
           <router-link to="/home">Mapotato</router-link>
         </template>
-        <t-menu-item value="home" :to="{ path: '/home' }">首页</t-menu-item>
-        <t-menu-item value="scrollDemo" :to="{ path: '/scrollDemo' }">表格</t-menu-item>
-        <t-menu-item value="lineGraph" :to="{ path: '/lineGraph' }">连线</t-menu-item>
-        <t-menu-item value="xstateDemo" :to="{ path: '/xstateDemo' }">xstate</t-menu-item>
-        <t-menu-item value="useClass" :to="{ path: '/useClass' }">useClass</t-menu-item>
-        <t-menu-item value="selectBox" :to="{ path: '/selectBox' }">选择器组件</t-menu-item>
+        <t-menu-item :value="String(menu.name)" :to="{ path: menu.path }" v-for="menu in menus" :key="menu.name">
+          {{ menu.name }}
+        </t-menu-item>
         <template #operations>
           <router-link to="/home"><t-icon class="t-menu__operations-icon" name="home" /></router-link>
         </template>
@@ -24,8 +21,11 @@
 </template>
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 const activeMenu = ref();
-
+const menus = useRouter()
+  .getRoutes()
+  .filter((item) => !item.redirect);
 onMounted(() => {
   activeMenu.value = window.location.pathname?.split('/')?.pop() ?? 'home';
   // 设置暗色模式
@@ -47,9 +47,12 @@ onMounted(() => {
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 100%;
+    height: calc(100% - 56px - 70px);
   }
   &__footer {
     text-align: center;
+    border-top: 1px solid var(--td-component-border);
   }
 }
 </style>

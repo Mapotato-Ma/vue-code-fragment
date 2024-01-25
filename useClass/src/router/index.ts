@@ -1,12 +1,17 @@
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
 const routes: Array<RouteRecordRaw> = [
   { path: '/', redirect: '/home' },
-  { path: '/home', component: () => import('../components/home-show.vue') },
-  { path: '/scrollDemo', component: () => import('../components/scroll-demo.vue') },
-  { path: '/lineGraph', component: () => import('../components/line-graph.vue') },
-  { path: '/xstateDemo', component: () => import('../components/xstate-demo.vue') },
-  { path: '/useClass', component: () => import('../components/use-class.vue') },
-  { path: '/selectBox', component: () => import('../components/select-box.vue') }
+  { path: '/home', name: '首页', component: () => import('../components/home-show.vue') },
+  { name: '表格滚动demo', path: '/scrollDemo', component: () => import('../components/scroll-demo.vue') },
+  { name: '连线demo', path: '/lineGraph', component: () => import('../components/line-graph.vue') },
+  { name: 'XstateDemo', path: '/xstateDemo', component: () => import('../components/xstate-demo.vue') },
+  { name: 'UnusedDemo', path: '/useClass', component: () => import('../components/use-class.vue') },
+  { name: 'SelectBoxDemo', path: '/selectBox', component: () => import('../components/select-box.vue') },
+  {
+    name: '伸缩排序demo',
+    path: '/flexible-layouts',
+    component: () => import('../components/flexible-layouts.vue')
+  }
 ];
 
 export const router = createRouter({
