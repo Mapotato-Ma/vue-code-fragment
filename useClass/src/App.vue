@@ -52,7 +52,7 @@ onMounted(() => {
   }
   &__footer {
     text-align: center;
-    border-top: 1px solid var(--td-component-border);
+    box-shadow: inset 0 0 0 1px var(--td-component-border);
   }
 }
 </style>
