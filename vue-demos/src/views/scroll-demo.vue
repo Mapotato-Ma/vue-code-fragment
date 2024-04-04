@@ -52,7 +52,6 @@ const onScroll = (e: any) => {
     left: 0;
     z-index: 1;
     min-width: 100px;
-    height: 100px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -63,19 +62,16 @@ const onScroll = (e: any) => {
     position: relative;
     display: flex;
     flex-direction: column;
-    height: 500px;
     width: 500px;
     gap: 10px;
     overflow: auto;
 
     .row {
       width: 700px;
-      height: 100px;
       display: flex;
       gap: 10px;
       .col {
         min-width: 100px;
-        height: 100px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -93,7 +89,7 @@ const onScroll = (e: any) => {
         .col {
           position: sticky;
           left: 0;
-          background-color: rgb(38, 215, 18);
+          background-color: rgb(14, 9, 172);
         }
       }
     }

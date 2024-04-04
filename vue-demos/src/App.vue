@@ -23,7 +23,13 @@
     </t-header>
     <!-- content -->
     <t-content>
-      <router-view></router-view>
+      <router-view v-slot="{ Component }">
+        <transition>
+          <keep-alive>
+            <component :is="Component" />
+          </keep-alive>
+        </transition>
+      </router-view>
     </t-content>
     <!-- footer -->
     <t-footer>
@@ -44,7 +50,7 @@ onMounted(() => {
 });
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .t-layout {
   width: 100%;
   height: 100%;
@@ -53,6 +59,7 @@ onMounted(() => {
     color: var(--td-text-color-brand);
     font-size: x-large;
     font-weight: lighter;
+    font-family: 'NNN';
   }
   &__content {
     display: flex;

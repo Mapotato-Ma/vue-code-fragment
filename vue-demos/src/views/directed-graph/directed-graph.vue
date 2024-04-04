@@ -42,7 +42,6 @@ onMounted(() => {
   point4.addConnection(point1);
   point4.addConnection(point2);
   point4.addConnection(point3);
-  point4.addConnection(point4);
   points.value = [point1, point2, point3, point4];
   document.addEventListener('mouseup', () => {
     draggingPoint.value = undefined;

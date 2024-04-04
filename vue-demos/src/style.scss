@@ -42,3 +42,8 @@ body {
 *::-webkit-scrollbar-corner {
   background-color: transparent;
 }
+
+@font-face {
+  font-family: 'NNN';
+  src: url(@/assets/font/NNNouvelleGroteskSTD-BoldDiagonal.woff2);
+}
