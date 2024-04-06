@@ -1,23 +1,25 @@
 import { computed, ref, type ComputedRef, type Ref } from 'vue';
 export interface IPoint {
-  id: symbol;
+  pointId: symbol;
+  pointName: string;
   top: Ref<number>;
   left: Ref<number>;
   radius: Ref<number>;
-  startPointIds: Array<IPoint>;
-  endPointIds: Array<IPoint>;
+  startPoints: Array<IPoint>;
+  endPoints: Array<IPoint>;
   getCenterPosition: ComputedRef<{ top: number; left: number }>;
   updatePosition: (top: number, left: number) => void;
   // 添加连接
   addConnection: (point: IPoint) => void;
 }
 
-export const usePoint = (x: number, y: number): IPoint => {
-  const id = Symbol();
+export const usePoint = (x: number, y: number, name: string): IPoint => {
+  const pointId = Symbol();
+  const pointName = name;
   const top = ref(y);
   const left = ref(x);
-  const startPointIds: IPoint['startPointIds'] = [];
-  const endPointIds: IPoint['endPointIds'] = [];
+  const startPoints: IPoint['startPoints'] = [];
+  const endPoints: IPoint['endPoints'] = [];
   const radius = ref(50);
 
   const getCenterPosition = computed(() => ({
@@ -31,29 +33,22 @@ export const usePoint = (x: number, y: number): IPoint => {
   };
 
   const addConnection = (point: IPoint) => {
-    endPointIds.push(point);
-    point.startPointIds.push({
-      id,
-      top,
-      left,
-      radius,
-      startPointIds,
-      endPointIds,
-      updatePosition,
-      addConnection,
-      getCenterPosition
-    });
+    endPoints.push(point);
+    point.startPoints.push(thisPoint);
   };
 
-  return {
-    id,
+  const thisPoint = {
+    pointId,
+    pointName,
     top,
     left,
     radius,
-    startPointIds,
-    endPointIds,
+    startPoints,
+    endPoints,
     updatePosition,
     addConnection,
     getCenterPosition
   };
+
+  return thisPoint;
 };
