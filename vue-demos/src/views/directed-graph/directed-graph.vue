@@ -1,15 +1,15 @@
 <template>
-  <div class="directed-graph">
+  <div class="directed-graph" :draggable="false" ref="elDrawContainer">
     <div
       class="dg-point"
       v-for="point in points"
       :key="point.id"
       :draggable="false"
       :style="{
-        top: point.top + 'px',
-        left: point.left + 'px',
-        width: point.radius * 2 + 'px',
-        height: point.radius * 2 + 'px'
+        top: numberToPx(point.top),
+        left: numberToPx(point.left),
+        width: numberToPx(point.radius * 2),
+        height: numberToPx(point.radius * 2)
       }"
       @mousedown="draggingPoint = point"
       :title="`Point${point.pointName}`"
@@ -40,17 +40,10 @@
           >
             Point{{ point.pointName }}
           </div>
-          <!-- TODO 操作提取到标题栏，添加连线操作也提取 -->
-          <!-- <t-button
-            class="dg-point-manage-card-point"
-            theme="primary"
-            size="large"
-            variant="base"
-            @click="addPoint"
-          >
-            <PlusIcon size="large" />
-          </t-button> -->
         </div>
+        <template #actions>
+          <t-link theme="primary" hover="color" @click="addPoint">New Point</t-link>
+        </template>
       </t-card>
       <t-divider></t-divider>
       <t-card title="Lines" header-bordered>
@@ -65,37 +58,6 @@
             <t-divider></t-divider>
             <div class="dg-cn">Point{{ item.endPoint.pointName }}</div>
           </div>
-          <div class="dg-point-manage-card-lined" :span="3">
-            <t-select>
-              <t-option
-                v-for="point in points"
-                :key="point.pointId"
-                :value="point.pointName"
-                :label="`Point ${point.pointName}`"
-              >
-                Point {{ point.pointName }}
-              </t-option>
-            </t-select>
-            <t-select>
-              <t-option
-                v-for="point in points"
-                :key="point.pointId"
-                :value="point.pointName"
-                :label="`Point ${point.pointName}`"
-              >
-                Point {{ point.pointName }}
-              </t-option>
-            </t-select>
-            <t-button
-              class="dg-point-manage-card-point"
-              theme="primary"
-              size="large"
-              variant="base"
-              @click="addPoint"
-            >
-              <PlusIcon size="large" />
-            </t-button>
-          </div>
         </div>
       </t-card>
     </t-card>
@@ -105,16 +67,17 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 import { usePoint, type IPoint } from './usePoint';
-import { PlusIcon } from 'tdesign-icons-vue-next';
+import { numberToPx } from '@/utils';
 const points = ref<any>([]);
 const connections = ref<any>([]);
 const draggingPoint = ref();
-
+const elDrawContainer = ref<HTMLElement>();
 const addPoint = () => {
+  const { width, height } = elDrawContainer.value!.getBoundingClientRect();
   points.value.push(
     usePoint(
-      Math.floor(Math.random() * 1000),
-      Math.floor(Math.random() * 1000),
+      Math.floor(Math.abs(Math.random() * (width - 500))),
+      Math.floor(Math.abs(Math.random() * height - 100)),
       `${points.value.length + 1}`
     )
   );
@@ -196,6 +159,7 @@ const getLineStyle = (
     > .t-card__body {
       display: flex;
       flex-direction: column;
+      padding: 16px;
     }
   }
   .dg-point-manage-card {
@@ -210,14 +174,15 @@ const getLineStyle = (
       display: grid;
       gap: 8px;
       grid-template-columns: repeat(4, 1fr);
-      max-height: 195px;
+      grid-template-rows: repeat(4, 1fr);
+      height: 195px;
       overflow: auto;
     }
     &-lines {
       display: flex;
       flex-direction: column;
       gap: 8px;
-      max-height: calc(100vh - 690px);
+      height: 390px;
       overflow: auto;
     }
     &-point,
@@ -246,10 +211,6 @@ const getLineStyle = (
       .t-divider--horizontal {
         flex: auto;
       }
-    }
-    &-lined {
-      display: flex;
-      gap: 8px;
     }
   }
   .dg-operation {
