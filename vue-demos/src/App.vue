@@ -39,12 +39,18 @@
 </template>
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 const activeMenu = ref('首页');
-const menus = useRouter()
-  .getRoutes()
-  .filter((item) => !item.redirect);
+const route = useRoute();
+const router = useRouter();
+const menus = router.getRoutes().filter((item) => !item.redirect);
 onMounted(() => {
+  console.log(route.name, route.fullPath);
+  console.log(router.currentRoute.value.fullPath, router.currentRoute.value.name);
+  setTimeout(() => {
+    console.log(route.name, route.fullPath);
+    console.log(router.currentRoute.value.fullPath, router.currentRoute.value.name);
+  }, 2000);
   // 设置暗色模式
   document.documentElement.setAttribute('theme-mode', 'dark');
 });
@@ -59,7 +65,6 @@ onMounted(() => {
     color: var(--td-text-color-brand);
     font-size: x-large;
     font-weight: lighter;
-    font-family: 'NNN';
   }
   &__content {
     display: flex;

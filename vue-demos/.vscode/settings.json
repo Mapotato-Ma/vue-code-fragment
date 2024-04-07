@@ -1,6 +1,8 @@
 {
-  // 以上是你自己的配置
   "css.customData": [
     "./.vscode/custom-css.json"
+  ],
+  "cSpell.words": [
+    "popconfirm"
   ]
 }

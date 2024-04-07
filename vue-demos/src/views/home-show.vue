@@ -14,7 +14,6 @@
   width: 100%;
   height: 100%;
   position: relative;
-  font-family: 'NNN';
   .hs-iframe {
     width: 100%;
     height: 100%;

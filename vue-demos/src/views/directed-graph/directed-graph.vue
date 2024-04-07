@@ -28,7 +28,7 @@
       class="dg-point-manage-card"
       title="Point-Manage"
       header-bordered
-      :style="{ width: '400px', height: '100%' }"
+      :style="{ width: '500px', height: '100%' }"
     >
       <t-card title="Points" header-bordered>
         <div class="dg-point-manage-card-points">
@@ -59,19 +59,70 @@
             <div class="dg-cn">Point{{ item.endPoint.pointName }}</div>
           </div>
         </div>
+        <template #actions>
+          <t-popconfirm
+            :popupProps="{ overlayInnerClassName: 'dg-popconfirm-content' }"
+            @confirm="confirmConnect"
+          >
+            <template #content>
+              <div class="dg-popconfirm">
+                <div class="dg-popconfirm-start-list">
+                  <t-select
+                    v-model="pointSelectStartValue"
+                    :options="pointSelectOptions"
+                    label="Start:"
+                  ></t-select>
+                </div>
+                <div class="dg-popconfirm-end-list">
+                  <t-select
+                    v-model="pointSelectEndValue"
+                    :options="pointSelectOptions"
+                    label="End:"
+                  ></t-select>
+                </div>
+              </div>
+            </template>
+            <t-link theme="primary" hover="color">New Connect</t-link>
+          </t-popconfirm>
+        </template>
       </t-card>
     </t-card>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import {
+  computed,
+  getCurrentInstance,
+  nextTick,
+  onMounted,
+  ref,
+  type ComponentInternalInstance
+} from 'vue';
 import { usePoint, type IPoint } from './usePoint';
 import { numberToPx } from '@/utils';
 const points = ref<any>([]);
 const connections = ref<any>([]);
 const draggingPoint = ref();
 const elDrawContainer = ref<HTMLElement>();
+
+const pointSelectStartValue = ref('1');
+const pointSelectEndValue = ref('1');
+const pointSelectStart = computed(() =>
+  points.value.find((point: IPoint) => point.pointName === pointSelectStartValue.value)
+);
+const pointSelectEnd = computed(() =>
+  points.value.find((point: IPoint) => point.pointName === pointSelectEndValue.value)
+);
+const pointSelectOptions = computed(() =>
+  points.value.map((point: { pointName: string }) => ({
+    value: point.pointName,
+    label: `Point ${point.pointName}`
+  }))
+);
+
+let currentInstance: ComponentInternalInstance | null;
+
 const addPoint = () => {
   const { width, height } = elDrawContainer.value!.getBoundingClientRect();
   points.value.push(
@@ -82,6 +133,16 @@ const addPoint = () => {
     )
   );
 };
+
+const confirmConnect = () => {
+  addConnection(pointSelectStart.value, pointSelectEnd.value);
+  currentInstance?.proxy?.$forceUpdate();
+};
+
+onMounted(() => {
+  currentInstance = getCurrentInstance();
+  console.log('🚀 ~ getCurrentInstance() ~ 131行', getCurrentInstance());
+});
 
 const addConnection = (startPoint: IPoint, endPoint: IPoint) => {
   connections.value.push({ startPoint, endPoint });
@@ -99,6 +160,7 @@ onMounted(() => {
   addConnection(point2, point3);
   addConnection(point3, point4);
   addConnection(point4, point1);
+  addConnection(point2, point4);
   document.addEventListener('mouseup', () => {
     draggingPoint.value = undefined;
   });
@@ -135,7 +197,6 @@ const getLineStyle = (
     place-content: center;
     font-size: 50px;
     font-weight: bolder;
-    font-family: 'NNN';
     -webkit-user-drag: none;
     cursor: move;
     border-radius: 100%;
@@ -161,6 +222,9 @@ const getLineStyle = (
       flex-direction: column;
       padding: 16px;
     }
+    .t-link {
+      user-select: none;
+    }
   }
   .dg-point-manage-card {
     position: absolute;
@@ -185,12 +249,12 @@ const getLineStyle = (
       height: 390px;
       overflow: auto;
     }
+
     &-point,
     &-line {
       text-align: center;
       padding: 10px;
       font-weight: bolder;
-      font-family: 'NNN';
       -webkit-user-drag: none;
       border-radius: 9999999em;
       background-color: blueviolet;
@@ -219,6 +283,32 @@ const getLineStyle = (
     right: 2vw;
     top: 50%;
     translate: 0 -50%;
+  }
+}
+</style>
+
+<style lang="scss">
+.dg-popconfirm-content {
+  .t-icon {
+    display: none;
+  }
+}
+.dg-popconfirm {
+  display: flex;
+  gap: 10px;
+  &-start-list {
+    grid-area: start-list;
+    display: flex;
+    flex-direction: column;
+    max-height: 200px;
+    overflow: auto;
+  }
+  &-end-list {
+    display: flex;
+    flex-direction: column;
+    grid-area: end-list;
+    max-height: 200px;
+    overflow: auto;
   }
 }
 </style>
