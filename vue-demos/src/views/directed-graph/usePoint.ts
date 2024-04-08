@@ -11,6 +11,7 @@ export interface IPoint {
   updatePosition: (top: number, left: number) => void;
   // 添加连接
   addConnection: (point: IPoint) => void;
+  dispose: () => Array<IPoint>;
 }
 
 export const usePoint = (x: number, y: number, name: string): IPoint => {
@@ -37,6 +38,14 @@ export const usePoint = (x: number, y: number, name: string): IPoint => {
     point.startPoints.push(thisPoint);
   };
 
+  const dispose = () => {
+    startPoints.forEach((point) => {
+      const index = point.endPoints.findIndex((p) => p.pointId === pointId);
+      point.endPoints.splice(index, 1);
+    });
+    return startPoints;
+  };
+
   const thisPoint = {
     pointId,
     pointName,
@@ -47,6 +56,7 @@ export const usePoint = (x: number, y: number, name: string): IPoint => {
     endPoints,
     updatePosition,
     addConnection,
+    dispose,
     getCenterPosition
   };
 

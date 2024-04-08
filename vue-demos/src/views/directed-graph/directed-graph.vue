@@ -1,5 +1,6 @@
 <template>
   <div class="directed-graph" :draggable="false" ref="elDrawContainer">
+    <!-- Points -->
     <div
       class="dg-point"
       v-for="point in points"
@@ -15,6 +16,7 @@
       :title="`Point${point.pointName}`"
     >
       <span>{{ point.pointName }}</span>
+      <!-- Link Lines -->
       <teleport to=".directed-graph">
         <div
           v-for="endPoint in point.endPoints"
@@ -24,12 +26,14 @@
         ></div>
       </teleport>
     </div>
+    <!-- 右侧卡片面板 -->
     <t-card
       class="dg-point-manage-card"
       title="Point-Manage"
       header-bordered
       :style="{ width: '500px', height: '100%' }"
     >
+      <!-- Points面板 -->
       <t-card title="Points" header-bordered>
         <div class="dg-point-manage-card-points">
           <div
@@ -37,26 +41,29 @@
             :span="3"
             v-for="point in points"
             :key="point.pointId"
+            @click="removePoint(point)"
           >
-            Point{{ point.pointName }}
+            Point {{ point.pointName }}
           </div>
         </div>
         <template #actions>
           <t-link theme="primary" hover="color" @click="addPoint">New Point</t-link>
         </template>
       </t-card>
+      <!-- 分割线 -->
       <t-divider></t-divider>
+      <!-- Lines面板 -->
       <t-card title="Lines" header-bordered>
         <div class="dg-point-manage-card-lines">
           <div
             class="dg-point-manage-card-line"
             :span="3"
-            v-for="item in connections"
+            v-for="(item, index) in connections"
             :key="item.startPoint.pointId"
           >
-            <div class="dg-cs">Point{{ item.startPoint.pointName }}</div>
-            <t-divider></t-divider>
-            <div class="dg-cn">Point{{ item.endPoint.pointName }}</div>
+            <div class="dg-cs">Point {{ item.startPoint.pointName }}</div>
+            <div class="dg-card-line"><CutIcon @click="removeConnection(item, index)" /></div>
+            <div class="dg-cn">Point {{ item.endPoint.pointName }}</div>
           </div>
         </div>
         <template #actions>
@@ -91,18 +98,18 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  computed,
-  getCurrentInstance,
-  nextTick,
-  onMounted,
-  ref,
-  type ComponentInternalInstance
-} from 'vue';
+import { computed, getCurrentInstance, onMounted, ref, type ComponentInternalInstance } from 'vue';
 import { usePoint, type IPoint } from './usePoint';
 import { numberToPx } from '@/utils';
+import { CutIcon } from 'tdesign-icons-vue-next';
+import { MessagePlugin } from 'tdesign-vue-next';
 const points = ref<any>([]);
-const connections = ref<any>([]);
+const connections = ref<
+  Array<{
+    startPoint: IPoint;
+    endPoint: IPoint;
+  }>
+>([]);
 const draggingPoint = ref();
 const elDrawContainer = ref<HTMLElement>();
 
@@ -139,14 +146,56 @@ const confirmConnect = () => {
   currentInstance?.proxy?.$forceUpdate();
 };
 
+const removeConnection = (connection: any, index: number) => {
+  const endPointIndex = connection.startPoint.endPoints.findIndex(
+    (point: IPoint) => point.pointName === connection.endPoint.pointName
+  );
+  const startPointIndex = connection.endPoint.startPoints.findIndex(
+    (point: IPoint) => point.pointName === connection.startPoint.pointName
+  );
+  connection.startPoint.endPoints.splice(endPointIndex, 1);
+  connection.endPoint.startPoints.splice(startPointIndex, 1);
+  connections.value.splice(index, 1);
+};
+
 onMounted(() => {
   currentInstance = getCurrentInstance();
-  console.log('🚀 ~ getCurrentInstance() ~ 131行', getCurrentInstance());
 });
 
-const addConnection = (startPoint: IPoint, endPoint: IPoint) => {
+const addConnection = (startPoint: any, endPoint: any) => {
+  if (startPoint.pointId === endPoint.pointId) {
+    MessagePlugin.warning('不能连接自身！');
+    return;
+  }
+  if (startPoint.endPoints.includes(endPoint) || startPoint.startPoints.includes(endPoint)) {
+    MessagePlugin.warning('连接已存在！');
+    return;
+  }
   connections.value.push({ startPoint, endPoint });
   startPoint.addConnection(endPoint);
+};
+
+const removePoint = (point: IPoint) => {
+  // 移除点
+  const index = points.value.findIndex((p: IPoint) => p.pointId === point.pointId);
+  points.value.splice(index, 1);
+  // 移除连接（双向移除）
+  point.startPoints.forEach((p) => {
+    const index = connections.value.findIndex(
+      (connect) =>
+        connect.startPoint.pointId === p.pointId && connect.endPoint.pointId === point.pointId
+    );
+    connections.value.splice(index, 1);
+  });
+  point.endPoints.forEach((p) => {
+    const index = connections.value.findIndex(
+      (connect) =>
+        connect.startPoint.pointId === point.pointId && connect.endPoint.pointId === p.pointId
+    );
+    connections.value.splice(index, 1);
+  });
+  // 断开连线
+  point.dispose();
 };
 
 onMounted(() => {
@@ -221,6 +270,8 @@ const getLineStyle = (
       display: flex;
       flex-direction: column;
       padding: 16px;
+      height: calc(100% - 57px);
+      overflow: auto;
     }
     .t-link {
       user-select: none;
@@ -238,20 +289,16 @@ const getLineStyle = (
       display: grid;
       gap: 8px;
       grid-template-columns: repeat(4, 1fr);
-      grid-template-rows: repeat(4, 1fr);
-      height: 195px;
-      overflow: auto;
     }
     &-lines {
       display: flex;
       flex-direction: column;
       gap: 8px;
-      height: 390px;
-      overflow: auto;
     }
 
     &-point,
     &-line {
+      position: relative;
       text-align: center;
       padding: 10px;
       font-weight: bolder;
@@ -259,9 +306,33 @@ const getLineStyle = (
       border-radius: 9999999em;
       background-color: blueviolet;
     }
+    &-point {
+      &::after {
+        cursor: pointer;
+        content: '删除';
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 9999999em;
+        transition: opacity 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+        opacity: 0;
+        backdrop-filter: blur(8px) grayscale(0.7);
+      }
+    }
+    &-point:hover {
+      &::after {
+        opacity: 1;
+      }
+    }
     &-line {
       background-color: rgba(137, 43, 226, 0.28);
       display: flex;
+      align-items: center;
       .dg-cs,
       .dg-cn {
         display: flex;
@@ -272,8 +343,24 @@ const getLineStyle = (
         border-radius: 9999999em;
         background-color: blueviolet;
       }
-      .t-divider--horizontal {
+      &:hover {
+        .dg-card-line .t-icon {
+          scale: 2;
+        }
+      }
+      .dg-card-line {
+        width: 100%;
         flex: auto;
+        height: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: blueviolet;
+        .t-icon {
+          cursor: pointer;
+          scale: 0;
+          transition: scale 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+        }
       }
     }
   }

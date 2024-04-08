@@ -12,7 +12,7 @@
           v-for="menu in menus"
           :key="menu.name"
         >
-          {{ menu.name }}
+          {{ menu.meta.title }}
         </t-menu-item>
         <template #operations>
           <router-link to="/home">
@@ -39,18 +39,17 @@
 </template>
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-const activeMenu = ref('首页');
-const route = useRoute();
+import { useRouter } from 'vue-router';
+import { TangHuLuToBigHump } from './utils';
+const activeMenu = ref('Home');
 const router = useRouter();
 const menus = router.getRoutes().filter((item) => !item.redirect);
 onMounted(() => {
-  console.log(route.name, route.fullPath);
-  console.log(router.currentRoute.value.fullPath, router.currentRoute.value.name);
-  setTimeout(() => {
-    console.log(route.name, route.fullPath);
-    console.log(router.currentRoute.value.fullPath, router.currentRoute.value.name);
-  }, 2000);
+  const pathName = window.location.pathname.split('/')[1];
+  const menu = TangHuLuToBigHump(pathName, '-', true);
+  if (menu) {
+    activeMenu.value = menu;
+  }
   // 设置暗色模式
   document.documentElement.setAttribute('theme-mode', 'dark');
 });

@@ -1,10 +1,11 @@
 <template>
   <div class="home-show">
-    <iframe
+    <!-- 3D 模型影响页面加载速度，先去掉 -->
+    <!-- <iframe
       class="hs-iframe"
       src="https://my.spline.design/rocket-8d31f46728f284f9df3e767becd8db34/"
       frameborder="0"
-    ></iframe>
+    ></iframe> -->
     <div class="hs-text">WELCOME</div>
   </div>
 </template>
@@ -23,7 +24,7 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    translate: -50% -50%;
     font-size: 200px;
     font-weight: lighter;
     transform: skew(0deg, 0deg);
