@@ -34,7 +34,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     name: 'DirectedGraph',
-    meta: { title: '有向图' },
+    meta: { title: '无向图' },
     path: '/directed-graph',
     component: () => import('@/views/directed-graph/directed-graph.vue')
   }

@@ -33,7 +33,7 @@
     </t-content>
     <!-- footer -->
     <t-footer>
-      Copyright @ 2019-{{ new Date().getFullYear() }} Mapotato. All Rights Reserved
+      Copyright @ 2024-{{ new Date().getFullYear() }} Mapotato. All Rights Reserved
     </t-footer>
   </t-layout>
 </template>

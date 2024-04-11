@@ -33,6 +33,13 @@
       header-bordered
       :style="{ width: '500px', height: '100%' }"
     >
+      <template #actions>
+        <t-button shape="circle" theme="primary" @click="showData">
+          <template #icon>
+            <CodeIcon />
+          </template>
+        </t-button>
+      </template>
       <!-- Points面板 -->
       <t-card title="Points" header-bordered>
         <div class="dg-point-manage-card-points">
@@ -101,7 +108,7 @@
 import { computed, getCurrentInstance, onMounted, ref, type ComponentInternalInstance } from 'vue';
 import { usePoint, type IPoint } from './usePoint';
 import { numberToPx } from '@/utils';
-import { CutIcon } from 'tdesign-icons-vue-next';
+import { CutIcon, CodeIcon } from 'tdesign-icons-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';
 const points = ref<any>([]);
 const connections = ref<
@@ -234,6 +241,11 @@ const getLineStyle = (
     clipPath: `polygon(${x1}px ${y1}px, ${x3}px ${x4}px, ${x2}px ${y2}px`
   };
 };
+
+const showData = () => {
+  console.log('🚀 ~ Points ~ 246行', points.value);
+  console.log('🚀 ~ Connections ~ 247行', connections.value);
+};
 </script>
 
 <style lang="scss" scoped>
@@ -266,6 +278,9 @@ const getLineStyle = (
     background-color: rgb(25, 126, 215);
   }
   :deep(.t-card.dg-point-manage-card) {
+    > .t-card__title {
+      user-select: none;
+    }
     > .t-card__body {
       display: flex;
       flex-direction: column;
