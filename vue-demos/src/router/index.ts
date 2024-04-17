@@ -19,6 +19,12 @@ const routes: Array<RouteRecordRaw> = [
     meta: { title: 'css连线' },
     component: () => import('@/views/line-graph.vue')
   },
+  {
+    name: 'SvgDemo',
+    path: '/svg-demo',
+    meta: { title: 'SVG DEMO' },
+    component: () => import('@/views/svg-demo/svg-demo.vue')
+  },
   // { name: 'UnusedDemo', path: '/useClass', component: () => import('@/views/use-class.vue') },
   {
     name: 'SelectBox',

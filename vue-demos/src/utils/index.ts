@@ -43,3 +43,8 @@ export const TangHuLuToBigHump = (
   const newArr = strArr.map((str) => str.toLowerCase());
   return newArr.join(split);
 };
+
+// 将角度转换为弧度：
+export const DTR = (degrees: number) => degrees * (Math.PI / 180);
+// 将弧度转换为角度：
+export const RTD = (radians: number) => radians * (180 / Math.PI);
