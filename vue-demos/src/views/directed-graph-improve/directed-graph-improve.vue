@@ -1,5 +1,21 @@
 <template>
   <div class="directed-graph" :draggable="false" ref="elDrawContainer">
+    <svg class="dg-draw-container">
+      <defs>
+        <!-- 用作箭头的 marker -->
+        <marker
+          id="arrow"
+          viewBox="0 0 30 30"
+          refX="30"
+          refY="15"
+          markerWidth="30"
+          markerHeight="30"
+          orient="auto-start-reverse"
+        >
+          <path d="M 0 0 L 30 15 L 0 30 Q 30 15 0 0 z" fill="rgb(27, 63, 206)" />
+        </marker>
+      </defs>
+    </svg>
     <!-- Points -->
     <div
       class="dg-point"
@@ -17,13 +33,14 @@
     >
       <span>{{ point.pointName }}</span>
       <!-- Link Lines -->
-      <teleport to=".directed-graph">
-        <div
+      <teleport to=".dg-draw-container">
+        <line
           v-for="endPoint in point.endPoints"
           :key="endPoint.id"
           class="dg-line"
-          :style="getLineStyle(point.getCenterPosition, endPoint.getCenterPosition)"
-        ></div>
+          marker-end="url(#arrow)"
+          v-bind="getLineStyle(point.getCenterPosition, endPoint.getCenterPosition)"
+        ></line>
       </teleport>
     </div>
     <!-- 右侧卡片面板 -->
@@ -109,7 +126,7 @@ import { computed, getCurrentInstance, onMounted, ref, type ComponentInternalIns
 import { usePoint, type IPoint } from './usePoint';
 import { numberToPx } from '@/utils';
 import { CutIcon, CodeIcon } from 'tdesign-icons-vue-next';
-import { MessagePlugin } from 'tdesign-vue-next';
+import { MessagePlugin, type HTMLElementAttributes } from 'tdesign-vue-next';
 const points = ref<any>([]);
 const connections = ref<
   Array<{
@@ -185,7 +202,7 @@ const addConnection = (startPoint: any, endPoint: any) => {
     MessagePlugin.warning('不能连接自身！');
     return;
   }
-  if (startPoint.endPoints.includes(endPoint) || startPoint.startPoints.includes(endPoint)) {
+  if (startPoint.endPoints.includes(endPoint)) {
     MessagePlugin.warning('连接已存在！');
     return;
   }
@@ -223,11 +240,17 @@ onMounted(() => {
   const point4 = usePoint(810, 390, `${4}`);
   points.value = [point1, point2, point3, point4];
   addConnection(point1, point2);
+  addConnection(point2, point1);
   addConnection(point1, point3);
+  addConnection(point3, point1);
   addConnection(point2, point3);
+  addConnection(point3, point2);
   addConnection(point3, point4);
+  addConnection(point4, point3);
   addConnection(point4, point1);
+  addConnection(point1, point4);
   addConnection(point2, point4);
+  addConnection(point4, point2);
   document.addEventListener('mouseup', () => {
     draggingPoint.value = undefined;
   });
@@ -243,14 +266,46 @@ onMounted(() => {
 const getLineStyle = (
   { top: y1, left: x1 }: { top: number; left: number },
   { top: y2, left: x2 }: { top: number; left: number }
-) => {
-  const { x3, x4 } = {
-    x3: Math.ceil(Math.abs(x1 - x2) / 2) + 2 + Math.min(x1, x2),
-    x4: Math.ceil(Math.abs(y1 - y2) / 2) + 1 + Math.min(y1, y2)
-  };
+): HTMLElementAttributes => {
+  const { M, N } = findPointsOnLine({ x: x1, y: y1 }, { x: x2, y: y2 }, 50);
   return {
-    clipPath: `polygon(${x1}px ${y1}px, ${x3}px ${x4}px, ${x2}px ${y2}px`
+    x1: String(M.x),
+    x2: String(N.x),
+    y1: String(M.y),
+    y2: String(N.y)
   };
+};
+
+type Point = { x: number; y: number };
+const findPointsOnLine = (A: Point, B: Point, k: number): { M: Point; N: Point } => {
+  // 计算AB向量的x和y分量
+  const dx = B.x - A.x;
+  const dy = B.y - A.y;
+
+  // 计算AB向量的长度
+  const ABLength = Math.sqrt(dx * dx + dy * dy);
+
+  // 检查k是否大于AB的长度，如果是，则无法找到这样的M和N点
+  if (k > ABLength) {
+    // throw new Error('k is greater than the distance between A and B, cannot find points M and N.');
+    return { M: { x: 0, y: 0 }, N: { x: 0, y: 0 } };
+  }
+
+  // 计算M和N点到A和B点的比例因子
+  const ratio = k / ABLength;
+
+  // 使用线性插值计算M和N点的坐标
+  const M = {
+    x: A.x + dx * ratio,
+    y: A.y + dy * ratio
+  };
+
+  const N = {
+    x: B.x - dx * ratio,
+    y: B.y - dy * ratio
+  };
+
+  return { M, N };
 };
 
 const showData = () => {
@@ -264,6 +319,16 @@ const showData = () => {
   position: relative;
   width: 100%;
   height: 100%;
+  .dg-draw-container {
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+    .dg-line {
+      stroke: rgb(27, 63, 206);
+    }
+  }
   .dg-point {
     display: grid;
     place-content: center;
@@ -279,15 +344,15 @@ const showData = () => {
       user-select: none;
     }
   }
-  .dg-line {
-    cursor: pointer;
-    position: absolute;
-    top: 0%;
-    left: 0%;
-    width: 100%;
-    height: 100%;
-    background-color: rgb(25, 126, 215);
-  }
+  // .dg-line {
+  //   cursor: pointer;
+  //   position: absolute;
+  //   top: 0%;
+  //   left: 0%;
+  //   width: 100%;
+  //   height: 100%;
+  //   background-color: rgb(25, 126, 215);
+  // }
   :deep(.t-card.dg-point-manage-card) {
     > .t-card__title {
       user-select: none;
