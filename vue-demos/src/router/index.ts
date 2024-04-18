@@ -46,7 +46,7 @@ const routes: Array<RouteRecordRaw> = [
   // },
   {
     name: 'DirectedGraphImprove',
-    meta: { title: '无向图SVG版' },
+    meta: { title: '有向图' },
     path: '/directed-graph-improve',
     component: () => import('@/views/directed-graph-improve/directed-graph-improve.vue')
   }

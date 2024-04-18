@@ -20,26 +20,26 @@
     <div
       class="dg-point"
       v-for="point in points"
-      :key="point.id"
+      :key="point.value.pointId"
       :draggable="false"
       :style="{
-        top: numberToPx(point.top),
-        left: numberToPx(point.left),
-        width: numberToPx(point.radius * 2),
-        height: numberToPx(point.radius * 2)
+        top: numberToPx(point.value.top),
+        left: numberToPx(point.value.left),
+        width: numberToPx(point.value.radius * 2),
+        height: numberToPx(point.value.radius * 2)
       }"
-      @mousedown="draggingPoint = point"
-      :title="`Point${point.pointName}`"
+      @mousedown="draggingPoint = point.value"
+      :title="`Point${point.value.pointName}`"
     >
-      <span>{{ point.pointName }}</span>
+      <span>{{ point.value.pointName }}</span>
       <!-- Link Lines -->
       <teleport to=".dg-draw-container">
         <line
-          v-for="endPoint in point.endPoints"
-          :key="endPoint.id"
+          v-for="endPoint in point.value.endPoints"
+          :key="endPoint.pointId"
           class="dg-line"
           marker-end="url(#arrow)"
-          v-bind="getLineStyle(point.getCenterPosition, endPoint.getCenterPosition)"
+          v-bind="getLineStyle(point, endPoint)"
         ></line>
       </teleport>
     </div>
@@ -64,10 +64,10 @@
             class="dg-point-manage-card-point"
             :span="3"
             v-for="point in points"
-            :key="point.pointId"
-            @click="removePoint(point)"
+            :key="point.value.pointId"
+            @click="removePoint(point.value)"
           >
-            Point {{ point.pointName }}
+            Point {{ point.value.pointName }}
           </div>
         </div>
         <template #actions>
@@ -83,7 +83,7 @@
             class="dg-point-manage-card-line"
             :span="3"
             v-for="(item, index) in connections"
-            :key="item.startPoint.pointId"
+            :key="item.startPoint.pointName + '-' + item.endPoint.pointName"
           >
             <div class="dg-cs">Point {{ item.startPoint.pointName }}</div>
             <div class="dg-card-line"><CutIcon @click="removeConnection(item, index)" /></div>
@@ -122,33 +122,36 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, getCurrentInstance, onMounted, ref, type ComponentInternalInstance } from 'vue';
-import { usePoint, type IPoint } from './usePoint';
+import {
+  computed,
+  getCurrentInstance,
+  onMounted,
+  ref,
+  type ComponentInternalInstance,
+  type Ref,
+  toRef
+} from 'vue';
+import { Point, type IPoint, type IConnection } from './usePoint';
 import { numberToPx } from '@/utils';
 import { CutIcon, CodeIcon } from 'tdesign-icons-vue-next';
 import { MessagePlugin, type HTMLElementAttributes } from 'tdesign-vue-next';
-const points = ref<any>([]);
-const connections = ref<
-  Array<{
-    startPoint: IPoint;
-    endPoint: IPoint;
-  }>
->([]);
-const draggingPoint = ref();
+const points = ref<Array<Ref<IPoint>>>([]);
+const connections = ref<Array<IConnection>>([]);
+const draggingPoint = ref<IPoint>();
 const elDrawContainer = ref<HTMLElement>();
 
 const pointSelectStartValue = ref('1');
 const pointSelectEndValue = ref('1');
 const pointSelectStart = computed(() =>
-  points.value.find((point: IPoint) => point.pointName === pointSelectStartValue.value)
+  points.value.find((point) => point.value.pointName === pointSelectStartValue.value)
 );
 const pointSelectEnd = computed(() =>
-  points.value.find((point: IPoint) => point.pointName === pointSelectEndValue.value)
+  points.value.find((point) => point.value.pointName === pointSelectEndValue.value)
 );
 const pointSelectOptions = computed(() =>
-  points.value.map((point: { pointName: string }) => ({
-    value: point.pointName,
-    label: `Point ${point.pointName}`
+  points.value.map((point) => ({
+    value: point.value.pointName,
+    label: `Point ${point.value.pointName}`
   }))
 );
 
@@ -158,8 +161,8 @@ const addPoint = () => {
   const { width, height } = elDrawContainer.value!.getBoundingClientRect();
   let findIndex = points.value.length + 1;
   const indexSet = new Set();
-  points.value.forEach((point: any) => {
-    indexSet.add(Number(point.pointName));
+  points.value.forEach((point) => {
+    indexSet.add(Number(point.value.pointName));
   });
   for (let i = 1; i <= points.value.length + 1; i++) {
     if (!indexSet.has(i)) {
@@ -168,20 +171,24 @@ const addPoint = () => {
     }
   }
   points.value.push(
-    usePoint(
-      Math.floor(Math.abs(Math.random() * (width - 500))),
-      Math.floor(Math.abs(Math.random() * height - 100)),
-      `${findIndex}`
+    toRef(
+      new Point(
+        Math.floor(Math.abs(Math.random() * (width - 500))),
+        Math.floor(Math.abs(Math.random() * height - 100)),
+        `${findIndex}`
+      )
     )
   );
 };
 
 const confirmConnect = () => {
-  addConnection(pointSelectStart.value, pointSelectEnd.value);
-  currentInstance?.proxy?.$forceUpdate();
+  if (pointSelectStart.value?.value && pointSelectEnd.value?.value) {
+    addConnection(pointSelectStart.value.value, pointSelectEnd.value.value);
+    currentInstance?.proxy?.$forceUpdate();
+  }
 };
 
-const removeConnection = (connection: any, index: number) => {
+const removeConnection = (connection: IConnection, index: number) => {
   const endPointIndex = connection.startPoint.endPoints.findIndex(
     (point: IPoint) => point.pointName === connection.endPoint.pointName
   );
@@ -197,7 +204,7 @@ onMounted(() => {
   currentInstance = getCurrentInstance();
 });
 
-const addConnection = (startPoint: any, endPoint: any) => {
+const addConnection = (startPoint: IPoint, endPoint: IPoint) => {
   if (startPoint.pointId === endPoint.pointId) {
     MessagePlugin.warning('不能连接自身！');
     return;
@@ -212,45 +219,40 @@ const addConnection = (startPoint: any, endPoint: any) => {
 
 const removePoint = (point: IPoint) => {
   // 移除点
-  const index = points.value.findIndex((p: IPoint) => p.pointId === point.pointId);
+  connections.value = connections.value.filter(
+    (connect) =>
+      !(connect.startPoint.pointId === point.pointId || connect.endPoint.pointId === point.pointId)
+  );
+  const index = points.value.findIndex((p) => p.value.pointId === point.pointId);
   points.value.splice(index, 1);
-  // 移除连接（双向移除）
-  point.startPoints.forEach((p) => {
-    const index = connections.value.findIndex(
-      (connect) =>
-        connect.startPoint.pointId === p.pointId && connect.endPoint.pointId === point.pointId
-    );
-    connections.value.splice(index, 1);
-  });
-  point.endPoints.forEach((p) => {
-    const index = connections.value.findIndex(
-      (connect) =>
-        connect.startPoint.pointId === point.pointId && connect.endPoint.pointId === p.pointId
-    );
-    connections.value.splice(index, 1);
-  });
   // 断开连线
   point.dispose();
+  if (pointSelectStartValue.value === point.pointName) {
+    pointSelectStartValue.value = points.value?.[0].value.pointName;
+  }
+  if (pointSelectEndValue.value === point.pointName) {
+    pointSelectEndValue.value = points.value?.[0].value.pointName;
+  }
 };
 
 onMounted(() => {
-  const point1 = usePoint(500, 690, `${1}`);
-  const point2 = usePoint(200, 390, `${2}`);
-  const point3 = usePoint(500, 90, `${3}`);
-  const point4 = usePoint(810, 390, `${4}`);
-  points.value = [point1, point2, point3, point4];
+  const point1 = new Point(500, 690, '1');
+  const point2 = new Point(200, 390, '2');
+  const point3 = new Point(500, 90, '3');
+  const point4 = new Point(810, 390, '4');
+  points.value = [toRef(point1), toRef(point2), toRef(point3), toRef(point4)];
   addConnection(point1, point2);
-  addConnection(point2, point1);
   addConnection(point1, point3);
-  addConnection(point3, point1);
+  addConnection(point1, point4);
+  addConnection(point2, point1);
   addConnection(point2, point3);
+  addConnection(point2, point4);
+  addConnection(point3, point1);
   addConnection(point3, point2);
   addConnection(point3, point4);
-  addConnection(point4, point3);
   addConnection(point4, point1);
-  addConnection(point1, point4);
-  addConnection(point2, point4);
   addConnection(point4, point2);
+  addConnection(point4, point3);
   document.addEventListener('mouseup', () => {
     draggingPoint.value = undefined;
   });
@@ -263,10 +265,9 @@ onMounted(() => {
 });
 
 // 更新连线位置
-const getLineStyle = (
-  { top: y1, left: x1 }: { top: number; left: number },
-  { top: y2, left: x2 }: { top: number; left: number }
-): HTMLElementAttributes => {
+const getLineStyle = (startPoint: Ref<IPoint>, endPoint: IPoint): HTMLElementAttributes => {
+  const { top: y1, left: x1 } = startPoint.value.getCenterPosition;
+  const { top: y2, left: x2 } = endPoint.getCenterPosition;
   const { M, N } = findPointsOnLine({ x: x1, y: y1 }, { x: x2, y: y2 }, 50);
   return {
     x1: String(M.x),
@@ -276,8 +277,11 @@ const getLineStyle = (
   };
 };
 
-type Point = { x: number; y: number };
-const findPointsOnLine = (A: Point, B: Point, k: number): { M: Point; N: Point } => {
+const findPointsOnLine = (
+  A: { x: number; y: number },
+  B: { x: number; y: number },
+  k: number
+): { M: { x: number; y: number }; N: { x: number; y: number } } => {
   // 计算AB向量的x和y分量
   const dx = B.x - A.x;
   const dy = B.y - A.y;
@@ -344,15 +348,6 @@ const showData = () => {
       user-select: none;
     }
   }
-  // .dg-line {
-  //   cursor: pointer;
-  //   position: absolute;
-  //   top: 0%;
-  //   left: 0%;
-  //   width: 100%;
-  //   height: 100%;
-  //   background-color: rgb(25, 126, 215);
-  // }
   :deep(.t-card.dg-point-manage-card) {
     > .t-card__title {
       user-select: none;

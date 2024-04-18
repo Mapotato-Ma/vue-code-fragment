@@ -1,64 +1,54 @@
-import { computed, ref, type ComputedRef, type Ref } from 'vue';
 export interface IPoint {
   pointId: symbol;
   pointName: string;
-  top: Ref<number>;
-  left: Ref<number>;
-  radius: Ref<number>;
+  top: number;
+  left: number;
+  radius: number;
   startPoints: Array<IPoint>;
   endPoints: Array<IPoint>;
-  getCenterPosition: ComputedRef<{ top: number; left: number }>;
-  updatePosition: (top: number, left: number) => void;
+  getCenterPosition: { top: number; left: number };
   // 添加连接
   addConnection: (point: IPoint) => void;
   dispose: () => Array<IPoint>;
 }
+export interface IConnection {
+  startPoint: IPoint;
+  endPoint: IPoint;
+}
+export class Point implements IPoint {
+  pointId = Symbol();
+  pointName: string;
+  top: number;
+  left: number;
+  startPoints: IPoint['startPoints'] = [];
+  endPoints: IPoint['endPoints'] = [];
+  radius = 50;
 
-export const usePoint = (x: number, y: number, name: string): IPoint => {
-  const pointId = Symbol();
-  const pointName = name;
-  const top = ref(y);
-  const left = ref(x);
-  const startPoints: IPoint['startPoints'] = [];
-  const endPoints: IPoint['endPoints'] = [];
-  const radius = ref(50);
+  constructor(x: number, y: number, name: string) {
+    this.top = y;
+    this.left = x;
+    this.pointName = name;
+  }
 
-  const getCenterPosition = computed(() => ({
-    top: top.value + radius.value,
-    left: left.value + radius.value
-  }));
+  public get getCenterPosition() {
+    return {
+      top: this.top + this.radius,
+      left: this.left + this.radius
+    };
+  }
 
-  const updatePosition = (x: number, y: number) => {
-    top.value = y;
-    left.value = x;
+  addConnection = (point: IPoint) => {
+    this.endPoints.push(point);
+    point.startPoints.push(this);
   };
 
-  const addConnection = (point: IPoint) => {
-    endPoints.push(point);
-    point.startPoints.push(thisPoint);
-  };
-
-  const dispose = () => {
-    startPoints.forEach((point) => {
-      const index = point.endPoints.findIndex((p) => p.pointId === pointId);
-      point.endPoints.splice(index, 1);
-    });
-    return startPoints;
-  };
-
-  const thisPoint = {
-    pointId,
-    pointName,
-    top,
-    left,
-    radius,
-    startPoints,
-    endPoints,
-    updatePosition,
-    addConnection,
-    dispose,
-    getCenterPosition
-  };
-
-  return thisPoint;
-};
+  dispose() {
+    this.startPoints.forEach(
+      (point) => (point.endPoints = point.endPoints.filter((ep) => ep.pointId !== this.pointId))
+    );
+    this.endPoints.forEach(
+      (point) => (point.startPoints = point.startPoints.filter((ep) => ep.pointId !== this.pointId))
+    );
+    return this.startPoints;
+  }
+}
