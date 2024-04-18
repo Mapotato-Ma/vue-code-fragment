@@ -206,10 +206,10 @@ const removePoint = (point: IPoint) => {
 };
 
 onMounted(() => {
-  const point1 = usePoint(100, 100, `${1}`);
-  const point2 = usePoint(200, 200, `${2}`);
-  const point3 = usePoint(300, 300, `${3}`);
-  const point4 = usePoint(400, 400, `${4}`);
+  const point1 = usePoint(500, 690, `${1}`);
+  const point2 = usePoint(200, 390, `${2}`);
+  const point3 = usePoint(500, 90, `${3}`);
+  const point4 = usePoint(810, 390, `${4}`);
   points.value = [point1, point2, point3, point4];
   addConnection(point1, point2);
   addConnection(point1, point3);
@@ -234,8 +234,8 @@ const getLineStyle = (
   { top: y2, left: x2 }: { top: number; left: number }
 ) => {
   const { x3, x4 } = {
-    x3: Math.ceil(Math.abs(x1 - x2) / 2) + 1 + Math.min(x1, x2),
-    x4: Math.ceil(Math.abs(y1 - y2) / 2) + Math.min(y1, y2)
+    x3: Math.ceil(Math.abs(x1 - x2) / 2) + 2 + Math.min(x1, x2),
+    x4: Math.ceil(Math.abs(y1 - y2) / 2) + 1 + Math.min(y1, y2)
   };
   return {
     clipPath: `polygon(${x1}px ${y1}px, ${x3}px ${x4}px, ${x2}px ${y2}px`
