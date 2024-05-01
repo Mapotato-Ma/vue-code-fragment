@@ -12,7 +12,7 @@
           markerHeight="30"
           orient="auto-start-reverse"
         >
-          <path d="M 0 0 L 30 15 L 0 30 Q 30 15 0 0 z" fill="rgb(27, 63, 206)" />
+          <path d="M 0 0 L 30 15 L 0 30 L 15 15 z" fill="rgba(255, 255, 255,0.5)" />
         </marker>
       </defs>
     </svg>
@@ -330,7 +330,7 @@ const showData = () => {
     width: 100%;
     height: 100%;
     .dg-line {
-      stroke: rgb(27, 63, 206);
+      stroke: rgb(255, 255, 255);
     }
   }
   .dg-point {
