@@ -33,7 +33,10 @@
     </t-content>
     <!-- footer -->
     <t-footer>
-      Copyright @ 2024-{{ new Date().getFullYear() }} Mapotato. All Rights Reserved
+      <span class="copy-right">
+        Copyright @ 2024-{{ new Date().getFullYear() }} Mapotato. All Rights Reserved
+      </span>
+      <a class="ICP" href="https://beian.miit.gov.cn/" target="_blank">苏ICP备2024113879号</a>
     </t-footer>
   </t-layout>
 </template>
@@ -75,6 +78,27 @@ onMounted(() => {
   &__footer {
     text-align: center;
     border-top: 1px solid var(--td-brand-color-5);
+    .ICP {
+      margin-left: 4px;
+      color: #fff;
+      border: 2px solid;
+      text-decoration: none;
+      padding: 2px 4px;
+      border-radius: 4px;
+      transition: all 0.3s;
+      &:hover {
+        color: goldenrod;
+      }
+    }
+    .copy-right {
+      color: #fff;
+      border: 2px solid;
+      padding: 2px 4px;
+      border-top-left-radius: 4px;
+      border-bottom-left-radius: 4px;
+      border-right: none;
+      background: linear-gradient(to right, #818181, transparent);
+    }
   }
 }
 </style>
