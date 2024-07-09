@@ -81,10 +81,8 @@ onMounted(() => {
     .ICP {
       margin-left: 4px;
       color: #fff;
-      border: 2px solid;
       text-decoration: none;
       padding: 2px 4px;
-      border-radius: 4px;
       transition: all 0.3s;
       &:hover {
         color: goldenrod;
@@ -92,11 +90,7 @@ onMounted(() => {
     }
     .copy-right {
       color: #fff;
-      border: 2px solid;
       padding: 2px 4px;
-      border-top-left-radius: 4px;
-      border-bottom-left-radius: 4px;
-      border-right: none;
       background: linear-gradient(to right, #818181, transparent);
     }
   }
