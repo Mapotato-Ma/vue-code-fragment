@@ -36,7 +36,7 @@
       <span class="copy-right">
         Copyright @ 2024-{{ new Date().getFullYear() }} Mapotato. All Rights Reserved
       </span>
-      <a class="ICP" href="https://beian.miit.gov.cn/" target="_blank">苏ICP备2024113879号</a>
+      <a class="ICP" href="https://beian.miit.gov.cn/" target="_blank">苏ICP备2024113879号-1</a>
     </t-footer>
   </t-layout>
 </template>
