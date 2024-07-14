@@ -105,6 +105,7 @@
 </template>
 
 <script lang="ts" setup>
+// @ts-nocheck
 import { computed, getCurrentInstance, onMounted, ref, type ComponentInternalInstance } from 'vue';
 import { usePoint, type IPoint } from './usePoint';
 import { numberToPx } from '@/utils';

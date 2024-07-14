@@ -23,7 +23,7 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 import { generateRightTrapezoid, type IShape } from './use-right-trapezoid';
-import { MessagePlugin } from 'tdesign-vue-next';
+import { message } from '@/common/plugins/message';
 
 const trapezoids = ref<Array<IShape>>([]);
 onMounted(() => {
@@ -36,10 +36,10 @@ onMounted(() => {
 
 const showTips = (radius: number) => {
   if (radius === 0) {
-    MessagePlugin.info('这是一个没有圆角的直角梯形');
+    message.message('这是一个没有圆角的直角梯形');
     return;
   }
-  MessagePlugin.info(`这是一个圆角弧度为${radius}px的直角梯形`);
+  message.message(`这是一个圆角弧度为${radius}px的直角梯形`);
 };
 </script>
 
@@ -47,7 +47,6 @@ const showTips = (radius: number) => {
 .svg-demo {
   width: 100%;
   height: 100%;
-  background: var(--td-brand-color-1);
   path {
     cursor: pointer;
     transition: all 233ms;

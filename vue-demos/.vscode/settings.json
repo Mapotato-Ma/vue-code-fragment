@@ -3,8 +3,13 @@
     "./.vscode/custom-css.json"
   ],
   "cSpell.words": [
+    "beian",
     "Biao",
+    "nocheck",
+    "pangmenzhengdaoxixianti",
     "popconfirm",
+    "yaohaixiao",
     "Zheng"
-  ]
+  ],
+  "typescript.tsdk": "node_modules\\typescript\\lib"
 }

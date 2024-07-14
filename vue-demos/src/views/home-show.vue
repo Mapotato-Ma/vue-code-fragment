@@ -37,12 +37,12 @@
     &::after {
       position: absolute;
       content: '';
-      background: var(--td-bg-color-page);
-      inset: 12px;
+      background-color: var(--bg-page);
+      inset: 1em;
       transition: inset 0.5s;
 
       @starting-style {
-        inset: -100px 0;
+        inset: 0 0;
       }
     }
   }

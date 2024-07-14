@@ -13,9 +13,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "pinia": "^2.1.7",
     "rxjs": "^7.8.1",
-    "tdesign-vue-next": "^1.8.0",
     "vite-plugin-ejs": "^1.7.0",
     "vue": "^3.4.21",
     "vue-draggable-plus": "^0.3.5",

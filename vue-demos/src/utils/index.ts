@@ -48,3 +48,27 @@ export const TangHuLuToBigHump = (
 export const DTR = (degrees: number) => degrees * (Math.PI / 180);
 // 将弧度转换为角度：
 export const RTD = (radians: number) => radians * (180 / Math.PI);
+
+/**
+ * 一个自定义的日志打印函数，用于在控制台输出格式化的日志信息。
+ * 它支持不同的日志类型和模块分类，使得日志输出更加清晰和可定制。
+ *
+ * @param msg 要输出的日志消息字符串。
+ * @param module 日志所属的模块，默认为'main'。
+ * @param type 日志的输出类型，默认为'log'。可以是Console对象上定义的所有方法名。
+ * @param args 额外的参数，会被传递给console[type]函数，用于支持不同类型日志的额外信息输出。
+ */
+export const log = (msg: string, module = 'main', type: keyof Console = 'log', ...args: any[]) => {
+  // 根据type的值决定是否直接调用console[type]()，用于处理groupEnd和clear类型
+  if (type === 'groupEnd' || type === 'clear') {
+    console[type]();
+  } else {
+    // 使用%c格式化代码为控制台日志添加样式，使得日志输出更加明显和分类清晰
+    console[type](
+      `%c[${module}] %c${msg}`,
+      'color: #fff; background: #409EFF; padding: 2px 4px; border-radius: 2px;',
+      'color: #fff; background: #409EFF; padding: 2px 4px; border-radius: 2px;',
+      ...args
+    );
+  }
+};

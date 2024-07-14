@@ -44,12 +44,12 @@ const routes: Array<RouteRecordRaw> = [
   //   path: '/directed-graph',
   //   component: () => import('@/views/directed-graph/directed-graph.vue')
   // },
-  {
-    name: 'DirectedGraphImprove',
-    meta: { title: '有向图' },
-    path: '/directed-graph-improve',
-    component: () => import('@/views/directed-graph-improve/directed-graph-improve.vue')
-  }
+  // {
+  //   name: 'DirectedGraphImprove',
+  //   meta: { title: '有向图' },
+  //   path: '/directed-graph-improve',
+  //   component: () => import('@/views/directed-graph-improve/directed-graph-improve.vue')
+  // }
 ];
 
 export const router = createRouter({
