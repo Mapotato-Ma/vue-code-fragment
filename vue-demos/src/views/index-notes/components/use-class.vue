@@ -1,3 +1,23 @@
+<template>
+  <div class="hello-world">
+    <div class="hello-world-list">
+      <div
+        v-for="({ title, content, author, id }, index) in data"
+        :key="id"
+        :data-title="content"
+        :class="[
+          'hello-world-item',
+          `hello-world-item-row${(index + 1) % 2 === 0 ? (index + 1) / 2 : (index + 1 + 1) / 2}`,
+          `hello-world-item-col${index % 2 === 0 ? '1' : '2'}`
+        ]"
+      >
+        <h2>{{ title }}</h2>
+        <p>{{ content }}</p>
+        <p>作者：{{ author }}</p>
+      </div>
+    </div>
+  </div>
+</template>
 <script setup lang="ts">
 import { ref } from 'vue';
 
@@ -39,31 +59,10 @@ const data = ref([
 ]);
 </script>
 
-<template>
-  <div class="hello-world">
-    <div class="hello-world-list">
-      <div
-        v-for="({ title, content, author, id }, index) in data"
-        :key="id"
-        :data-title="content"
-        :class="[
-          'hello-world-item',
-          `hello-world-item-row${(index + 1) % 2 === 0 ? (index + 1) / 2 : (index + 1 + 1) / 2}`,
-          `hello-world-item-col${index % 2 === 0 ? '1' : '2'}`
-        ]"
-      >
-        <h2>{{ title }}</h2>
-        <p>{{ content }}</p>
-        <p>作者：{{ author }}</p>
-      </div>
-    </div>
-  </div>
-</template>
-
 <style scoped lang="scss">
 .hello-world {
-  width: 800px;
-  padding: 10px;
+  width: 100%;
+  height: 100%;
 }
 
 .hello-world-list {
@@ -89,7 +88,7 @@ const data = ref([
   }
 }
 .hello-world-item {
-  &-row1&-col2 {
+  &-col2 {
     background-color: #1d2cd1;
   }
 }

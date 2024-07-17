@@ -37,6 +37,10 @@
 
 <script lang="ts" setup>
 import { reactive, ref } from 'vue';
+defineOptions({
+  name: 'line-graph'
+});
+
 const selectList = reactive([1, 2, 3, 4, 5, 6]);
 const selectedList = reactive([1, 2, 3, 4, 5, 6]);
 const stateClassSet = ref<Set<string>>(new Set());
@@ -108,7 +112,8 @@ function getWidth(left: number, right: number) {
 <style lang="scss" scoped>
 .line-graph {
   display: flex;
-
+  width: 100%;
+  height: 100%;
   .select,
   .selected {
     display: flex;

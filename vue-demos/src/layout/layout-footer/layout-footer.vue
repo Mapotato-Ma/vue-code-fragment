@@ -38,7 +38,7 @@
     color: #fff;
     text-decoration: none;
     transition: all 0.3s;
-    border-left: 1.5px solid goldenrod;
+    border-left: 1.5px solid var(--border-color);
     &:hover {
       color: rgba(159, 67, 244, 0.521);
     }

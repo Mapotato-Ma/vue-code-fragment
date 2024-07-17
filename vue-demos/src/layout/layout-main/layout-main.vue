@@ -14,5 +14,6 @@
 .main {
   height: var(--main-h);
   padding: 2em;
+  overflow: auto;
 }
 </style>

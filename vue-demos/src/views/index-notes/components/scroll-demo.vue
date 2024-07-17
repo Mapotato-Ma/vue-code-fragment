@@ -18,6 +18,11 @@
 
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue';
+
+defineOptions({
+  name: 'scroll-demo'
+});
+
 const data = new Array(10)
   .fill(0)
   .map(() => new Array(10).fill(0).map(() => Math.floor(Math.random() * 10)));
@@ -25,7 +30,7 @@ const scrollX = ref(0);
 const container = ref<HTMLElement>();
 const containerScrollWidth = ref();
 const criticalScrollWidth = computed(() => {
-  return containerScrollWidth.value - 108;
+  return containerScrollWidth.value;
 });
 const calcTranslateX = computed(
   () =>
@@ -44,43 +49,53 @@ const onScroll = (e: any) => {
 <style lang="scss" scoped>
 .box {
   position: relative;
-  height: 500px;
-  width: 500px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: 100%;
+  color: #fff;
+  background-color: var(--bg-page);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   .col-position {
     position: absolute;
     top: 0;
     left: 0;
     z-index: 1;
     min-width: 100px;
+    padding: 2em 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgb(235, 87, 1);
-    color: aqua;
+    background-color: var(--bg-page);
+    border: 1px solid #fff;
+    background: rgba($color: #000000, $alpha: 1);
   }
   .scroll-demo {
     position: relative;
     display: flex;
     flex-direction: column;
-    width: 500px;
+    width: 100%;
+    height: 500px;
     gap: 10px;
     overflow: auto;
 
     .row {
-      width: 700px;
+      width: 100%;
       display: flex;
       gap: 10px;
       .col {
         min-width: 100px;
+        padding: 2em 0;
         display: flex;
         align-items: center;
         justify-content: center;
-        background-color: aqua;
-        color: rgb(235, 87, 1);
+        border: 1px solid #fff;
         &.col-sticky {
           position: sticky;
           left: 0;
-          background-color: rgb(18, 74, 215);
+          background: rgba($color: #000000, $alpha: 1);
         }
       }
       &.row-sticky {
@@ -89,7 +104,7 @@ const onScroll = (e: any) => {
         .col {
           position: sticky;
           left: 0;
-          background-color: rgb(14, 9, 172);
+          background: rgba($color: #000000, $alpha: 1);
         }
       }
     }

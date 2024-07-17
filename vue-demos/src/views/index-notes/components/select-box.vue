@@ -15,12 +15,45 @@
         </TransitionGroup>
       </div>
     </div>
+    <div class="m-select">
+      <span>{{ selected }}</span>
+      <div class="m-overlay" ref="overlay" @mouseover.stop>
+        <TransitionGroup name="fade">
+          <span
+            v-for="(item, index) in currentList"
+            :key="item"
+            @click="selectItem(item, index)"
+            :class="{ active: index === 2 }"
+          >
+            {{ item }}
+          </span>
+        </TransitionGroup>
+      </div>
+    </div>
+    <div class="m-select">
+      <span>{{ selected }}</span>
+      <div class="m-overlay" ref="overlay" @mouseover.stop>
+        <TransitionGroup name="fade">
+          <span
+            v-for="(item, index) in currentList"
+            :key="item"
+            @click="selectItem(item, index)"
+            :class="{ active: index === 2 }"
+          >
+            {{ item }}
+          </span>
+        </TransitionGroup>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { fromEvent } from 'rxjs';
 import { computed, onMounted, ref } from 'vue';
+
+defineOptions({ name: 'select-box' });
+
 const overlay = ref<HTMLElement>();
 const currentList = ref(['苹果', '香蕉', '橘子', '橙子', '甘蔗', '凑数的']);
 const selected = computed(() => currentList.value[2]);
@@ -53,8 +86,9 @@ const selectItem = (item: string, index: number) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 200px;
-  height: 75px;
+  gap: 1em;
+  width: 100%;
+  height: 500px;
   color: #fff;
 
   .m-select {

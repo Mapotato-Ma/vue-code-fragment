@@ -8,48 +8,11 @@ const routes: Array<RouteRecordRaw> = [
     meta: { title: '首页' },
     component: () => import('@/views/home-show.vue')
   },
-  // {
-  //   name: '固定第一行第一列滚动',
-  //   path: '/scrollDemo',
-  //   component: () => import('@/views/scroll-demo.vue')
-  // },
   {
-    name: 'LineGraph',
-    path: '/line-graph',
-    meta: { title: 'css连线' },
-    component: () => import('@/views/line-graph.vue')
-  },
-  {
-    name: 'SvgDemo',
-    path: '/svg-demo',
-    meta: { title: 'SVG DEMO' },
-    component: () => import('@/views/svg-demo/svg-demo.vue')
-  },
-  // { name: 'UnusedDemo', path: '/useClass', component: () => import('@/views/use-class.vue') },
-  {
-    name: 'SelectBox',
-    path: '/select-box',
-    meta: { title: 'SelectBox' },
-    component: () => import('@/views/select-box.vue')
-  },
-  {
-    name: 'FlexibleLayouts',
-    meta: { title: '拖拽排序' },
-    path: '/flexible-layouts',
-    component: () => import('@/views/flexible-layouts.vue')
-  },
-  // {
-  //   name: 'DirectedGraph',
-  //   meta: { title: '无向图' },
-  //   path: '/directed-graph',
-  //   component: () => import('@/views/directed-graph/directed-graph.vue')
-  // },
-  // {
-  //   name: 'DirectedGraphImprove',
-  //   meta: { title: '有向图' },
-  //   path: '/directed-graph-improve',
-  //   component: () => import('@/views/directed-graph-improve/directed-graph-improve.vue')
-  // }
+    name: 'IndexNotes',
+    path: '/index-notes',
+    component: () => import('@/views/index-notes/index-notes.vue')
+  }
 ];
 
 export const router = createRouter({

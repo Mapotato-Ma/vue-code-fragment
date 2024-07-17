@@ -8,18 +8,26 @@
 
 <script lang="ts" setup>
 import { installMessage } from '@/common/plugins/message';
-import { getCurrentInstance, onMounted, ref } from 'vue';
+import { getCurrentInstance, onMounted, ref, nextTick } from 'vue';
 import type { LPopover } from '..';
 const message = ref('');
 let timer: number | null;
 defineExpose({
   message: (msg: string, duration: number = 2000) => {
-    message.value = msg;
-    if (timer !== null) clearTimeout(timer);
-    timer = setTimeout(() => {
+    const showMessage = () => {
+      message.value = msg;
+      if (timer !== null) clearTimeout(timer);
+      timer = setTimeout(() => {
+        message.value = '';
+        timer = null;
+      }, duration);
+    };
+    if (message.value !== '') {
       message.value = '';
-      timer = null;
-    }, duration);
+      nextTick(showMessage);
+    } else {
+      showMessage();
+    }
   }
 });
 onMounted(() => {
@@ -53,7 +61,7 @@ onMounted(() => {
 
 .v-enter-from,
 .v-leave-to {
-  transform: translateX(0) translateY(-20px);
+  transform: translateX(-50%) translateY(-20px);
   opacity: 0;
 }
 </style>

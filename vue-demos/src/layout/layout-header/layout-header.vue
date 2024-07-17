@@ -2,8 +2,13 @@
   <header class="header">
     <menu class="h-menu">
       <li class="logo"><router-link to="/home">Mapotato</router-link></li>
-      <li v-for="menu in MENULIST" :key="menu.name" :class="{ active: $route.path === menu.path }">
-        <router-link :value="String(menu.name)" :to="{ path: menu.path }" class="h-li">
+      <li
+        class="h-li"
+        v-for="menu in MENULIST"
+        :key="menu.name"
+        :class="{ active: $route.path === menu.path }"
+      >
+        <router-link :value="String(menu.name)" :to="{ path: menu.path }" class="h-li-a">
           {{ menu.name }}
         </router-link>
       </li>
@@ -23,20 +28,8 @@ const MENULIST = Object.freeze([
     name: '首页'
   },
   {
-    path: '/line-graph',
-    name: 'css连线'
-  },
-  {
-    path: '/svg-demo',
-    name: 'SVG DEMO'
-  },
-  {
-    path: '/select-box',
-    name: 'SelectBox'
-  },
-  {
-    path: '/flexible-layouts',
-    name: '拖拽排序'
+    path: '/index-notes',
+    name: '杂七杂八'
   }
   // {
   //   path: '/directed-graph-improve',
@@ -51,7 +44,7 @@ const MENULIST = Object.freeze([
   align-items: center;
   height: var(--header-h);
   padding: 0 1em;
-  border-bottom: 1px dashed goldenrod;
+  border-bottom: 1px solid var(--border-color);
   .logo {
     margin-right: 2em;
     a {
@@ -60,14 +53,15 @@ const MENULIST = Object.freeze([
   }
   .h-li {
     padding: 0.5em 1em;
-    border-left: 2px solid rgba(255, 255, 255, 0.5);
+    border-left: 1px solid var(--border-color);
     &:hover {
       background-color: rgba(255, 255, 255, 0.5);
     }
+    &.active {
+      background-color: rgba(188, 188, 188, 0.5);
+    }
   }
-  .active {
-    opacity: 0.5;
-  }
+
   .icon {
     margin-left: auto;
   }

@@ -3,7 +3,7 @@
     <div v-for="(item, index) in list" :key="item.id" class="fl-box">
       <div
         class="fl-text"
-        :style="{ animationDelay: `${Math.random() * -5}s` }"
+        :style="{ animationDelay: `${Math.random() * -2}s` }"
         :class="[`fl-text-${index}`]"
       >
         {{ item.name }}
@@ -15,6 +15,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import { VueDraggable } from 'vue-draggable-plus';
+defineOptions({ name: 'flexible-layouts' });
 
 const randomEmojis = [
   '😓',
@@ -99,35 +100,29 @@ const onSort = () => {
   grid-template-columns: repeat(10, 1fr);
   padding: 10px;
   gap: 10px;
-  &:hover {
-    .fl-box {
-      background-color: rgba(165, 42, 42, 0.761);
-    }
-  }
   .fl-box {
     cursor: move;
     display: grid;
     place-content: center;
     transition: background-color 0.3s ease-in;
-    background-color: rgba(165, 42, 42, 0.309);
+    background-color: rgba(165, 42, 42, 0.761);
     border-radius: 4px;
     user-select: none;
+    padding: 2em 0;
   }
 
   .fl-text {
     display: grid;
     place-content: center;
-    width: 5vh;
-    height: 5vh;
-    font-size: 5vh;
+    font-size: 2cqi;
     transform-origin: center bottom;
-    animation: danceText 3s infinite;
+    animation: danceTextRun 1s infinite alternate;
   }
 }
 </style>
 
 <style>
-@keyframes danceText {
+@keyframes danceTextShake {
   0% {
     text-shadow: 0 0 13px rgba(236, 227, 203, 0.6);
     transform: scale(1, 1) rotateZ(0deg);
@@ -151,6 +146,15 @@ const onSort = () => {
   100% {
     text-shadow: 0 0 13px rgba(236, 227, 203, 0.6);
     transform: scale(1, 1) rotateZ(0deg);
+  }
+}
+@keyframes danceTextRun {
+  0% {
+    transform: translateY(-5px);
+  }
+
+  100% {
+    transform: translateY(5px);
   }
 }
 </style>
