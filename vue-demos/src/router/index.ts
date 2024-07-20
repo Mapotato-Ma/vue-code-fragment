@@ -12,6 +12,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'IndexNotes',
     path: '/index-notes',
     component: () => import('@/views/index-notes/index-notes.vue')
+  },
+  {
+    name: 'CodepenNotes',
+    path: '/codepen-notes',
+    component: () => import('@/views/codepen-notes/codepen-notes.vue')
   }
 ];
 

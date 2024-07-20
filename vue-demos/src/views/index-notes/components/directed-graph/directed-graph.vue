@@ -1,5 +1,6 @@
 <template>
   <div class="directed-graph" :draggable="false" ref="elDrawContainer">
+    <!-- 箭头 -->
     <svg class="dg-draw-container">
       <defs>
         <!-- 用作箭头的 marker -->
@@ -12,7 +13,7 @@
           markerHeight="30"
           orient="auto-start-reverse"
         >
-          <path d="M 0 0 L 30 15 L 0 30 L 15 15 z" fill="rgba(255, 255, 255,0.5)" />
+          <path d="M 0 0 L 30 15 L 0 30 L 15 15 z" fill="rgba(255, 255, 255, 1)" />
         </marker>
       </defs>
     </svg>
@@ -44,85 +45,60 @@
       </teleport>
     </div>
     <!-- 右侧卡片面板 -->
-    <t-card
-      class="dg-point-manage-card"
-      title="Point-Manage"
-      header-bordered
-      :style="{ width: '500px', height: '100%' }"
-    >
-      <template #actions>
-        <t-button shape="circle" theme="primary" @click="showData">
-          <template #icon>
-            <CodeIcon />
-          </template>
-        </t-button>
-      </template>
-      <!-- Points面板 -->
-      <t-card title="Points" header-bordered>
-        <div class="dg-point-manage-card-points">
-          <div
-            class="dg-point-manage-card-point"
-            :span="3"
-            v-for="point in points"
-            :key="point.value.pointId"
-            @click="removePoint(point.value)"
-          >
-            Point {{ point.value.pointName }}
-          </div>
+    <fieldset class="dg-panel">
+      <legend>Panel</legend>
+      <fieldset class="dg-panel-item dg-panel-operation">
+        <legend>Operate</legend>
+        <fieldset>
+          <legend size="small">AddLine</legend>
+          <select v-model="pointSelectStartValue">
+            <option :value="option.value" v-for="option in pointSelectOptions">
+              {{ option.label }}
+            </option>
+          </select>
+          <hr />
+          <select v-model="pointSelectEndValue">
+            <option :value="option.value" v-for="option in pointSelectOptions">
+              {{ option.label }}
+            </option>
+          </select>
+          <button @click="confirmConnect" class="dg-add-connect">添加连接</button>
+        </fieldset>
+        <fieldset>
+          <legend size="small">AddPoint</legend>
+          <button @click="addPoint" block>+ AddPoint</button>
+        </fieldset>
+      </fieldset>
+      <fieldset class="dg-panel-item dg-panel-points">
+        <legend>Points</legend>
+        <div
+          class="dg-panel-point"
+          :span="3"
+          v-for="point in points"
+          :key="point.value.pointId"
+          @click="removePoint(point.value)"
+        >
+          Point {{ point.value.pointName }}
         </div>
-        <template #actions>
-          <t-link theme="primary" hover="color" @click="addPoint">New Point</t-link>
-        </template>
-      </t-card>
-      <!-- 分割线 -->
-      <t-divider></t-divider>
-      <!-- Lines面板 -->
-      <t-card title="Lines" header-bordered>
-        <div class="dg-point-manage-card-lines">
-          <div
-            class="dg-point-manage-card-line"
-            :span="3"
-            v-for="(item, index) in connections"
-            :key="item.startPoint.pointName + '-' + item.endPoint.pointName"
-          >
-            <div class="dg-cs">Point {{ item.startPoint.pointName }}</div>
-            <div class="dg-card-line"><CutIcon @click="removeConnection(item, index)" /></div>
-            <div class="dg-cn">Point {{ item.endPoint.pointName }}</div>
-          </div>
+      </fieldset>
+      <fieldset class="dg-panel-item dg-panel-lines">
+        <legend>Lines</legend>
+        <div
+          class="dg-panel-line"
+          :span="3"
+          v-for="(item, index) in connections"
+          :key="item.startPoint.pointName + '-' + item.endPoint.pointName"
+        >
+          <div class="dg-cs">Point {{ item.startPoint.pointName }}</div>
+          <div class="dg-remove-line" @click="removeConnection(item, index)"></div>
+          <div class="dg-cn">Point {{ item.endPoint.pointName }}</div>
         </div>
-        <template #actions>
-          <t-popconfirm
-            :popupProps="{ overlayInnerClassName: 'dg-popconfirm-content' }"
-            @confirm="confirmConnect"
-          >
-            <template #content>
-              <div class="dg-popconfirm">
-                <div class="dg-popconfirm-start-list">
-                  <t-select
-                    v-model="pointSelectStartValue"
-                    :options="pointSelectOptions"
-                    label="Start:"
-                  ></t-select>
-                </div>
-                <div class="dg-popconfirm-end-list">
-                  <t-select
-                    v-model="pointSelectEndValue"
-                    :options="pointSelectOptions"
-                    label="End:"
-                  ></t-select>
-                </div>
-              </div>
-            </template>
-            <t-link theme="primary" hover="color">New Connect</t-link>
-          </t-popconfirm>
-        </template>
-      </t-card>
-    </t-card>
+      </fieldset>
+    </fieldset>
   </div>
 </template>
 
 <script lang="ts" setup>
-// @ts-nocheck
 import {
   computed,
   getCurrentInstance,
@@ -134,8 +110,7 @@ import {
 } from 'vue';
 import { Point, type IPoint, type IConnection } from './usePoint';
 import { numberToPx } from '@/utils';
-import { CutIcon, CodeIcon } from 'tdesign-icons-vue-next';
-import { MessagePlugin, type HTMLElementAttributes } from 'tdesign-vue-next';
+import { message } from '@/common/plugins/message';
 const points = ref<Array<Ref<IPoint>>>([]);
 const connections = ref<Array<IConnection>>([]);
 const draggingPoint = ref<IPoint>();
@@ -207,11 +182,13 @@ onMounted(() => {
 
 const addConnection = (startPoint: IPoint, endPoint: IPoint) => {
   if (startPoint.pointId === endPoint.pointId) {
-    MessagePlugin.warning('不能连接自身！');
+    // TODO: 更改提示类型为warning
+    message.message('不能连接自身！');
     return;
   }
   if (startPoint.endPoints.includes(endPoint)) {
-    MessagePlugin.warning('连接已存在！');
+    // TODO: 更改提示类型为warning
+    message.message('连接已存在！');
     return;
   }
   connections.value.push({ startPoint, endPoint });
@@ -266,7 +243,7 @@ onMounted(() => {
 });
 
 // 更新连线位置
-const getLineStyle = (startPoint: Ref<IPoint>, endPoint: IPoint): HTMLElementAttributes => {
+const getLineStyle = (startPoint: Ref<IPoint>, endPoint: IPoint) => {
   const { top: y1, left: x1 } = startPoint.value.getCenterPosition;
   const { top: y2, left: x2 } = endPoint.getCenterPosition;
   const { M, N } = findPointsOnLine({ x: x1, y: y1 }, { x: x2, y: y2 }, 50);
@@ -324,6 +301,7 @@ const showData = () => {
   position: relative;
   width: 100%;
   height: 100%;
+  min-height: 80vh;
   .dg-draw-container {
     position: absolute;
     top: 0%;
@@ -341,30 +319,18 @@ const showData = () => {
     font-weight: bolder;
     -webkit-user-drag: none;
     cursor: move;
-    border-radius: 100%;
     position: absolute;
     z-index: 1;
-    background-color: blueviolet;
+    background-color: var(--color-brand-fill);
+    border-radius: 100%;
     > span {
       user-select: none;
     }
   }
-  :deep(.t-card.dg-point-manage-card) {
-    > .t-card__title {
-      user-select: none;
-    }
-    > .t-card__body {
-      display: flex;
-      flex-direction: column;
-      padding: 16px;
-      height: calc(100% - 57px);
-      overflow: auto;
-    }
-    .t-link {
-      user-select: none;
-    }
-  }
-  .dg-point-manage-card {
+  .dg-panel {
+    user-select: none;
+    width: 500px;
+    height: 100%;
     position: absolute;
     z-index: 1;
     right: 0;
@@ -372,28 +338,60 @@ const showData = () => {
     transform: translateY(-50%);
     display: flex;
     flex-direction: column;
+    gap: 8px;
+    backdrop-filter: blur(10px);
+
+    &-item {
+      width: 100%;
+      text-align: center;
+      display: flex;
+      flex: auto;
+      align-items: center;
+      overflow: auto;
+      padding: 0.5rem 1rem;
+    }
+    &-operation {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      justify-content: flex-start;
+      align-items: flex-start;
+      max-height: 250px;
+      fieldset {
+        text-align: left;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        hr {
+          flex: 1;
+        }
+        .dg-add-connect {
+          margin-left: 1em;
+        }
+      }
+    }
+
     &-points {
       display: grid;
-      gap: 8px;
       grid-template-columns: repeat(4, 1fr);
+      max-height: 200px;
+      flex-wrap: wrap;
+      overflow: auto;
     }
     &-lines {
       display: flex;
       flex-direction: column;
+      max-height: calc(100% - 450px);
       gap: 8px;
     }
 
     &-point,
     &-line {
       position: relative;
-      text-align: center;
-      padding: 10px;
-      font-weight: bolder;
-      -webkit-user-drag: none;
-      border-radius: 9999999em;
-      background-color: blueviolet;
+      padding: 0.5rem 1rem;
     }
     &-point {
+      border: 1px solid transparent;
       &::after {
         cursor: pointer;
         content: '删除';
@@ -405,21 +403,22 @@ const showData = () => {
         left: 0;
         width: 100%;
         height: 100%;
-        border-radius: 9999999em;
-        transition: opacity 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+        transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
         opacity: 0;
-        backdrop-filter: blur(8px) grayscale(0.7);
+        background-color: var(--color-brand-bg);
       }
-    }
-    &-point:hover {
-      &::after {
-        opacity: 1;
+      &:hover {
+        border: 1px solid var(--color-border);
+        &::after {
+          opacity: 1;
+        }
       }
     }
     &-line {
-      background-color: rgba(137, 43, 226, 0.28);
       display: flex;
       align-items: center;
+      width: 100%;
+      border: 1px solid var(--color-border);
       .dg-cs,
       .dg-cn {
         display: flex;
@@ -427,36 +426,36 @@ const showData = () => {
         white-space: nowrap;
         padding: 8px;
         flex: 1;
-        border-radius: 9999999em;
-        background-color: blueviolet;
       }
-      &:hover {
-        .dg-card-line .t-icon {
-          scale: 2;
+      &:hover .dg-remove-line {
+        &::before {
+          rotate: 45deg;
+        }
+        &::after {
+          rotate: -45deg;
         }
       }
-      .dg-card-line {
+      .dg-remove-line {
+        position: relative;
         width: 100%;
-        flex: auto;
-        height: 4px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: blueviolet;
-        .t-icon {
-          cursor: pointer;
-          scale: 0;
-          transition: scale 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+        height: 0.5em;
+        border-radius: 9999999em;
+        cursor: pointer;
+        background: var(--color-border);
+        &::after,
+        &::before {
+          content: '';
+          position: absolute;
+          width: 2em;
+          height: 0.5em;
+          border-radius: 9999999em;
+          left: 50%;
+          translate: -50% 0;
+          background: var(--color-border);
+          transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
         }
       }
     }
-  }
-  .dg-operation {
-    position: absolute;
-    z-index: 1;
-    right: 2vw;
-    top: 50%;
-    translate: 0 -50%;
   }
 }
 </style>

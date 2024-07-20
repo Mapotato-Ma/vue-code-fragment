@@ -14,7 +14,7 @@
       L ${H.x} ${H.y} 
       A ${radius} ${radius} 0 0 1 ${A.x} ${A.y}
       z`"
-      :fill
+      :fill="fill"
       @click="showTips(radius)"
     ></path>
   </svg>
@@ -47,6 +47,7 @@ const showTips = (radius: number) => {
 .svg-demo {
   width: 100%;
   height: 100%;
+  aspect-ratio: 2/1;
   path {
     cursor: pointer;
     transition: all 233ms;

@@ -126,7 +126,7 @@ function getWidth(left: number, right: number) {
       cursor: pointer;
       width: 40px;
       height: 40px;
-      background-color: #904cbc;
+      background-color: var(--color-brand-fill);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -139,7 +139,7 @@ function getWidth(left: number, right: number) {
         top: 50%;
         left: 50%;
         height: 4px;
-        background-color: #904cbc;
+        background-color: var(--color-brand-fill);
         transform-origin: top left;
         scale: 0;
         opacity: 0;
@@ -166,7 +166,7 @@ function getWidth(left: number, right: number) {
     }
 
     .active {
-      box-shadow: 0 0 10px 5px #904cbc;
+      box-shadow: 0 0 10px 5px var(--color-brand-fill);
     }
   }
 

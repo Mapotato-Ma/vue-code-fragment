@@ -25,7 +25,7 @@ export interface IShape {
   };
 }
 
-// 等腰梯形工厂函数
+// 梯形工厂函数
 export const useRightTrapezoid = (
   pointTopLeft: IPoint,
   pointTopRight: IPoint,

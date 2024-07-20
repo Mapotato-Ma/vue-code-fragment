@@ -2,10 +2,9 @@
   <div class="index-notes">
     <div
       class="in-x"
-      v-for="{ component, size } in components"
-      :class="[`in-${component.name}`]"
+      v-for="{ component, size, name } in components"
       :style="{ gridColumn: `span ${size.w}`, gridRow: `span ${size.h}` }"
-      :key="component.name"
+      :key="name"
     >
       <component :is="component"></component>
     </div>
@@ -13,13 +12,21 @@
 </template>
 
 <script lang="ts" setup>
-import { FlexibleLayouts, LineGraph, ScrollDemo, SelectBox, UseClass,SvgDemo } from './components';
+import {
+  FlexibleLayouts,
+  LineGraph,
+  ScrollDemo,
+  SelectBox,
+  DirectedGraphImprove,
+  SvgDemo
+} from './components';
 const components = [
-  { component: FlexibleLayouts, size: { w: 2, h: 2 } },
-  { component: LineGraph, size: { w: 1, h: 1 } },
-  { component: ScrollDemo, size: { w: 1, h: 1 } },
-  { component: SelectBox, size: { w: 1, h: 1 } },
-  { component: SvgDemo, size: { w: 2, h: 1 } },
+  { name: '可拖拽布局组件', component: FlexibleLayouts, size: { w: 2, h: 2 } },
+  { name: '双边连线组件', component: LineGraph, size: { w: 1, h: 1 } },
+  { name: '冻结行列表格', component: ScrollDemo, size: { w: 1, h: 1 } },
+  { name: '选择器组件', component: SelectBox, size: { w: 1, h: 1 } },
+  { name: '随机梯形svg组件', component: SvgDemo, size: { w: 2, h: 1 } },
+  { name: '有向图组件', component: DirectedGraphImprove, size: { w: 3, h: 2 } }
 ];
 </script>
 
@@ -32,10 +39,11 @@ const components = [
   .in-x {
     width: 100%;
     height: 100%;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--color-border);
     padding: 10px;
     background: #000;
     align-content: center;
+    overflow: hidden;
   }
 }
 </style>

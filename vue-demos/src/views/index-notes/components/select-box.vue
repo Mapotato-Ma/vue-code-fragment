@@ -1,36 +1,6 @@
 <template>
   <div class="main">
-    <div class="m-select">
-      <span>{{ selected }}</span>
-      <div class="m-overlay" ref="overlay" @mouseover.stop>
-        <TransitionGroup name="fade">
-          <span
-            v-for="(item, index) in currentList"
-            :key="item"
-            @click="selectItem(item, index)"
-            :class="{ active: index === 2 }"
-          >
-            {{ item }}
-          </span>
-        </TransitionGroup>
-      </div>
-    </div>
-    <div class="m-select">
-      <span>{{ selected }}</span>
-      <div class="m-overlay" ref="overlay" @mouseover.stop>
-        <TransitionGroup name="fade">
-          <span
-            v-for="(item, index) in currentList"
-            :key="item"
-            @click="selectItem(item, index)"
-            :class="{ active: index === 2 }"
-          >
-            {{ item }}
-          </span>
-        </TransitionGroup>
-      </div>
-    </div>
-    <div class="m-select">
+    <div class="m-select" v-for="item in 5" :key="item">
       <span>{{ selected }}</span>
       <div class="m-overlay" ref="overlay" @mouseover.stop>
         <TransitionGroup name="fade">
@@ -88,14 +58,15 @@ const selectItem = (item: string, index: number) => {
   justify-content: center;
   gap: 1em;
   width: 100%;
-  height: 500px;
+  min-height: 500px;
   color: #fff;
+  user-select: none;
 
   .m-select {
     position: relative;
     width: 100px;
     height: 40px;
-    background-color: #3520d1;
+    background-color: var(--color-brand-fill);
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -150,7 +121,7 @@ const selectItem = (item: string, index: number) => {
         justify-content: center;
         width: 100%;
         height: 40px;
-        background-color: rgba(53, 32, 207, 0.6);
+        background-color: var(--color-brand-fill);
         border-radius: 12px;
         transition: box-shadow 0.2s ease-in-out;
         &:active {
@@ -159,13 +130,12 @@ const selectItem = (item: string, index: number) => {
       }
 
       .active {
-        background-color: rgba(53, 32, 207, 1);
+        background-color: var(--color-brand-fill);
       }
     }
     &:hover {
       .m-overlay {
         opacity: 1;
-        // transform: translateY(-50%) scaleY(1);
       }
     }
   }

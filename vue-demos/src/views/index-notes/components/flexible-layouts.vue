@@ -104,11 +104,10 @@ const onSort = () => {
     cursor: move;
     display: grid;
     place-content: center;
-    transition: background-color 0.3s ease-in;
-    background-color: rgba(165, 42, 42, 0.761);
     border-radius: 4px;
     user-select: none;
     padding: 2em 0;
+    background: var(--color-brand-fill);
   }
 
   .fl-text {
