@@ -8,6 +8,9 @@
     },
     "jsx": "preserve",
     "jsxImportSource": "vue",
+    "types": [
+      "node"
+    ]
   },
   "references": [
     {

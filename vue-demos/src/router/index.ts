@@ -17,6 +17,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'CodepenNotes',
     path: '/codepen-notes',
     component: () => import('@/views/codepen-notes/codepen-notes.vue')
+  },
+  {
+    name: 'JuejinNotes',
+    path: '/juejin-notes',
+    component: () => import('@/views/juejin-notes/juejin-notes.vue')
   }
 ];
 
