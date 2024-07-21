@@ -4,7 +4,7 @@
     :min-height="300"
     :width="width"
     scrolling="no"
-    :src="`https://codepen.io/mapotato-ma/embed/${id}?default-tab=${defaultTab}`"
+    :src="`https://codepen.io/mapotato-ma/embed/${penId}?default-tab=${defaultTab}&zoom=${zoom}`"
     frameborder="no"
     loading="lazy"
     allowtransparency="true"
@@ -12,7 +12,7 @@
     class="codepen"
   >
     See the
-    <a :href="`https://codepen.io/mapotato-ma/pen/${id}`">Pen</a>
+    <a :href="`https://codepen.io/mapotato-ma/pen/${penId}`">Pen</a>
     by Mapotato-Ma (
     <a href="https://codepen.io/mapotato-ma">@mapotato-ma</a>
     ) on
@@ -23,7 +23,7 @@
 
 <script lang="ts" setup>
 defineProps({
-  id: {
+  penId: {
     type: String,
     default: ''
   },
@@ -38,12 +38,16 @@ defineProps({
   height: {
     type: String,
     default: '100%'
+  },
+  zoom: {
+    type: Number,
+    default: 1
   }
 });
 </script>
 
 <style>
-.codepen{
+.codepen {
   min-height: 300px;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <header class="header">
-    <menu class="h-menu">
+    <nav class="h-menu">
       <li class="logo"><router-link to="/home">Mapotato</router-link></li>
       <li
         class="h-li"
@@ -17,7 +17,7 @@
           <!-- <t-icon class="t-menu__operations-icon" name="home" /> -->
         </router-link>
       </li>
-    </menu>
+    </nav>
   </header>
 </template>
 
@@ -41,7 +41,7 @@ const MENULIST = Object.freeze([
 <style lang="scss" scoped>
 .h-menu {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   height: var(--header-h);
   padding: 0 1em;
   margin: 0;
@@ -54,6 +54,7 @@ const MENULIST = Object.freeze([
   }
 
   li {
+    align-content: center;
     list-style: none;
   }
   .h-li {
