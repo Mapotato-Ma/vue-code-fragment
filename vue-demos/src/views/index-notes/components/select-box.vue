@@ -29,6 +29,7 @@ const currentList = ref(['苹果', '香蕉', '橘子', '橙子', '甘蔗', '凑�
 const selected = computed(() => currentList.value[2]);
 onMounted(() => {
   fromEvent<WheelEvent>(overlay.value!, 'wheel').subscribe((e) => {
+    e.preventDefault();
     if (e.deltaY < 0) {
       currentList.value.unshift(currentList.value.pop()!);
     } else {

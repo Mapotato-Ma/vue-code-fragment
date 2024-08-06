@@ -72,3 +72,14 @@ export const log = (msg: string, module = 'main', type: keyof Console = 'log', .
     );
   }
 };
+
+export const getRandomInt = (min: number, max: number) => {
+  console.log('🚀 ~ min ~ 77行', min);
+  console.log('🚀 ~ max ~ 78行', max);
+  // 确保 min 和 max 是整数
+  min = Math.ceil(min);
+  max = Math.floor(max);
+
+  // 生成从 min 到 max 之间的随机整数（包括 min 和 max）
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};

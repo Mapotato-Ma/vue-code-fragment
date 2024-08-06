@@ -114,6 +114,7 @@ function getWidth(left: number, right: number) {
   display: flex;
   width: 100%;
   height: 100%;
+  align-items: center;
   .select,
   .selected {
     display: flex;
@@ -184,6 +185,7 @@ function getWidth(left: number, right: number) {
 
   .data-show {
     width: 500px;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -201,8 +203,6 @@ function getWidth(left: number, right: number) {
         align-items: center;
         justify-content: center;
         flex: 1;
-        height: 100%;
-        border: 1px solid #ccc;
         &-head {
           border: none;
         }
