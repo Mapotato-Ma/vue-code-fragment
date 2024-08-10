@@ -4,6 +4,7 @@
       class="cn-x"
       :style="{ gridColumn: `span ${size.w}`, gridRow: `span ${size.h}` }"
       v-for="{ penId, name, size } in components"
+      :key="penId"
     >
       <legend>{{ name }}</legend>
       <Codepen :penId="penId" default-tab="result" :zoom="size.zoom"></Codepen>

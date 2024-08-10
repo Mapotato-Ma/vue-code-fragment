@@ -1,4 +1,4 @@
-import { Subscription, filter, fromEvent, interval, take, tap, throttleTime, timer } from 'rxjs';
+import { Subscription, filter, fromEvent, interval, tap, throttleTime } from 'rxjs';
 import { useDirection } from './useDirection';
 import { RewardType, useRewards } from './useRewards';
 import { useSnake, type PointList } from './useSnake';
