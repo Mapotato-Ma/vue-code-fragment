@@ -15,14 +15,16 @@
 import {
   FlexibleLayouts,
   LineGraph,
-  ScrollDemo,
   SelectBox,
   DirectedGraphImprove,
   SvgDemo,
-  LovelySnake
+  LovelySnake,
+  JSONView
 } from './components';
+
 const total = 100;
 const components = [
+  { name: 'JSON可视化', component: JSONView, size: { w: 0.3 * total, h: 0.4 * total } },
   { name: '贪吃蛇组件', component: LovelySnake, size: { w: 0.2 * total, h: 0.2 * total } },
   { name: '双边连线组件', component: LineGraph, size: { w: 0.1 * total, h: 0.1 * total } },
   // { name: '冻结行列表格', component: ScrollDemo, size: { w: 0.1*total, h: 0.1*total } },

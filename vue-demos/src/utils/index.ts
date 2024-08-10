@@ -83,3 +83,13 @@ export const getRandomInt = (min: number, max: number) => {
   // 生成从 min 到 max 之间的随机整数（包括 min 和 max）
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
+
+export const isSimpleData = (data: any) => {
+  return (
+    data === null ||
+    data === undefined ||
+    typeof data === 'string' ||
+    typeof data === 'number' ||
+    typeof data === 'boolean'
+  );
+};

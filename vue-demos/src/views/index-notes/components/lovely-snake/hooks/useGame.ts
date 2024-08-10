@@ -25,9 +25,9 @@ export const useGame = () => {
   // 游戏中
   let gaming: Subscription;
 
-  const registerEvent = () => {
+  const registerEvent = (container: HTMLElement) => {
     // 总事件
-    const allEvent = fromEvent<KeyboardEvent>(document, 'keydown').pipe(
+    const allEvent = fromEvent<KeyboardEvent>(container, 'keydown').pipe(
       tap((v) => v.preventDefault()),
       filter((e) => ALL_KEY_CODE.includes(e.code))
     );

@@ -1,5 +1,5 @@
 <template>
-  <div class="lovely-snake">
+  <div class="lovely-snake" ref="layoutRef">
     <fieldset class="info">
       <legend>贪吃蛇</legend>
       <div>
@@ -32,13 +32,14 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useGrids } from './hooks/useGrids';
 import { useGame } from './hooks/useGame';
 const { grids } = useGrids();
 const { currentRewardJSON, snakeJSON, snakeLength, gameOver, registerEvent } = useGame();
+const layoutRef = ref<HTMLElement>();
 onMounted(() => {
-  registerEvent();
+  registerEvent(layoutRef.value!);
 });
 </script>
 
