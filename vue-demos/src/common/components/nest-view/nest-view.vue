@@ -7,10 +7,10 @@
   >
     <div v-for="(item, index) in data" :key="item" class="array-item">
       <CollapsePanel v-if="isSimpleData(item)">
-        <template #header>索引: {{ index }}</template>
+        <template #header>index: {{ index }}</template>
         <template #body>
-          <div>数据类型: {{ typeof item }}</div>
-          <div>值: {{ item }}</div>
+          <div>type: {{ typeof item }}</div>
+          <div>value: {{ item }}</div>
         </template>
       </CollapsePanel>
       <NestView v-else v-model:data="data[index]" />
@@ -18,9 +18,9 @@
   </VueDraggable>
   <div class="nest-view" v-else>
     <CollapsePanel v-for="(item, index) in Object.entries(data)" :key="index">
-      <template #header>键名 :{{ item[0] }}</template>
+      <template #header>key: {{ item[0] }}</template>
       <template #body>
-        <span>值:</span>
+        <span>value: </span>
         <span v-if="isSimpleData(item[1])">
           {{ item[1] }}
         </span>
@@ -45,7 +45,7 @@ const isArray = computed(() => Array.isArray(data.value));
 .nest-view {
   position: relative;
   width: 100%;
-  max-height: 80vh;
+  max-height: 100%;
   overflow: auto;
   padding: 1em;
   border: 1px solid var(--color-border);

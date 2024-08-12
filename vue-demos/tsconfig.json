@@ -2,19 +2,15 @@
   "files": [],
   "compilerOptions": {
     "paths": {
-      "@/*": [
-        "/src/*"
-      ]
+      "@/*": ["/src/*"]
     },
     "jsx": "preserve",
     "jsxImportSource": "vue",
-    "types": [
-      "node"
-    ]
+    "types": ["node"]
   },
   "references": [
     {
-      "path": "./tsconfig.node.json",
+      "path": "./tsconfig.node.json"
     },
     {
       "path": "./tsconfig.app.json"

@@ -66,6 +66,17 @@ button {
   padding: 0.3rem 0.6rem;
   border: none;
   font-size: 14px;
+  background-color: rgb(24, 84, 168);
+  color: #fff;
+  border-radius: 0.2rem;
+  font-weight: bolder;
+  transition: all 0.2s;
+  &:hover {
+    box-shadow: 0 0 0 2px #fff;
+  }
+  &:active {
+    box-shadow: 0 0 0 2px #ffffffa4;
+  }
   &[block] {
     width: 100%;
   }

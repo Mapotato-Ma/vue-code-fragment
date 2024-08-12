@@ -1,0 +1,49 @@
+{
+  "booleanValue": true,
+  "nullValue": null,
+  "numberValue": 42,
+  "stringValue": "A string with special characters: \n\t!@#$%^&*()_+-=<>?",
+  "arrayValue": [
+    1,
+    2.5,
+    "string in array",
+    {
+      "nestedKey": "nestedValue"
+    },
+    [
+      1,
+      2,
+      3
+    ]
+  ],
+  "objectValue": {
+    "subObject": {
+      "boolean": false,
+      "array": [
+        "first",
+        "second",
+        {
+          "deeplyNestedKey": "deeplyNestedValue"
+        }
+      ]
+    },
+    "numbers": {
+      "integer": 100,
+      "float": 3.14,
+      "exponential": 1.23e4
+    },
+    "strings": {
+      "singleQuote": "Single quoted string",
+      "doubleQuote": "Double quoted string"
+    },
+    "mixedTypeArray": [
+      1,
+      "two",
+      true,
+      null,
+      {
+        "anotherKey": "anotherValue"
+      }
+    ]
+  }
+}

@@ -23,18 +23,31 @@ const collapse = ref(false);
   border: 1px solid var(--color-border);
   transition: all 0.2s ease;
   .header {
+    position: relative;
     align-content: center;
-    padding: 0 0.5em;
+    padding: 0 0.5em 0 2em;
     cursor: pointer;
     transition: background-color 0.2s ease;
+    background-color: #006aff60;
     &:hover {
       background-color: #006affca;
+    }
+
+    &::after {
+      font-family: cursive;
+      content: '>';
+      position: absolute;
+      top: 50%;
+      translate: 0 -50%;
+      left: 0.5em;
+      rotate: 90deg;
+      transition: rotate 0.2s ease;
     }
   }
 
   .body {
     align-content: center;
-    padding: 0 0 0.5em 0.5em;
+    padding: 0.5em;
     min-height: 0;
     border-top: 1px solid var(--color-border);
     transition: all 0.2s ease;
@@ -43,9 +56,14 @@ const collapse = ref(false);
 
   &.collapse {
     grid-template-rows: 30px 0fr;
+    .header {
+      &::after {
+        rotate: 0deg;
+      }
+    }
     .body {
       opacity: 0;
-      margin-top: -0.5em;
+      margin-top: -1em;
     }
   }
 }
