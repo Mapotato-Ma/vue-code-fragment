@@ -6,26 +6,24 @@
     v-if="isArray"
   >
     <div v-for="(item, index) in data" :key="item" class="array-item">
-      <CollapsePanel v-if="isSimpleData(item)">
-        <template #header>index: {{ index }}</template>
-        <template #body>
-          <div>type: {{ typeof item }}</div>
-          <div>value: {{ item }}</div>
-        </template>
+      <CollapsePanel v-if="isSimpleData(item)" :title="`index: ${index}`">
+        <div>type: {{ typeof item }}</div>
+        <div>value: {{ item }}</div>
       </CollapsePanel>
       <NestView v-else v-model:data="data[index]" />
     </div>
   </VueDraggable>
   <div class="nest-view" v-else>
-    <CollapsePanel v-for="(item, index) in Object.entries(data)" :key="index">
-      <template #header>key: {{ item[0] }}</template>
-      <template #body>
-        <span>value: </span>
-        <span v-if="isSimpleData(item[1])">
-          {{ item[1] }}
-        </span>
-        <NestView v-else v-model:data="(data as Record<string, any>)[item[0]]" />
-      </template>
+    <CollapsePanel
+      v-for="(item, index) in Object.entries(data)"
+      :key="index"
+      :title="`key: ${item[0]}`"
+    >
+      <span>value:</span>
+      <span v-if="isSimpleData(item[1])">
+        {{ item[1] }}
+      </span>
+      <NestView v-else v-model:data="(data as Record<string, any>)[item[0]]" />
     </CollapsePanel>
   </div>
 </template>

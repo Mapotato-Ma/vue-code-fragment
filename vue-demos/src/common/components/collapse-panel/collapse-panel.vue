@@ -1,17 +1,30 @@
 <template>
   <div class="collapse-panel" :class="{ collapse }">
     <div class="header" @click="collapse = !collapse">
-      <slot name="header"></slot>
+      <slot name="header">{{ title }}</slot>
     </div>
-    <div class="body">
-      <slot name="body"></slot>
+    <div class="body" :class="[bodyClass]">
+      <slot></slot>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
-const collapse = ref(false);
+import { computed, ref } from 'vue';
+const props = defineProps<{
+  title?: string;
+  initCollapse?: boolean;
+  bodyMaxHeight?: number;
+  bodyClass?: string;
+}>();
+const collapse = ref(props.initCollapse ?? false);
+
+const bodyMaxHeight = computed(() => {
+  if (props.bodyMaxHeight) {
+    return `${props.bodyMaxHeight}px`;
+  }
+  return 'unset';
+});
 </script>
 
 <style lang="scss" scoped>
@@ -33,20 +46,24 @@ const collapse = ref(false);
       background-color: #006affca;
     }
 
-    &::after {
+    &::before {
       font-family: cursive;
-      content: '>';
+      content: '';
       position: absolute;
       top: 50%;
       translate: 0 -50%;
+      width: 1em;
+      height: 1em;
+      clip-path: polygon(2px 0, 85% 50%, 2px 100%, 0 calc(100% - 2px), 50% 50%, 0 2px);
       left: 0.5em;
       rotate: 90deg;
       transition: rotate 0.2s ease;
+      background: #fff;
     }
   }
 
   .body {
-    align-content: center;
+    max-height: v-bind(bodyMaxHeight);
     padding: 0.5em;
     min-height: 0;
     border-top: 1px solid var(--color-border);
@@ -57,7 +74,7 @@ const collapse = ref(false);
   &.collapse {
     grid-template-rows: 30px 0fr;
     .header {
-      &::after {
+      &::before {
         rotate: 0deg;
       }
     }

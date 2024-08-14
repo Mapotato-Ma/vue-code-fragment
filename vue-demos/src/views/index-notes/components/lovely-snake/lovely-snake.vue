@@ -1,5 +1,5 @@
 <template>
-  <div class="lovely-snake" ref="layoutRef">
+  <div class="lovely-snake" ref="layoutRef" tabindex="0">
     <fieldset class="info">
       <legend>贪吃蛇</legend>
       <div>

@@ -45,10 +45,8 @@
       </teleport>
     </div>
     <!-- 右侧卡片面板 -->
-    <fieldset class="dg-panel">
-      <legend>Panel</legend>
-      <fieldset class="dg-panel-item dg-panel-operation">
-        <legend>Operate</legend>
+    <div class="dg-panel">
+      <CollapsePanel class="dg-panel-item dg-panel-operation" title="Operation" init-collapse>
         <fieldset>
           <legend size="small">AddLine</legend>
           <select v-model="pointSelectStartValue">
@@ -68,9 +66,13 @@
           <legend size="small">AddPoint</legend>
           <button @click="addPoint" block>+ AddPoint</button>
         </fieldset>
-      </fieldset>
-      <fieldset class="dg-panel-item dg-panel-points">
-        <legend>Points</legend>
+      </CollapsePanel>
+      <CollapsePanel
+        class="dg-panel-item"
+        title="Points"
+        body-class="dg-panel-points"
+        init-collapse
+      >
         <div
           class="dg-panel-point"
           :span="3"
@@ -80,9 +82,8 @@
         >
           Point {{ point.value.pointName }}
         </div>
-      </fieldset>
-      <fieldset class="dg-panel-item dg-panel-lines">
-        <legend>Lines</legend>
+      </CollapsePanel>
+      <CollapsePanel class="dg-panel-item" title="Lines" init-collapse>
         <div
           class="dg-panel-line"
           :span="3"
@@ -93,8 +94,8 @@
           <div class="dg-remove-line" @click="removeConnection(item, index)"></div>
           <div class="dg-cn">Point {{ item.endPoint.pointName }}</div>
         </div>
-      </fieldset>
-    </fieldset>
+      </CollapsePanel>
+    </div>
   </div>
 </template>
 
@@ -111,6 +112,7 @@ import {
 import { Point, type IPoint, type IConnection } from './usePoint';
 import { numberToPx } from '@/utils';
 import { message } from '@/common/plugins/message';
+import { CollapsePanel } from '@/common/components';
 const points = ref<Array<Ref<IPoint>>>([]);
 const connections = ref<Array<IConnection>>([]);
 const draggingPoint = ref<IPoint>();
@@ -300,7 +302,6 @@ const showData = () => {
 .directed-graph {
   position: relative;
   width: 100%;
-  height: 100%;
   min-height: 80vh;
   .dg-draw-container {
     position: absolute;
@@ -330,33 +331,23 @@ const showData = () => {
   .dg-panel {
     user-select: none;
     width: 500px;
-    height: 100%;
+    max-height: 100%;
     position: absolute;
     z-index: 1;
     right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
     backdrop-filter: blur(10px);
+    overflow: auto;
 
     &-item {
       width: 100%;
-      text-align: center;
-      display: flex;
-      flex: auto;
-      align-items: center;
-      overflow: auto;
-      padding: 0.5rem 1rem;
     }
-    &-operation {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      justify-content: flex-start;
-      align-items: flex-start;
+    :deep(.collapse-panel.dg-panel-operation) {
       max-height: 250px;
+      .body {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
       fieldset {
         text-align: left;
         width: 100%;
@@ -370,14 +361,15 @@ const showData = () => {
         }
       }
     }
-
-    &-points {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      max-height: 200px;
-      flex-wrap: wrap;
-      overflow: auto;
+    :deep(.collapse-panel) {
+      .dg-panel-points {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        max-height: 200px;
+        overflow: auto;
+      }
     }
+
     &-lines {
       display: flex;
       flex-direction: column;
@@ -429,9 +421,11 @@ const showData = () => {
       }
       &:hover .dg-remove-line {
         &::before {
+          opacity: 1;
           rotate: 45deg;
         }
         &::after {
+          opacity: 1;
           rotate: -45deg;
         }
       }
@@ -452,6 +446,7 @@ const showData = () => {
           left: 50%;
           translate: -50% 0;
           background: var(--color-border);
+          opacity: 0;
           transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
         }
       }
