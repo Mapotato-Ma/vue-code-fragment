@@ -30,11 +30,15 @@ const MENULIST = Object.freeze([
   },
   {
     path: '/index-notes',
-    name: '杂七杂八'
+    name: 'demo合集'
   },
   {
     path: '/codepen-notes',
     name: 'codepen'
+  },
+  {
+    path: '/juejin-notes',
+    name: '掘金笔记'
   }
 ]);
 </script>

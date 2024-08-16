@@ -5,12 +5,13 @@
     :min-height="300"
     :width="width"
     scrolling="no"
-    :src="`https://codepen.io/mapotato-ma/embed/${penId}?default-tab=${defaultTab}&zoom=${zoom}`"
+    :src="src"
     frameborder="no"
     loading="lazy"
     allowtransparency="true"
     allowfullscreen="true"
     class="codepen"
+    v-if="src"
   >
     See the
     <a :href="`https://codepen.io/mapotato-ma/pen/${penId}`">Pen</a>
@@ -20,10 +21,13 @@
     <a href="https://codepen.io">CodePen</a>
     .
   </iframe>
+  <button block v-else @click="loadPen">点击加载</button>
 </template>
 
 <script lang="ts" setup>
-defineProps({
+import { ref } from 'vue';
+
+const props = defineProps({
   penId: {
     type: String,
     default: ''
@@ -45,10 +49,25 @@ defineProps({
     default: 1
   }
 });
+
+const src = ref();
+const loadPen = () => {
+  const params = new URLSearchParams({
+    defaultTab: props.defaultTab,
+    height: props.height,
+    preview: 'true',
+    user: 'mapotato-ma',
+    zoom: props.zoom.toString()
+  });
+  src.value = `https://codepen.io/mapotato-ma/embed/${props.penId}?${params.toString()}`;
+};
 </script>
 
-<style>
+<style scoped>
 .codepen {
   min-height: 300px;
+}
+button{
+  margin: auto;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="index-notes">
     <div
-      class="in-x"
+      class="in-x scale-in-out"
       v-for="{ component, size, name } in components"
       :style="{ gridColumn: `span ${size.w}`, gridRow: `span ${size.h}` }"
       :key="name"
@@ -34,7 +34,6 @@ const components = [
   { name: '有向图组件', component: DirectedGraphImprove, size: { w: 0.3 * total, h: 0.2 * total } }
 ];
 </script>
-
 <style lang="scss" scoped>
 .index-notes {
   width: 100%;

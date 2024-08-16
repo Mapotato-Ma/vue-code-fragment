@@ -17,7 +17,7 @@ export default defineConfig({
     ViteEjsPlugin(),
     vueJsx(),
     plugin({
-      mode: [Mode.VUE]
+      mode: [Mode.VUE, Mode.HTML, Mode.MARKDOWN]
     })
   ],
   resolve: {

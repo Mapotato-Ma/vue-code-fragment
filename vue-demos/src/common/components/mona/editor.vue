@@ -20,14 +20,14 @@ const container = ref<HTMLElement>();
 
 let editor: monaco.editor.IStandaloneCodeEditor;
 
-const props = defineProps<{ data: string }>();
+const props = defineProps<{ data?: string }>();
 const emit = defineEmits(['update:data']);
 
 let stopWatch = watch(
   () => props.data,
   () => {
     if (!container.value?.contains(document.activeElement)) {
-      editor.setValue(props.data);
+      editor.setValue(props.data ?? '');
     }
   }
 );
@@ -35,7 +35,7 @@ onUnmounted(() => {
   stopWatch();
 });
 onMounted(async () => {
-  const jsonModel = monaco.editor.createModel(props.data, 'json');
+  const jsonModel = monaco.editor.createModel(props.data ?? '', 'json');
   editor = monaco.editor.create(container.value!, {
     model: jsonModel,
     tabSize: 2,

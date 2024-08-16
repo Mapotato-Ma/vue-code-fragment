@@ -1,7 +1,7 @@
 <template>
   <div class="codepen-notes">
     <fieldset
-      class="cn-x"
+      class="cn-x scale-in-out"
       :style="{ gridColumn: `span ${size.w}`, gridRow: `span ${size.h}` }"
       v-for="{ penId, name, size } in components"
       :key="penId"

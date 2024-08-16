@@ -72,13 +72,11 @@ const exportJson = () => {
     display: flex;
     flex-direction: column;
     min-width: 30cqw;
-    border: 3px solid #2068ed;
   }
   .right {
     flex: auto;
     display: flex;
     flex-direction: column;
-    border: 3px solid #2068ed;
     & > .nest-view {
       border: none;
     }

@@ -78,6 +78,7 @@ button {
     box-shadow: 0 0 0 2px #ffffffa4;
   }
   &[block] {
+    display: block;
     width: 100%;
   }
 }
