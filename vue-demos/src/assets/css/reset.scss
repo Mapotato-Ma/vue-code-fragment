@@ -72,10 +72,10 @@ button {
   font-weight: bolder;
   transition: all 0.2s;
   &:hover {
-    box-shadow: 0 0 0 2px #fff;
+    box-shadow: 0 0 10px 2px rgba(41, 116, 221, 0.77);
   }
   &:active {
-    box-shadow: 0 0 0 2px #ffffffa4;
+    box-shadow: 0 0 10px 2px rgba(221, 158, 41, 0.204);
   }
   &[block] {
     display: block;

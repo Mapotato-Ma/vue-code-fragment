@@ -86,8 +86,7 @@ const exportJson = () => {
     gap: 1em;
     justify-content: flex-end;
     align-items: center;
-    height: 3em;
-    padding-right: 1em;
+    padding: 0.5em 1em;
     border-bottom: 1px solid var(--color-border);
   }
 }

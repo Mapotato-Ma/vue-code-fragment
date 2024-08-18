@@ -4,6 +4,7 @@
     :animation="500"
     class="nest-view array"
     v-if="isArray"
+    group="json-view"
   >
     <div v-for="(item, index) in data" :key="item" class="array-item">
       <CollapsePanel v-if="isSimpleData(item)" :title="`index: ${index}`">

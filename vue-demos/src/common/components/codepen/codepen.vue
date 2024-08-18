@@ -1,31 +1,33 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
-  <iframe
-    :height="height"
-    :min-height="300"
-    :width="width"
-    scrolling="no"
-    :src="src"
-    frameborder="no"
-    loading="lazy"
-    allowtransparency="true"
-    allowfullscreen="true"
-    class="codepen"
-    v-if="src"
-  >
-    See the
-    <a :href="`https://codepen.io/mapotato-ma/pen/${penId}`">Pen</a>
-    by Mapotato-Ma (
-    <a href="https://codepen.io/mapotato-ma">@mapotato-ma</a>
-    ) on
-    <a href="https://codepen.io">CodePen</a>
-    .
-  </iframe>
-  <button block v-else @click="loadPen">点击加载</button>
+  <div class="codepen">
+    <iframe
+      :height="height"
+      :width="width"
+      :min-height="300"
+      scrolling="no"
+      :src="src"
+      frameborder="no"
+      loading="lazy"
+      allowtransparency="true"
+      allowfullscreen="true"
+      @load="loading = false"
+      v-if="startLoad"
+    >
+      See the
+      <a :href="`https://codepen.io/mapotato-ma/pen/${penId}`">Pen</a>
+      by Mapotato-Ma (
+      <a href="https://codepen.io/mapotato-ma">@mapotato-ma</a>
+      ) on
+      <a href="https://codepen.io">CodePen</a>
+      .
+    </iframe>
+    <div class="loading" v-if="loading"></div>
+  </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 const props = defineProps({
   penId: {
@@ -47,10 +49,22 @@ const props = defineProps({
   zoom: {
     type: Number,
     default: 1
+  },
+  loadingDelay: {
+    type: Number,
+    default: 1
   }
 });
 
 const src = ref();
+const startLoad = ref(false);
+const loading = ref(true);
+
+onMounted(() => {
+  setTimeout(() => {
+    loadPen();
+  }, props.loadingDelay * 1000);
+});
 const loadPen = () => {
   const params = new URLSearchParams({
     defaultTab: props.defaultTab,
@@ -60,14 +74,30 @@ const loadPen = () => {
     zoom: props.zoom.toString()
   });
   src.value = `https://codepen.io/mapotato-ma/embed/${props.penId}?${params.toString()}`;
+  startLoad.value = true;
 };
 </script>
 
 <style scoped>
 .codepen {
-  min-height: 300px;
-}
-button{
-  margin: auto;
+  height: 100%;
+  iframe {
+    height: 100%;
+    min-height: 300px;
+  }
+  .loading:empty::after {
+    position: absolute;
+    content: '加载中...';
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-size: 1.5em;
+    font-weight: bold;
+    z-index: 9999;
+    opacity: 0.5;
+    transition: opacity 0.5s;
+    animation: loadingContent 1s steps(3) infinite;
+  }
 }
 </style>
