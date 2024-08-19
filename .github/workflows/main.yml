@@ -4,6 +4,8 @@ jobs:
   my_first_job:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
       - name: 安装node
         uses: actions/setup-node@v4
         with:
