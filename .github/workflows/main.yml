@@ -16,12 +16,12 @@ jobs:
       - name: 打包
         working-directory: vue-demos
         run: npm run build
-      - name: Deploy to server
-        uses: appleboy/scp-action@master
+      - name: Publish
+        uses: nogsantos/scp-deploy@master
         with:
+          src: vue-demos/mapotato
           host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USERNAME }}
+          remote: ${{ secrets.SERVER_PUBLISH_DIR }}
           port: ${{ secrets.SERVER_PORT }}
+          user: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: vue-demos/mapotato
-          target: /home/nginx/html/haha/test  # 替换为你的服务器目录
