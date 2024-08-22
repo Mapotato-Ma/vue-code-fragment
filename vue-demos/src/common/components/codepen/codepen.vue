@@ -80,6 +80,7 @@ const loadPen = () => {
 
 <style scoped>
 .codepen {
+  position: relative;
   height: 100%;
   iframe {
     height: 100%;
@@ -88,9 +89,11 @@ const loadPen = () => {
   .loading:empty::after {
     position: absolute;
     content: '加载中...';
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    inset: 0;
+    display: flex;
+    align-items: center;
+    place-content: center;
+    background-color: rgb(97, 83, 83);
     color: #fff;
     font-size: 1.5em;
     font-weight: bold;

@@ -8,14 +8,10 @@
         :key="menu.name"
         :to="{ path: menu.path }"
         class="h-li"
+        :class="{ active: $route.path === menu.path }"
       >
-        <li :class="{ active: $route.path === menu.path }">
+        <li>
           {{ menu.name }}
-        </li>
-      </router-link>
-      <router-link to="/home">
-        <li class="icon">
-          <!-- <t-icon class="t-menu__operations-icon" name="home" /> -->
         </li>
       </router-link>
     </nav>
