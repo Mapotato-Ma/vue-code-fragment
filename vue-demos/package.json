@@ -6,13 +6,16 @@
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
-    "build-upload": "run-s build upload",
+    "build-upload": "run-s build cls zip cls upload cls unzip",
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "format": "prettier --write src/",
-    "upload": "scp -r ./mapotato 腾讯云:/home/nginx/html/"
+    "upload": "scp ./mapotato.zip 腾讯云:/home/nginx/html/",
+    "zip": "powershell -Command \"Compress-Archive -Path ./mapotato/* mapotato.zip -Force\"",
+    "unzip": "ssh 腾讯云 unzip -o /home/nginx/html/mapotato.zip -d /home/nginx/html/mapotato",
+    "cls": "cls"
   },
   "dependencies": {
     "@vueuse/core": "^10.11.0",
