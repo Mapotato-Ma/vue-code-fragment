@@ -84,7 +84,6 @@ const loadPen = () => {
   height: 100%;
   iframe {
     height: 100%;
-    min-height: 300px;
   }
   .loading:empty::after {
     position: absolute;

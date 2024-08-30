@@ -1,26 +1,36 @@
 <template>
   <div class="juejin-notes">
-    <VueShowdown
-      class="jn-article"
-      :markdown="article"
+    <CollapsePanel
+      class="jn-article fade-in-out"
+      :title="titleList[index]"
       v-for="(article, index) in articles"
-      :key="index"
-      :flavor="'allOn'"
+      :key="titleList[index]"
       ref="articleRefs"
-      @dblclick="fullScreenArticle(index)"
-    ></VueShowdown>
+    >
+      <VueShowdown
+        :markdown="article"
+        :key="index"
+        :flavor="'allOn'"
+        @dblclick="fullScreenArticle(index)"
+      ></VueShowdown>
+    </CollapsePanel>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { getArticles } from './articles';
 import { VueShowdown } from 'vue-showdown';
 import { useFullscreen } from '@vueuse/core';
-const articles = ref<string[]>();
+import { CollapsePanel } from '@/common/components';
+const articles = ref<string[]>([]);
 const articleRefs = ref<HTMLElement[]>([]);
+const titleList = computed(() =>
+  articles.value.map((article) => article.split('\n')[0]?.replace('#', '').trim())
+);
 onMounted(async () => {
   articles.value = await getArticles();
+  console.log('🚀 ~  ~ 24行', articles.value);
 });
 
 const fullScreenArticle = (index: number) => {
@@ -31,8 +41,9 @@ const fullScreenArticle = (index: number) => {
 <style lang="scss" scoped>
 .juejin-notes {
   width: 100%;
-  columns: 3;
+  columns: 4;
   column-gap: 1em;
+
   .jn-article {
     margin-bottom: 1em;
     height: max-content;
@@ -41,12 +52,6 @@ const fullScreenArticle = (index: number) => {
     max-height: 60vh;
     color: #e0e0e0;
     background-color: #292929;
-    --tw-ring-offset-shadow: 0 0 #0000;
-    --tw-ring-shadow: 0 0 #0000;
-    --tw-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
-    --tw-shadow-colored: inset 0 2px 4px 0 var(--tw-shadow-color);
-    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000),
-      var(--tw-shadow);
   }
 }
 </style>
@@ -60,22 +65,31 @@ const fullScreenArticle = (index: number) => {
     padding: 0.5em 0.5em 0.5em 1em;
     background: #00000029;
   }
+
   code {
     margin-right: 0.5em;
   }
+
   p {
     margin: 0;
   }
+
   img {
-    width: 90%;
+    border: 5px dashed var(--color-border);
+    margin: 1em 5%;
+    padding: 0.5em;
+    max-width: 90%;
   }
+
   a {
     color: rgb(100, 173, 255);
     text-decoration: underline;
+
     &:hover {
       color: rgba(100, 172, 255, 0.728);
     }
   }
+
   pre {
     position: relative;
     margin: 1.5em 2em;
@@ -83,6 +97,7 @@ const fullScreenArticle = (index: number) => {
     background-color: #6464649c;
     overflow: auto;
     border: 2px solid #eee;
+
     &::before {
       content: '';
       position: absolute;
@@ -94,27 +109,35 @@ const fullScreenArticle = (index: number) => {
       font-size: 12px;
       padding: 0.1em 0.5em;
     }
+
     &:has(.js)::before {
       content: 'js';
     }
+
     &:has(.ts)::before {
       content: 'ts';
     }
+
     &:has(.json)::before {
       content: 'json';
     }
+
     &:has(.ps1)::before {
       content: 'ps1';
     }
+
     &:has(.typescript)::before {
       content: 'typescript';
     }
+
     &:has(.shell)::before {
       content: 'shell';
     }
+
     &:has(.toml)::before {
       content: 'toml';
     }
+
     &:has(.text)::before {
       content: 'text';
     }

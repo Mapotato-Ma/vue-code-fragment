@@ -24,7 +24,7 @@
 
   @keyframes fade-in-on-enter--fade-out-on-exit {
     entry 0% {
-      opacity: 0;
+      opacity: 0.5;
     }
 
     entry 100% {
@@ -36,7 +36,7 @@
     }
 
     exit 100% {
-      opacity: 0;
+      opacity: 0.5;
     }
   }
 

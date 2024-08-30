@@ -1,6 +1,6 @@
 <template>
   <div class="collapse-panel" :class="{ collapse }">
-    <div class="header" @click="collapse = !collapse">
+    <div class="header" @click="collapse = !collapse" :title="title">
       <slot name="header">{{ title }}</slot>
     </div>
     <div class="body" :class="[bodyClass]">
@@ -42,6 +42,10 @@ const bodyMaxHeight = computed(() => {
     cursor: pointer;
     transition: background-color 0.2s ease;
     background-color: #006aff60;
+    width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
     &:hover {
       background-color: #006affca;
     }
@@ -69,6 +73,7 @@ const bodyMaxHeight = computed(() => {
     border-top: 1px solid var(--color-border);
     transition: all 0.2s ease;
     box-shadow: inset 20px 0 50px -10px rgb(34, 54, 238);
+    overflow: auto;
   }
 
   &.collapse {
@@ -79,6 +84,7 @@ const bodyMaxHeight = computed(() => {
       }
     }
     .body {
+      pointer-events: none;
       opacity: 0;
       margin-top: -1em;
     }

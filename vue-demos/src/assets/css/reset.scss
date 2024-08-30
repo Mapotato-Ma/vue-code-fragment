@@ -41,10 +41,16 @@ table {
 }
 
 * {
+  box-sizing: border-box;
   outline: none;
   &:focus {
     outline: none;
   }
+}
+
+div {
+  margin: 0;
+  padding: 0;
 }
 
 fieldset {

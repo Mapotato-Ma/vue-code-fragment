@@ -80,7 +80,7 @@ const randomEmojis = [
   '😢'
 ];
 const list = ref<{ id: number; name: string }[]>(
-  new Array(60).fill(0).map((_, i) => ({
+  new Array(36).fill(0).map((_, i) => ({
     id: i,
     name: String(randomEmojis[i])
   }))
@@ -97,7 +97,7 @@ const onSort = () => {
   height: 100%;
   display: grid;
   grid-template-rows: repeat(6, 1fr);
-  grid-template-columns: repeat(10, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   padding: 10px;
   gap: 10px;
   .fl-box {
