@@ -31,38 +31,40 @@ const bodyMaxHeight = computed(() => {
 .collapse-panel {
   display: grid;
   grid-template-rows: 30px 1fr;
-  padding: 0.5em;
+  row-gap: 0.1em;
+  padding: 6px;
   overflow: hidden;
-  border: 1px solid var(--color-border);
   transition: all 0.2s ease;
+  border: 2px solid #575757;
+  border-radius: 12px;
+  background: var(--apple-music-bg-lighten);
   .header {
     position: relative;
     align-content: center;
-    padding: 0 0.5em 0 2em;
+    padding: 0 0.5em 0 1.7em;
     cursor: pointer;
-    transition: background-color 0.2s ease;
-    background-color: #006aff60;
+    background: #575757;
     width: 100%;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
-    &:hover {
-      background-color: #006affca;
-    }
+    border-radius: 9px;
+    border-end-start-radius: 3px;
+    border-end-end-radius: 3px;
 
     &::before {
       font-family: cursive;
       content: '';
       position: absolute;
       top: 50%;
-      translate: 0 -50%;
+      translate: 0 -40%;
       width: 1em;
       height: 1em;
       clip-path: polygon(2px 0, 85% 50%, 2px 100%, 0 calc(100% - 2px), 50% 50%, 0 2px);
       left: 0.5em;
       rotate: 90deg;
       transition: rotate 0.2s ease;
-      background: #fff;
+      background: var(--apple-music-primary);
     }
   }
 
@@ -70,23 +72,28 @@ const bodyMaxHeight = computed(() => {
     max-height: v-bind(bodyMaxHeight);
     padding: 0.5em;
     min-height: 0;
-    border-top: 1px solid var(--color-border);
     transition: all 0.2s ease;
-    box-shadow: inset 20px 0 50px -10px rgb(34, 54, 238);
     overflow: auto;
+    background: #575757;
+    border-radius: 9px;
+    border-start-start-radius: 3px;
+    border-start-end-radius: 3px;
   }
 
   &.collapse {
     grid-template-rows: 30px 0fr;
     .header {
+      border-end-start-radius: 9px;
+      border-end-end-radius: 9px;
       &::before {
         rotate: 0deg;
       }
     }
     .body {
+      z-index: -1;
       pointer-events: none;
       opacity: 0;
-      margin-top: -1em;
+      margin-top: -2em;
     }
   }
 }

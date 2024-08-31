@@ -5,7 +5,7 @@
   --font-f: 'NNN', '庞门正道细线体', Inter, var(--font-fallback);
   --header-h: 3em;
   --footer-h: 2em;
-  --main-h: calc(100% - var(--header-h) - var(--footer-h));
+  --main-h: calc(100% - var(--footer-h));
   --bg-page: #1a1a1a;
   --msg-zi: 9999;
   --popover-bg: rgba(72, 80, 85, 0.8);
@@ -16,4 +16,8 @@
   --color-brand-bg-hover: rgba(100, 75, 75, 0.8);
   --color-brand-bg-active: rgba(100, 75, 75, 0.6);
   --color-brand-fill: rgb(125, 125, 125);
+  --apple-music-primary: #fa2d48;
+  --apple-music-default: #7e7d7d;
+  --apple-music-bg-darken: #060605;
+  --apple-music-bg-lighten: #242528;
 }

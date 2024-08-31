@@ -13,7 +13,7 @@
 <style lang="scss" scoped>
 .main {
   height: var(--main-h);
-  padding: 2em;
+  padding-top: calc(var(--header-h) + 30px);
   overflow: auto;
 }
 </style>

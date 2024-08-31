@@ -1,7 +1,9 @@
 <template>
   <header class="header">
     <nav class="h-menu">
-      <router-link to="/home" class="logo">Mapotato</router-link>
+      <router-link to="/home" class="logo">
+        <img src="@/assets/img/icon/camera.png" alt="" />
+      </router-link>
       <router-link
         :value="String(menu.name)"
         v-for="menu in MENULIST"
@@ -22,34 +24,49 @@
 const MENULIST = Object.freeze([
   {
     path: '/home',
-    name: '首页'
+    name: 'Home'
   },
   {
     path: '/index-notes',
-    name: 'demo合集'
+    name: 'Demo'
   },
   {
     path: '/codepen-notes',
-    name: 'codepen'
+    name: 'Codepen'
   },
   {
     path: '/juejin-notes',
-    name: '掘金笔记'
+    name: 'Juejin'
   }
 ]);
 </script>
 
 <style lang="scss" scoped>
 .h-menu {
+  position: fixed;
+  top: 1em;
+  left: 1em;
   display: flex;
-  align-items: stretch;
+  gap: 1em;
   height: var(--header-h);
-  padding: 0.5em 1em;
+  padding: 12px;
   margin: 0;
-  border-bottom: 1px solid var(--color-border);
+  background: lch(from var(--apple-music-bg-lighten) l c h / calc(alpha - 0.8));
+  border-radius: 16px;
+  z-index: 1;
+  box-shadow: 0 0 6px 4px rgb(0 0 0 / 50%);
+  backdrop-filter: blur(6px);
+  transition: background 233ms;
+  &:hover {
+    background: var(--apple-music-bg-lighten);
+  }
   .logo {
-    margin-right: 2rem;
-    font-size: xx-large;
+    display: flex;
+    align-items: center;
+    border-radius: 10px;
+    img {
+      width: 2em;
+    }
   }
 
   li {
@@ -59,12 +76,16 @@ const MENULIST = Object.freeze([
   .h-li {
     align-content: center;
     padding: 0 1em;
-    border-left: 1px solid var(--color-border);
+    border-radius: 10px;
+    transition: all 233ms;
+    font-weight: bold;
     &:hover {
-      background-color: rgba(255, 255, 255, 0.5);
+      color: var(--apple-music-primary);
     }
     &.active {
-      background-color: rgba(188, 188, 188, 0.5);
+      scale: 1.5;
+      transform-origin: center 70%;
+      color: var(--apple-music-primary);
     }
   }
 

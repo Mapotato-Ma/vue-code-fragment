@@ -25,28 +25,25 @@
 .footer {
   margin-top: auto;
   height: var(--footer-h);
-  align-content: center;
-  text-align: center;
-  .f-copy-right {
-    color: #fff;
-    padding: 0 1em 0 0.5em;
-    background: linear-gradient(to right, #818181, transparent 10em);
-  }
+  display: flex;
+  color: #fff;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
   .f-beian-num {
-    padding: 0 1em;
     margin-left: 4px;
-    color: #fff;
     text-decoration: none;
     transition: all 0.3s;
-    border-left: 1.5px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
     &:hover {
-      color: rgba(159, 67, 244, 0.521);
+      color: var(--apple-music-primary);
     }
   }
   .f-beian-img {
     width: 1em;
     height: 1em;
-    vertical-align: text-top;
   }
 }
 </style>

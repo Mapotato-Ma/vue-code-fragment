@@ -1,7 +1,7 @@
 <template>
   <div class="index-notes">
     <div
-      class="in-x scale-in-out"
+      class="in-x"
       v-for="{ component, size, name } in components"
       :style="{ gridColumn: `span ${size.w}`, gridRow: `span ${size.h}` }"
       :key="name"
@@ -43,11 +43,10 @@ const components = [
   .in-x {
     width: 100%;
     height: 100%;
-    border: 1px solid var(--color-border);
     padding: 10px;
-    background: #000;
     align-content: center;
     overflow: hidden;
+    background: var(--apple-music-bg-lighten);
   }
 }
 </style>

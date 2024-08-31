@@ -30,6 +30,7 @@
     transform: skew(0deg, 0deg);
     transition: transform 0.5s;
     user-select: none;
+    color: var(--apple-music-primary);
     @starting-style {
       transform: skew(-45deg, 0deg);
     }
