@@ -31,7 +31,7 @@ const bodyMaxHeight = computed(() => {
 .collapse-panel {
   display: grid;
   grid-template-rows: 30px 1fr;
-  row-gap: 0.1em;
+  row-gap: 4px;
   padding: 6px;
   overflow: hidden;
   transition: all 0.2s ease;
@@ -81,6 +81,7 @@ const bodyMaxHeight = computed(() => {
   }
 
   &.collapse {
+    row-gap: 0;
     grid-template-rows: 30px 0fr;
     .header {
       border-end-start-radius: 9px;
