@@ -50,9 +50,7 @@ const fullScreenArticle = (id: string) => {
     grid-template-rows: repeat(2, 1fr);
     height: 100%;
     flex: 1;
-    padding: 10px;
     align-content: center;
-    padding: 2em;
     gap: 2em;
     .cn-x {
       padding: 10px;

@@ -50,13 +50,13 @@
         <fieldset>
           <legend size="small">AddLine</legend>
           <select v-model="pointSelectStartValue">
-            <option :value="option.value" v-for="option in pointSelectOptions">
+            <option :value="option.value" v-for="option in pointSelectOptions" :key="option.value">
               {{ option.label }}
             </option>
           </select>
           <hr />
           <select v-model="pointSelectEndValue">
-            <option :value="option.value" v-for="option in pointSelectOptions">
+            <option :value="option.value" v-for="option in pointSelectOptions" :key="option.value">
               {{ option.label }}
             </option>
           </select>
@@ -292,10 +292,10 @@ const findPointsOnLine = (
   return { M, N };
 };
 
-const showData = () => {
-  console.log('🚀 ~ Points ~ 246行', points.value);
-  console.log('🚀 ~ Connections ~ 247行', connections.value);
-};
+// const showData = () => {
+//   console.log('🚀 ~ Points ~ 246行', points.value);
+//   console.log('🚀 ~ Connections ~ 247行', connections.value);
+// };
 </script>
 
 <style lang="scss" scoped>

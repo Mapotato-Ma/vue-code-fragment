@@ -72,16 +72,16 @@ button {
   padding: 0.3rem 0.6rem;
   border: none;
   font-size: 14px;
-  background-color: rgb(24, 84, 168);
+  background-color: var(--apple-music-primary);
   color: #fff;
   border-radius: 0.2rem;
   font-weight: bolder;
   transition: all 0.2s;
   &:hover {
-    box-shadow: 0 0 10px 2px rgba(41, 116, 221, 0.77);
+    box-shadow: 0 0 10px 2px lch(from var(--apple-music-primary) l c h / 0.77);
   }
   &:active {
-    box-shadow: 0 0 10px 2px rgba(221, 158, 41, 0.204);
+    box-shadow: 0 0 10px 2px lch(from var(--apple-music-primary) calc(l - 10) c h / 0.77);
   }
   &[block] {
     display: block;

@@ -18,20 +18,16 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue';
-import { getArticles } from './articles';
+import { ref } from 'vue';
 import { VueShowdown } from 'vue-showdown';
 import { useFullscreen } from '@vueuse/core';
 import { CollapsePanel } from '@/common/components';
-const articles = ref<string[]>([]);
+
+const articles = Object.values(
+  import.meta.glob<true, string, { markdown: string }>('./articles/*.md', { eager: true })
+).map((file) => file.markdown);
 const articleRefs = ref<HTMLElement[]>([]);
-const titleList = computed(() =>
-  articles.value.map((article) => article.split('\n')[0]?.replace('#', '').trim())
-);
-onMounted(async () => {
-  articles.value = await getArticles();
-  console.log('🚀 ~  ~ 24行', articles.value);
-});
+const titleList = articles.map((article) => article.split('\n')[0]?.replace('#', '').trim());
 
 const fullScreenArticle = (index: number) => {
   useFullscreen(articleRefs.value[index]!).toggle();

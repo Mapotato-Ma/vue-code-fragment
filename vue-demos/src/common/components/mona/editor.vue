@@ -1,9 +1,10 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <div class="editor" ref="container"></div>
 </template>
 <script lang="ts" setup>
 import { ref, onMounted, watch, onUnmounted } from 'vue';
-import { monaco } from './customMonaco';
+import { editor as monaEditor } from './customMonaco';
 
 import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
 import JsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker';
@@ -18,7 +19,7 @@ self.MonacoEnvironment = {
 };
 const container = ref<HTMLElement>();
 
-let editor: monaco.editor.IStandaloneCodeEditor;
+let editor: monaEditor.IStandaloneCodeEditor;
 
 const props = defineProps<{ data?: string }>();
 const emit = defineEmits(['update:data']);
@@ -35,8 +36,8 @@ onUnmounted(() => {
   stopWatch();
 });
 onMounted(async () => {
-  const jsonModel = monaco.editor.createModel(props.data ?? '', 'json');
-  editor = monaco.editor.create(container.value!, {
+  const jsonModel = monaEditor.createModel(props.data ?? '', 'json');
+  editor = monaEditor.create(container.value!, {
     model: jsonModel,
     tabSize: 2,
     automaticLayout: true,
@@ -44,11 +45,11 @@ onMounted(async () => {
     fontSize: 20,
     fontWeight: '900'
   });
-  monaco.editor.defineTheme(
+  monaEditor.defineTheme(
     'monokai',
-    (await import('monaco-themes/themes/Monokai.json')) as monaco.editor.IStandaloneThemeData
+    (await import('monaco-themes/themes/Monokai.json')) as monaEditor.IStandaloneThemeData
   );
-  monaco.editor.setTheme('monokai');
+  monaEditor.setTheme('monokai');
 
   editor.onDidChangeModelContent(() => {
     emit('update:data', editor.getValue());
