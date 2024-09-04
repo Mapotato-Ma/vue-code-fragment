@@ -39,7 +39,7 @@ const components = [
   width: 100%;
   display: grid;
   grid-template-columns: repeat(1, minmax(400px, 1fr));
-  grid-template-rows: repeat(auto-fill, minmax(400px, 50vh));
+  grid-template-rows: repeat(auto-fill, minmax(400px, 1fr));
   gap: 2em;
   .in-x {
     width: 100%;

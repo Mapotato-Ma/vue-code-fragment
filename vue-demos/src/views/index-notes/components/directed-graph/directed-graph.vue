@@ -337,6 +337,9 @@ const findPointsOnLine = (
     right: 0;
     backdrop-filter: blur(10px);
     overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
 
     &-item {
       width: 100%;
