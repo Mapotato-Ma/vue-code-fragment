@@ -19,11 +19,13 @@ import {
   DirectedGraphImprove,
   SvgDemo,
   LovelySnake,
-  JSONView
+  JSONView,
+  NeonBall
 } from './components';
 
 const total = 100;
 const components = [
+  { name: '霓虹灯', component: NeonBall, size: { w: 0.3 * total, h: 0.2 * total } },
   { name: 'JSON可视化', component: JSONView, size: { w: 0.3 * total, h: 0.2 * total } },
   { name: '贪吃蛇组件', component: LovelySnake, size: { w: 0.2 * total, h: 0.2 * total } },
   { name: '双边连线组件', component: LineGraph, size: { w: 0.1 * total, h: 0.1 * total } },
