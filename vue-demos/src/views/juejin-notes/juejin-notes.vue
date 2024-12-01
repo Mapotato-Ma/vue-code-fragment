@@ -12,40 +12,39 @@
         {{ titleList[index] }}
       </a>
     </div>
-    <div class="jn-content">
-      <VueShowdown
+    <div class="jn-content" @scrollsnapchange="refreshHash">
+      <UseFullscreen
         class="jn-article"
+        :class="{ active: `#${titleList[index]}` === hash }"
+        v-slot="{ isFullscreen, toggle }"
         v-for="(article, index) in articles"
-        ref="articleRefs"
         :key="index"
-        :markdown="article"
-        :flavor="'allOn'"
-        @dblclick="fullScreenArticle(index)"
-        :title="titleList[index]"
         :id="titleList[index]"
-      ></VueShowdown>
+      >
+        <VueShowdown :markdown="article" flavor="allOn" :title="titleList[index]"></VueShowdown>
+        <BsFullscreenExit class="jn-icon" @click="toggle" v-if="isFullscreen"></BsFullscreenExit>
+        <EpFullScreen class="jn-icon" @click="toggle" v-else></EpFullScreen>
+      </UseFullscreen>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, nextTick, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted } from 'vue';
 import { VueShowdown } from 'vue-showdown';
-import { useFullscreen } from '@vueuse/core';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
+import { UseFullscreen } from '@vueuse/components';
+import { EpFullScreen } from 'vue-icons-plus/ep';
+import { BsFullscreenExit } from 'vue-icons-plus/bs';
 
 const baseURL = import.meta.env.BASE_URL;
 const route = useRoute();
+const router = useRouter();
 const hash = computed(() => route.hash);
 const articles = Object.values(
   import.meta.glob<true, string, { markdown: string }>('./articles/*.md', { eager: true })
 ).map((file) => file.markdown);
-const articleRefs = ref<HTMLElement[]>([]);
 const titleList = articles.map((article) => article.split('\n')[0]?.replace('#', '').trim());
-
-const fullScreenArticle = (index: number) => {
-  useFullscreen(articleRefs.value[index]!).toggle();
-};
 
 onMounted(() => {
   nextTick(() => {
@@ -54,6 +53,8 @@ onMounted(() => {
     });
   });
 });
+const refreshHash = (e: { snapTargetBlock: Element }) =>
+  router.replace({ hash: `#${e.snapTargetBlock.id}` });
 </script>
 
 <style lang="scss" scoped>
@@ -62,6 +63,7 @@ onMounted(() => {
   overflow: hidden;
   display: flex;
   gap: 2em;
+
   .jn-directory {
     max-width: 15%;
     height: 100%;
@@ -71,6 +73,7 @@ onMounted(() => {
     gap: 1em;
     outline: 1px;
     outline-color: var(--color-border);
+
     .jn-article-title {
       cursor: pointer;
       font-weight: bold;
@@ -80,19 +83,25 @@ onMounted(() => {
       overflow: hidden;
       text-overflow: ellipsis;
       flex-shrink: 0;
-      color: var(--apple-music-primary);
       padding: 0.2em 1em;
-      opacity: 0.6;
-      border-left: 5px solid var(--color-border-light);
+      color: var(--apple-music-default);
+      filter: brightness(1);
+      border-left: 1px solid;
+      transition: all 233ms ease;
+      text-underline-offset: 8px;
+
       &:hover {
-        opacity: 1;
+        filter: brightness(0.6);
       }
+
       &.active {
-        opacity: 1;
-        color: var(--apple-music-default);
+        filter: brightness(1);
+        border-width: 5px;
+        color: var(--apple-music-primary);
       }
     }
   }
+
   .jn-content {
     height: 100%;
     display: flex;
@@ -100,22 +109,48 @@ onMounted(() => {
     overflow: auto;
     padding-right: 20px;
     scroll-behavior: smooth;
+    scroll-snap-type: y mandatory;
+
     .jn-article {
+      position: relative;
       flex-shrink: 0;
       margin-bottom: 1em;
-      height: max-content;
-      padding-left: 1.5em;
-      overflow: auto;
-      max-height: 80vh;
+      padding: 1.5em;
+      overflow: hidden;
       color: #e0e0e0;
       background-color: #292929;
       border-left: 5px solid var(--color-border-light);
+      scroll-snap-align: center;
+      transition: all 233ms ease;
+
+      &.active {
+        border-left: 0px;
+        box-shadow: inset 0px 0px 20px 4px var(--apple-music-primary);
+      }
+
+      .jn-icon {
+        cursor: pointer;
+        position: absolute;
+        right: 1em;
+        top: 1em;
+        transition: color 233ms ease;
+        &:hover {
+          color: var(--apple-music-primary);
+        }
+      }
+
+      & > div {
+        height: 100%;
+      }
     }
   }
 }
 </style>
-<style>
+<style lang="scss">
 .juejin-notes {
+  .jn-article h1:nth-of-type(1) {
+    margin-top: 0;
+  }
   blockquote,
   q {
     quotes: none;
