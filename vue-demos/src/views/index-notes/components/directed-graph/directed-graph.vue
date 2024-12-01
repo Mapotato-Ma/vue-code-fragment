@@ -334,7 +334,7 @@ const findPointsOnLine = (
     max-height: 100%;
     position: absolute;
     z-index: 1;
-    right: 0;
+    left: 0;
     backdrop-filter: blur(10px);
     overflow: auto;
     display: flex;

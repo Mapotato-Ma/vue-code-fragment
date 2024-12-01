@@ -1,28 +1,42 @@
 <template>
   <div class="juejin-notes">
-    <CollapsePanel
-      class="jn-article fade-in-out"
-      :title="titleList[index]"
-      v-for="(article, index) in articles"
-      :key="titleList[index]"
-      ref="articleRefs"
-    >
+    <div class="jn-directory">
+      <a
+        class="jn-article-title"
+        :href="`${baseURL}/juejin-notes#${titleList[index]}`"
+        :class="{ active: `#${titleList[index]}` === hash }"
+        v-for="(_, index) in articles"
+        :key="titleList[index]"
+        :title="titleList[index]"
+      >
+        {{ titleList[index] }}
+      </a>
+    </div>
+    <div class="jn-content">
       <VueShowdown
-        :markdown="article"
+        class="jn-article"
+        v-for="(article, index) in articles"
+        ref="articleRefs"
         :key="index"
+        :markdown="article"
         :flavor="'allOn'"
         @dblclick="fullScreenArticle(index)"
+        :title="titleList[index]"
+        :id="titleList[index]"
       ></VueShowdown>
-    </CollapsePanel>
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 import { VueShowdown } from 'vue-showdown';
 import { useFullscreen } from '@vueuse/core';
-import { CollapsePanel } from '@/common/components';
+import { useRoute } from 'vue-router';
 
+const baseURL = import.meta.env.BASE_URL;
+const route = useRoute();
+const hash = computed(() => route.hash);
 const articles = Object.values(
   import.meta.glob<true, string, { markdown: string }>('./articles/*.md', { eager: true })
 ).map((file) => file.markdown);
@@ -32,22 +46,71 @@ const titleList = articles.map((article) => article.split('\n')[0]?.replace('#',
 const fullScreenArticle = (index: number) => {
   useFullscreen(articleRefs.value[index]!).toggle();
 };
+
+onMounted(() => {
+  nextTick(() => {
+    document.getElementById(route.hash.substring(1))?.scrollIntoView({
+      behavior: 'smooth'
+    });
+  });
+});
 </script>
 
 <style lang="scss" scoped>
 .juejin-notes {
-  width: 100%;
-  columns: 4;
-  column-gap: 1em;
-
-  .jn-article {
-    margin-bottom: 1em;
-    height: max-content;
-    padding: 10px;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  gap: 2em;
+  .jn-directory {
+    max-width: 15%;
+    height: 100%;
     overflow: auto;
-    max-height: 60vh;
-    color: #e0e0e0;
-    background-color: #292929;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    outline: 1px;
+    outline-color: var(--color-border);
+    .jn-article-title {
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 20px;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex-shrink: 0;
+      color: var(--apple-music-primary);
+      padding: 0.2em 1em;
+      opacity: 0.6;
+      border-left: 5px solid var(--color-border-light);
+      &:hover {
+        opacity: 1;
+      }
+      &.active {
+        opacity: 1;
+        color: var(--apple-music-default);
+      }
+    }
+  }
+  .jn-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    padding-right: 20px;
+    scroll-behavior: smooth;
+    .jn-article {
+      flex-shrink: 0;
+      margin-bottom: 1em;
+      height: max-content;
+      padding-left: 1.5em;
+      overflow: auto;
+      max-height: 80vh;
+      color: #e0e0e0;
+      background-color: #292929;
+      border-left: 5px solid var(--color-border-light);
+    }
   }
 }
 </style>

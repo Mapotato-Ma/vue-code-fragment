@@ -25,15 +25,15 @@ import {
 
 const total = 100;
 const components = [
-  { name: '霓虹灯', component: NeonBall, size: { w: 0.3 * total, h: 0.2 * total } },
-  { name: 'JSON可视化', component: JSONView, size: { w: 0.3 * total, h: 0.2 * total } },
+  { name: 'JSON可视化', component: JSONView, size: { w: 0.3 * total, h: 0.1 * total } },
   { name: '贪吃蛇组件', component: LovelySnake, size: { w: 0.2 * total, h: 0.2 * total } },
   { name: '双边连线组件', component: LineGraph, size: { w: 0.1 * total, h: 0.1 * total } },
   // { name: '冻结行列表格', component: ScrollDemo, size: { w: 0.1*total, h: 0.1*total } },
   { name: '选择器组件', component: SelectBox, size: { w: 0.1 * total, h: 0.1 * total } },
-  { name: '可拖拽布局组件', component: FlexibleLayouts, size: { w: 0.15 * total, h: 0.1 * total } },
-  { name: '随机梯形svg组件', component: SvgDemo, size: { w: 0.15 * total, h: 0.1 * total } },
-  { name: '有向图组件', component: DirectedGraphImprove, size: { w: 0.3 * total, h: 0.2 * total } }
+  { name: '霓虹灯', component: NeonBall, size: { w: 0.1 * total, h: 0.1 * total } },
+  { name: '可拖拽布局组件', component: FlexibleLayouts, size: { w: 0.2 * total, h: 0.1 * total } },
+  { name: '随机梯形svg组件', component: SvgDemo, size: { w: 0.15 * total, h: 0.2 * total } },
+  { name: '有向图组件', component: DirectedGraphImprove, size: { w: 0.15 * total, h: 0.2 * total } }
 ];
 </script>
 <style lang="scss" scoped>
