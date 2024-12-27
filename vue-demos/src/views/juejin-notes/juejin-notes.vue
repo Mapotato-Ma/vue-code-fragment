@@ -1,30 +1,34 @@
 <template>
   <div class="juejin-notes">
     <div class="jn-directory">
-      <a
-        class="jn-article-title"
-        :href="`${baseURL}/juejin-notes#${titleList[index]}`"
-        :class="{ active: `#${titleList[index]}` === hash }"
-        v-for="(_, index) in articles"
-        :key="titleList[index]"
-        :title="titleList[index]"
-      >
-        {{ titleList[index] }}
-      </a>
+      <div class="jn-container">
+        <a
+          class="jn-article-title"
+          :href="`${baseURL}/juejin-notes#${titleList[index]}`"
+          :class="{ active: `#${titleList[index]}` === hash }"
+          v-for="(_, index) in articles"
+          :key="titleList[index]"
+          :title="titleList[index]"
+        >
+          {{ titleList[index] }}
+        </a>
+      </div>
     </div>
-    <div class="jn-content" @scrollsnapchange="refreshHash">
-      <UseFullscreen
-        class="jn-article"
-        :class="{ active: `#${titleList[index]}` === hash }"
-        v-slot="{ isFullscreen, toggle }"
-        v-for="(article, index) in articles"
-        :key="index"
-        :id="titleList[index]"
-      >
-        <VueShowdown :markdown="article" flavor="allOn" :title="titleList[index]"></VueShowdown>
-        <BsFullscreenExit class="jn-icon" @click="toggle" v-if="isFullscreen"></BsFullscreenExit>
-        <EpFullScreen class="jn-icon" @click="toggle" v-else></EpFullScreen>
-      </UseFullscreen>
+    <div class="jn-content">
+      <div class="jn-container">
+        <UseFullscreen
+          class="jn-article"
+          :class="{ active: `#${titleList[index]}` === hash }"
+          v-slot="{ isFullscreen, toggle }"
+          v-for="(article, index) in articles"
+          :key="index"
+          :id="titleList[index]"
+        >
+          <VueShowdown :markdown="article" flavor="allOn" :title="titleList[index]"></VueShowdown>
+          <BsFullscreenExit class="jn-icon" @click="toggle" v-if="isFullscreen"></BsFullscreenExit>
+          <EpFullScreen class="jn-icon" @click="toggle" v-else></EpFullScreen>
+        </UseFullscreen>
+      </div>
     </div>
   </div>
 </template>
@@ -39,7 +43,6 @@ import { BsFullscreenExit } from 'vue-icons-plus/bs';
 
 const baseURL = import.meta.env.BASE_URL;
 const route = useRoute();
-const router = useRouter();
 const hash = computed(() => route.hash);
 const articles = Object.values(
   import.meta.glob<true, string, { markdown: string }>('./articles/*.md', { eager: true })
@@ -53,8 +56,6 @@ onMounted(() => {
     });
   });
 });
-const refreshHash = (e: { snapTargetBlock: Element }) =>
-  router.replace({ hash: `#${e.snapTargetBlock.id}` });
 </script>
 
 <style lang="scss" scoped>
@@ -62,17 +63,16 @@ const refreshHash = (e: { snapTargetBlock: Element }) =>
   height: 100%;
   overflow: hidden;
   display: flex;
-  gap: 2em;
+  gap: 1em;
 
   .jn-directory {
     max-width: 15%;
     height: 100%;
-    overflow: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-    outline: 1px;
-    outline-color: var(--color-border);
+    padding: 20px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    border-top: 2px solid var(--apple-music-primary);
+    border-left: 2px solid var(--apple-music-primary);
 
     .jn-article-title {
       cursor: pointer;
@@ -83,12 +83,14 @@ const refreshHash = (e: { snapTargetBlock: Element }) =>
       overflow: hidden;
       text-overflow: ellipsis;
       flex-shrink: 0;
-      padding: 0.2em 1em;
+      padding: 0.2em 10px;
       color: var(--apple-music-default);
       filter: brightness(1);
-      border-left: 1px solid;
+      border-right: 2px solid transparent;
+      border-top: 2px solid transparent;
+      text-decoration: none;
       transition: all 233ms ease;
-      text-underline-offset: 8px;
+      background: #292929;
 
       &:hover {
         filter: brightness(0.6);
@@ -96,7 +98,7 @@ const refreshHash = (e: { snapTargetBlock: Element }) =>
 
       &.active {
         filter: brightness(1);
-        border-width: 5px;
+        border-color: currentColor;
         color: var(--apple-music-primary);
       }
     }
@@ -106,10 +108,10 @@ const refreshHash = (e: { snapTargetBlock: Element }) =>
     height: 100%;
     display: flex;
     flex-direction: column;
-    overflow: auto;
-    padding-right: 20px;
-    scroll-behavior: smooth;
-    scroll-snap-type: y mandatory;
+    padding: 20px;
+    padding-bottom: 0px;
+    border: 2px solid var(--apple-music-primary);
+    border-bottom: none;
 
     .jn-article {
       position: relative;
@@ -119,14 +121,6 @@ const refreshHash = (e: { snapTargetBlock: Element }) =>
       overflow: hidden;
       color: #e0e0e0;
       background-color: #292929;
-      border-left: 5px solid var(--color-border-light);
-      scroll-snap-align: center;
-      transition: all 233ms ease;
-
-      &.active {
-        border-left: 0px;
-        box-shadow: inset 0px 0px 20px 4px var(--apple-music-primary);
-      }
 
       .jn-icon {
         cursor: pointer;
@@ -144,12 +138,31 @@ const refreshHash = (e: { snapTargetBlock: Element }) =>
       }
     }
   }
+
+  .jn-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    overflow: auto;
+    scroll-behavior: smooth;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
 }
 </style>
 <style lang="scss">
 .juejin-notes {
-  .jn-article h1:nth-of-type(1) {
-    margin-top: 0;
+  .jn-article {
+    &.active h1:nth-of-type(1) {
+      text-decoration: underline;
+      color: var(--apple-music-primary);
+      text-underline-offset: 15px;
+    }
+    h1:nth-of-type(1) {
+      margin-top: 0;
+    }
   }
   blockquote,
   q {

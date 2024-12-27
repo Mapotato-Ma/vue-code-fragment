@@ -36,7 +36,7 @@ const MENULIST = Object.freeze([
   },
   {
     path: '/juejin-notes',
-    name: 'Juejin'
+    name: 'Notes'
   }
 ]);
 </script>
