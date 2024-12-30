@@ -22,20 +22,39 @@
 
 <script lang="ts" setup>
 import { Codepen } from '@/common/components';
-import { useComponentsData } from './hooks/useComponentsData';
 import { computed, onMounted, ref } from 'vue';
 import { useFullscreen } from '@vueuse/core';
+import { message } from '@/common/plugins/message';
 
 onMounted(async () => {
-  const res = await (await fetch('/api/getPens', { method: 'POST' })).json();
-  console.log('🚀 ~ pens ~ 31行', res);
+  try {
+    const res = await (await fetch('/api/getPens', { method: 'POST' })).json();
+    if (typeof res === 'object') {
+      components.value = res;
+    } else {
+      message.message('获取组件失败！');
+    }
+  } catch (error) {
+    message.message('获取组件失败！');
+  }
 });
 
-const { components } = useComponentsData();
+const components = ref<
+  {
+    penId: string;
+    name: string;
+    size: {
+      w: number;
+      h: number;
+      zoom?: undefined;
+    };
+  }[]
+>([]);
+
 const currentPage = ref(1);
 
 const currentComponents = computed(() => {
-  return components.slice((currentPage.value - 1) * 6, (currentPage.value - 1) * 6 + 6);
+  return components.value.slice((currentPage.value - 1) * 6, (currentPage.value - 1) * 6 + 6);
 });
 const fullScreenArticle = (id: string) => {
   const element = document.getElementById(id);
