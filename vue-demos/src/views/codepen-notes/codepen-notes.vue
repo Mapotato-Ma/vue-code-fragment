@@ -23,8 +23,13 @@
 <script lang="ts" setup>
 import { Codepen } from '@/common/components';
 import { useComponentsData } from './hooks/useComponentsData';
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useFullscreen } from '@vueuse/core';
+
+onMounted(async () => {
+  const res = await (await fetch('/api/getPens', { method: 'POST' })).json();
+  console.log('🚀 ~ pens ~ 31行', res);
+});
 
 const { components } = useComponentsData();
 const currentPage = ref(1);
