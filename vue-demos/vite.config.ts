@@ -4,6 +4,9 @@ import vue from '@vitejs/plugin-vue';
 import vueJsx from '@vitejs/plugin-vue-jsx';
 import { ViteEjsPlugin } from 'vite-plugin-ejs';
 import { Mode, plugin } from 'vite-plugin-markdown';
+import wasm from 'vite-plugin-wasm';
+import topLevelAwait from 'vite-plugin-top-level-await';
+import { templateCompilerOptions } from '@tresjs/core';
 // 分析打包大小
 // import { analyzer } from 'vite-bundle-analyzer';
 
@@ -13,7 +16,11 @@ export default defineConfig({
   base: '/mapotato',
   plugins: [
     // analyzer(),
-    vue(),
+    wasm(),
+    topLevelAwait(),
+    vue({
+      ...templateCompilerOptions
+    }),
     ViteEjsPlugin(),
     vueJsx(),
     plugin({

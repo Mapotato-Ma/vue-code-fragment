@@ -6,9 +6,14 @@
       src="https://my.spline.design/rocket-8d31f46728f284f9df3e767becd8db34/"
       frameborder="0"
     ></iframe> -->
-    <div class="hs-text">WELCOME</div>
+    <Suspense><ModelShow /></Suspense>
+    <!-- <div class="hs-text">WELCOME</div> -->
   </div>
 </template>
+
+<script setup lang="ts">
+import ModelShow from './model-show/model-show.vue';
+</script>
 
 <style lang="scss" scoped>
 .home-show {
