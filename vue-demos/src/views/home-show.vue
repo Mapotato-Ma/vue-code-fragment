@@ -1,18 +1,35 @@
 <template>
   <div class="home-show">
-    <!-- 3D 模型影响页面加载速度，先去掉 -->
-    <!-- <iframe
-      class="hs-iframe"
-      src="https://my.spline.design/rocket-8d31f46728f284f9df3e767becd8db34/"
-      frameborder="0"
-    ></iframe> -->
-    <Suspense><ModelShow /></Suspense>
-    <!-- <div class="hs-text">WELCOME</div> -->
+    <Suspense @resolve="onResolve">
+      <template #default>
+        <ModelShow />
+      </template>
+    </Suspense>
+    <div class="hs-text" ref="welcomeRef">WELCOME</div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
 import ModelShow from './model-show/model-show.vue';
+
+const welcomeRef = ref<HTMLElement>();
+
+const onResolve = () => {
+  const propertyValue = [
+    ['transform', 'skew(0deg, 0deg)'],
+    ['translate', 'unset'],
+    ['top', 'unset'],
+    ['bottom', '0'],
+    ['left', 'unset'],
+    ['right', '0'],
+    ['scale', '0.5'],
+    ['opacity', '0.7']
+  ];
+  propertyValue.forEach(([property, value]) => {
+    welcomeRef.value?.style.setProperty(property, value);
+  });
+};
 </script>
 
 <style lang="scss" scoped>
@@ -33,7 +50,7 @@ import ModelShow from './model-show/model-show.vue';
     font-size: 200px;
     font-weight: lighter;
     transform: skew(0deg, 0deg);
-    transition: transform 0.5s;
+    transition: all 0.5s;
     user-select: none;
     color: var(--apple-music-primary);
     @starting-style {
