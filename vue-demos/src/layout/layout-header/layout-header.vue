@@ -37,6 +37,10 @@ const MENULIST = Object.freeze([
   {
     path: '/juejin-notes',
     name: 'Notes'
+  },
+  {
+    path: '/json-viewer',
+    name: 'JSON'
   }
 ]);
 </script>

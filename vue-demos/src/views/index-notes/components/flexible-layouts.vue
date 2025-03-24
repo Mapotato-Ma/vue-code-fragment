@@ -106,7 +106,6 @@ const onSort = () => {
     place-content: center;
     border-radius: 4px;
     user-select: none;
-    padding: 2em 0;
     background: var(--color-brand-fill);
   }
 

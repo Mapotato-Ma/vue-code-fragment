@@ -21,6 +21,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'JuejinNotes',
     path: '/juejin-notes',
     component: () => import('@/views/juejin-notes/juejin-notes.vue')
+  },
+  {
+    name: 'JSONViewer',
+    path: '/json-viewer',
+    component: () => import('@/views/json-view/json-view.vue')
   }
 ];
 

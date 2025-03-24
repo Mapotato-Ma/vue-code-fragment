@@ -60,5 +60,8 @@ onMounted(async () => {
 .editor {
   width: 100%;
   height: 100%;
+  .monaco-editor {
+    --vscode-editor-background: #27282260;
+  }
 }
 </style>

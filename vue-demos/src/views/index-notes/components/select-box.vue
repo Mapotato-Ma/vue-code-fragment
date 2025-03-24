@@ -59,7 +59,6 @@ const selectItem = (item: string, index: number) => {
   justify-content: center;
   gap: 1em;
   width: 100%;
-  min-height: 500px;
   color: #fff;
   user-select: none;
 

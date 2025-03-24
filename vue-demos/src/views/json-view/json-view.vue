@@ -1,14 +1,23 @@
 <template>
   <div class="json-view">
-    <div class="left">
+    <div class="left" :style="{ flex: leftDiv }">
       <Editor :data="jsonStr" @update:data="updateData"></Editor>
     </div>
-    <div class="right" tabindex="0">
+    <div class="right" :style="{ flex: rightDiv }" tabindex="0">
       <div class="operation">
         <button @click="importJson">导入JSON</button>
         <button @click="exportJson">导出JSON</button>
       </div>
       <NestView v-model:data="data" is-root></NestView>
+    </div>
+    <div class="layout">
+      <div
+        class="div"
+        :class="{ leftDiv: i + 1 <= leftDiv }"
+        v-for="(div, i) in 24"
+        @click="leftDiv = i + 1"
+        :key="div"
+      ></div>
     </div>
   </div>
 </template>
@@ -18,6 +27,10 @@ import { Editor, NestView } from '@/common/components';
 import { message } from '@/common/plugins/message';
 import { computed, ref } from 'vue';
 const data = ref();
+const leftDiv = ref(8);
+const rightDiv = computed(() => {
+  return 24 - leftDiv.value;
+});
 (async () => {
   data.value = (await import('./json/mock.json')).default;
 })();
@@ -66,19 +79,56 @@ const exportJson = () => {
 <style lang="scss" scoped>
 .json-view {
   width: 100%;
-  height: 100vh;
+  padding: 3em 0 0 0;
+  height: 100%;
   display: flex;
-  .left {
+  position: relative;
+  .left,
+  .right {
     display: flex;
     flex-direction: column;
-    min-width: 30cqw;
+    overflow: hidden;
+    transition: flex 0.2s;
+  }
+  .left {
+    border-top: 3px solid #b6770b;
   }
   .right {
-    flex: auto;
+    border-top: 3px solid #9232ec;
+  }
+  .right > .nest-view {
+    border: none;
+  }
+  .layout {
+    position: absolute;
+    top: 0.5em;
+    width: 100%;
+    height: 2em;
     display: flex;
-    flex-direction: column;
-    & > .nest-view {
-      border: none;
+    background-color: #191919;
+    gap: 4px;
+    .div {
+      cursor: pointer;
+      flex: 1;
+      height: 100%;
+      opacity: 0.6;
+      background-color: #892be2;
+      transition: all 0.2s;
+      &.leftDiv {
+        background-color: #b6580b;
+      }
+      &:hover {
+        background-color: #b6580b;
+        opacity: 1;
+      }
+      &:hover ~ .div {
+        opacity: 1;
+        background-color: #892be2;
+      }
+    }
+    .div:has(~ .div:hover) {
+      opacity: 1;
+      background-color: #b6580b;
     }
   }
   .operation {
