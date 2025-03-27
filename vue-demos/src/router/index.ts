@@ -26,6 +26,16 @@ const routes: Array<RouteRecordRaw> = [
     name: 'JSONViewer',
     path: '/json-viewer',
     component: () => import('@/views/json-view/json-view.vue')
+  },
+  {
+    name: 'DemoCom',
+    path: '/demo-com',
+    component: () => import('@/views/demo-com/demo-com.vue')
+  },
+  {
+    name: 'rhythmic',
+    path: '/rhythmic',
+    component: () => import('@/views/rhythm-master/rhythm-master.vue')
   }
 ];
 

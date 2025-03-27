@@ -41,6 +41,10 @@ const MENULIST = Object.freeze([
   {
     path: '/json-viewer',
     name: 'JSON'
+  },
+  {
+    path: '/rhythmic',
+    name: 'Beat'
   }
 ]);
 </script>
