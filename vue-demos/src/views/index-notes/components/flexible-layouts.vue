@@ -107,6 +107,10 @@ const onSort = () => {
     border-radius: 4px;
     user-select: none;
     background: var(--color-brand-fill);
+    &:hover .fl-text {
+      scale: 2;
+      filter: grayscale(0);
+    }
   }
 
   .fl-text {
@@ -115,6 +119,10 @@ const onSort = () => {
     font-size: 2cqi;
     transform-origin: center bottom;
     animation: danceTextRun 1s infinite alternate;
+    scale: 1.5;
+    filter: grayscale(1);
+    transition: all 0.3s;
+    transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
   }
 }
 </style>
