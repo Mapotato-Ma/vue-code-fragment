@@ -4,7 +4,7 @@
       <div class="jn-container">
         <a
           class="jn-article-title"
-          :href="`${baseURL}/juejin-notes#${titleList[index]}`"
+          :href="`${BASE_URL}/juejin-notes#${titleList[index]}`"
           :class="{ active: `#${titleList[index]}` === hash }"
           v-for="(_, index) in articles"
           :key="titleList[index]"
@@ -16,7 +16,7 @@
     </div>
     <div class="jn-content">
       <div class="jn-container">
-        <UseFullscreen
+        <use-fullscreen
           class="jn-article"
           :class="{ active: `#${titleList[index]}` === hash }"
           v-slot="{ isFullscreen, toggle }"
@@ -24,38 +24,38 @@
           :key="index"
           :id="titleList[index]"
         >
-          <VueShowdown :markdown="article" flavor="allOn" :title="titleList[index]"></VueShowdown>
-          <BsFullscreenExit class="jn-icon" @click="toggle" v-if="isFullscreen"></BsFullscreenExit>
-          <EpFullScreen class="jn-icon" @click="toggle" v-else></EpFullScreen>
-        </UseFullscreen>
+          <vue-showdown :markdown="article" flavor="allOn" :title="titleList[index]"></vue-showdown>
+          <bs-fullscreen-exit
+            class="jn-icon"
+            @click="toggle"
+            v-if="isFullscreen"
+          ></bs-fullscreen-exit>
+          <ep-full-screen class="jn-icon" @click="toggle" v-else></ep-full-screen>
+        </use-fullscreen>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, nextTick, onMounted } from 'vue';
+import { computed } from 'vue';
 import { VueShowdown } from 'vue-showdown';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import { UseFullscreen } from '@vueuse/components';
 import { EpFullScreen } from 'vue-icons-plus/ep';
 import { BsFullscreenExit } from 'vue-icons-plus/bs';
+import { BASE_URL } from '@/config';
 
-const baseURL = import.meta.env.BASE_URL;
 const route = useRoute();
 const hash = computed(() => route.hash);
-const articles = Object.values(
-  import.meta.glob<true, string, { markdown: string }>('./articles/*.md', { eager: true })
-).map((file) => file.markdown);
-const titleList = articles.map((article) => article.split('\n')[0]?.replace('#', '').trim());
-
-onMounted(() => {
-  nextTick(() => {
-    document.getElementById(route.hash.substring(1))?.scrollIntoView({
-      behavior: 'smooth'
-    });
-  });
-});
+const articles = Object.freeze(
+  Object.values(
+    import.meta.glob<true, string, { markdown: string }>('./articles/*.md', { eager: true })
+  ).map((file) => file.markdown)
+);
+const titleList = Object.freeze(
+  articles.map((article) => article.split('\n')[0]?.replace('#', '').trim())
+);
 </script>
 
 <style lang="scss" scoped>

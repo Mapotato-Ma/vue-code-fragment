@@ -1,9 +1,9 @@
 <template>
   <div class="codepen-notes">
     <div class="cn-container">
-      <fieldset class="cn-x" v-for="{ penId, name, size } in currentComponents" :key="penId">
+      <fieldset class="cn-x" v-for="{ penId, name, zoom } in currentComponents" :key="penId">
         <div class="cn-pen" :id="`cn${penId}`">
-          <Codepen :penId="penId" default-tab="result" :zoom="size.zoom"></Codepen>
+          <codepen :pen-id default-tab="result" :zoom></codepen>
         </div>
         <div class="cn-bottom">
           <div class="cn-name">{{ name }}</div>
@@ -43,11 +43,7 @@ const components = ref<
   {
     penId: string;
     name: string;
-    size: {
-      w: number;
-      h: number;
-      zoom?: undefined;
-    };
+    zoom?: number;
   }[]
 >([]);
 
