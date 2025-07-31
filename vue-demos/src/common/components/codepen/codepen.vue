@@ -1,27 +1,21 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <div class="codepen">
-    <iframe
-      :height="height"
-      :width="width"
-      :min-height="300"
-      scrolling="no"
-      :src="src"
-      frameborder="no"
-      loading="lazy"
-      allowtransparency="true"
-      allowfullscreen="true"
-      @load="loading = false"
-      v-if="startLoad"
-    >
-      See the
-      <a :href="`https://codepen.io/mapotato-ma/pen/${penId}`">Pen</a>
-      by Mapotato-Ma (
-      <a href="https://codepen.io/mapotato-ma">@mapotato-ma</a>
-      ) on
-      <a href="https://codepen.io">CodePen</a>
-      .
-    </iframe>
+    <a :href="`https://codepen.io/mapotato-ma/pen/${penId}`">
+      <iframe
+        :height="height"
+        :width="width"
+        :min-height="300"
+        scrolling="no"
+        :src="src"
+        frameborder="no"
+        loading="lazy"
+        allowtransparency="true"
+        allowfullscreen="true"
+        @load="loading = false"
+        v-if="startLoad"
+      ></iframe>
+    </a>
     <div class="loading" v-if="loading"></div>
   </div>
 </template>
