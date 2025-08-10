@@ -36,6 +36,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'rhythmic',
     path: '/rhythmic',
     component: () => import('@/views/rhythm-master/rhythm-master.vue')
+  },
+  {
+    name: 'earth',
+    path: '/earth',
+    component: () => import('@/views/earth-model/earth-model.vue')
   }
 ];
 

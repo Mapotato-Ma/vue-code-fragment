@@ -45,6 +45,10 @@ const MENULIST = Object.freeze([
   {
     path: '/rhythmic',
     name: 'Beat'
+  },
+  {
+    path: '/earth',
+    name: 'Earth'
   }
 ]);
 </script>

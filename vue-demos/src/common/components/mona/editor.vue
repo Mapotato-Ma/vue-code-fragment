@@ -24,7 +24,7 @@ let editor: monaEditor.IStandaloneCodeEditor;
 const props = defineProps<{ data?: string }>();
 const emit = defineEmits(['update:data']);
 
-let stopWatch = watch(
+const stopWatch = watch(
   () => props.data,
   () => {
     if (!container.value?.contains(document.activeElement)) {

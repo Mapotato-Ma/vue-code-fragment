@@ -31,7 +31,7 @@
   place-content: center;
   perspective: 1000px;
   transform-style: preserve-3d;
-  animation: animationBox 20s linear alternate;
+  animation: animationBox 20s linear infinite alternate;
   .x {
     position: absolute;
     inset: 0;

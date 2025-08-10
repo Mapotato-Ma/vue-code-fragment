@@ -2,7 +2,7 @@
   <div class="home-show">
     <Suspense @resolve="onResolve">
       <template #default>
-        <ModelShow />
+        <tres-model-loader :loop-callback="modelInitAnimate" />
       </template>
     </Suspense>
     <div class="hs-text" ref="welcomeRef">WELCOME</div>
@@ -10,8 +10,10 @@
 </template>
 
 <script setup lang="ts">
+import { TresModelLoader } from '@/common/components';
+import { useModelUtil } from '@/common/hooks/useModelUtil';
+import type { Scene } from 'three';
 import { ref } from 'vue';
-import ModelShow from './model-show/model-show.vue';
 
 const welcomeRef = ref<HTMLElement>();
 
@@ -30,6 +32,14 @@ const onResolve = () => {
     welcomeRef.value?.style.setProperty(property, value);
   });
 };
+
+const { loopScaleList, loopScaleIndex } = useModelUtil();
+
+const modelInitAnimate = (model: Scene) => {
+  loopScaleIndex.value = (loopScaleIndex.value + 1) % loopScaleList.length;
+  const scaleQuanta = loopScaleList[loopScaleIndex.value];
+  model.scale.set(scaleQuanta, 1, 1);
+};
 </script>
 
 <style lang="scss" scoped>
@@ -37,6 +47,7 @@ const onResolve = () => {
   width: 100%;
   height: 100%;
   position: relative;
+
   .hs-iframe {
     width: 100%;
     height: 100%;
@@ -53,6 +64,7 @@ const onResolve = () => {
     transition: all 0.5s;
     user-select: none;
     color: var(--apple-music-primary);
+
     @starting-style {
       transform: skew(-45deg, 0deg);
     }

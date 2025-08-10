@@ -66,11 +66,12 @@ const components = [
 </script>
 <style lang="scss" scoped>
 .index-notes {
+  display: grid;
   width: 100%;
   height: 100%;
-  overflow: auto;
-  display: grid;
-  grid-template-columns: repeat(5, minmax(400px, 1fr));
+  overflow-x: hidden;
+  overflow-y: auto;
+  grid-template-columns: repeat(5, 1fr);
   grid-auto-rows: minmax(400px, auto);
   gap: 2em;
   .in-x {
