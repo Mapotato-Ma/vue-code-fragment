@@ -1,8 +1,8 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <div class="codepen">
     <a :href="`https://codepen.io/mapotato-ma/pen/${penId}`">
       <iframe
+        v-if="startLoad"
         :height="height"
         :width="width"
         :min-height="300"
@@ -13,10 +13,9 @@
         allowtransparency="true"
         allowfullscreen="true"
         @load="loading = false"
-        v-if="startLoad"
       ></iframe>
     </a>
-    <div class="loading" v-if="loading"></div>
+    <div v-if="loading" class="loading"></div>
   </div>
 </template>
 
@@ -26,28 +25,28 @@ import { onMounted, ref } from 'vue';
 const props = defineProps({
   penId: {
     type: String,
-    default: ''
+    default: '',
   },
   defaultTab: {
     type: String,
-    default: 'html,result'
+    default: 'html,result',
   },
   width: {
     type: String,
-    default: '100%'
+    default: '100%',
   },
   height: {
     type: String,
-    default: '100%'
+    default: '100%',
   },
   zoom: {
     type: Number,
-    default: 1
+    default: 1,
   },
   loadingDelay: {
     type: Number,
-    default: 1
-  }
+    default: 1,
+  },
 });
 
 const src = ref();
@@ -65,7 +64,7 @@ const loadPen = () => {
     height: props.height,
     preview: 'true',
     user: 'mapotato-ma',
-    zoom: props.zoom.toString()
+    zoom: props.zoom.toString(),
   });
   src.value = `https://codepen.io/mapotato-ma/embed/${props.penId}?${params.toString()}`;
   startLoad.value = true;

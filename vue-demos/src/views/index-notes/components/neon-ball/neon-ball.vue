@@ -2,18 +2,18 @@
   <div class="neon-ball">
     <div class="ball-center ball"></div>
     <div
-      class="x"
       v-for="i in 30"
       :key="i"
+      class="x"
       :style="{
         rotate: `${Math.random()} ${Math.random()} 1 ${Math.random() * 720}deg`,
-        '--shadow-color': `lch(60% ${Math.random() * 100} ${Math.random() * 270 + 100}deg / 0.5)`
+        '--shadow-color': `lch(60% ${Math.random() * 100} ${Math.random() * 270 + 100}deg / 0.5)`,
       }"
     >
       <div
         class="ball"
         :style="{
-          'animation-delay': `${Math.random() * -150}s`
+          'animation-delay': `${Math.random() * -150}s`,
         }"
       ></div>
     </div>

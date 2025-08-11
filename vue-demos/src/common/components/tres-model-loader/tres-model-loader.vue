@@ -14,8 +14,8 @@
     <TresAmbientLight :intensity="2" />
     <!-- 辉光混合器 -->
     <effect-composer-pmndrs
-      v-bind="bloomOptions.effectComposerProps"
       v-if="bloomOptions?.showBloom"
+      v-bind="bloomOptions.effectComposerProps"
     >
       <!-- 辉光（自发光） -->
       <bloom-pmndrs v-bind="bloomOptions.bloomProps"></bloom-pmndrs>
@@ -30,10 +30,25 @@ import {
   BloomPmndrs,
   EffectComposerPmndrs,
   type BloomPmndrsProps,
-  type EffectComposerPmndrsProps
+  type EffectComposerPmndrsProps,
 } from '@tresjs/post-processing';
 import { BasicShadowMap, SRGBColorSpace, LinearToneMapping, Scene } from 'three';
 
+/**
+ * 模型纹理配置项详见：
+ * https://docs.tresjs.org/zh/api/composables.html#use-texture
+ */
+type TextureOptionsType = {
+  [key in
+    | 'map'
+    | 'displacementMap'
+    | 'roughnessMap'
+    | 'normalMap'
+    | 'aoMap'
+    | 'metalnessMap'
+    | 'matcap'
+    | 'alphaMap']: string;
+};
 interface Props {
   /**
    * 模型名称，必传且组件初始化时需有，非响应式
@@ -42,7 +57,7 @@ interface Props {
   /**
    * 模型纹理
    */
-  textureOptions?: Record<string, any>;
+  textureOptions?: Partial<TextureOptionsType>;
   /**
    * 辉光（自发光）配置项
    */
@@ -63,12 +78,12 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   modelName: 'mapotato-v1.glb',
-  textureOptions: () => ({})
+  textureOptions: () => ({}),
 });
 
 const { scene: model } = await useGLTF(`mapotato/models/${props.modelName}`, {
   draco: true,
-  decoderPath: 'mapotato/models/'
+  decoderPath: 'mapotato/models/',
 });
 
 props.loadCallback?.(model);
@@ -90,7 +105,7 @@ const gl = {
   shadowMapType: BasicShadowMap,
   outputColorSpace: SRGBColorSpace,
   toneMapping: LinearToneMapping,
-  windowSize: false
+  windowSize: false,
 };
 </script>
 

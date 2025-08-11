@@ -19,5 +19,5 @@ window.console.log(
       2.1px 3px 0 rgb(255 255 255 / 92%),
       2.8px 4px 0 rgb(255 255 255 / 88%),
       1px 1px 2px rgb(100 100 100 / 70%);
-  `
+  `,
 );

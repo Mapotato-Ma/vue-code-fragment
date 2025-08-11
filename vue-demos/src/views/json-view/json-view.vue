@@ -12,11 +12,11 @@
     </div>
     <div class="layout">
       <div
+        v-for="(div, i) in 24"
+        :key="div"
         class="div"
         :class="{ leftDiv: i + 1 <= leftDiv }"
-        v-for="(div, i) in 24"
         @click="leftDiv = i + 1"
-        :key="div"
       ></div>
     </div>
   </div>
@@ -51,11 +51,12 @@ const importJson = () => {
   input.type = 'file';
   input.accept = 'application/json';
   input.click();
-  input.onchange = (e: any) => {
-    const file = e.target.files[0];
+  input.onchange = (e: Event) => {
+    const file = (e.target as HTMLInputElement)?.files?.[0];
+    if (!file) return;
     const reader = new FileReader();
     reader.readAsText(file);
-    reader.onload = (e) => {
+    reader.onload = e => {
       try {
         data.value = JSON.parse(e.target!.result as string);
       } catch (error) {

@@ -8,24 +8,24 @@
     </audio>
     <div class="sidebar">
       <div
-        class="beat"
         v-for="beat in 4"
         :key="beat"
+        class="beat"
         :class="{ active: beat === currentRhythmIndex + 1 }"
       ></div>
     </div>
     <div class="content">
       <div
-        :class="['rhythm', `rhythm-${index + 1}`, { active: index === currentRhythmIndex }]"
-        :style="{
-          gridArea: `rhythm-${index + 1}`
-        }"
         v-for="(rhythm, index) in rhythms"
         :key="index"
+        :class="['rhythm', `rhythm-${index + 1}`, { active: index === currentRhythmIndex }]"
+        :style="{
+          gridArea: `rhythm-${index + 1}`,
+        }"
       >
-        <div class="rhythm-beat" v-for="beat in rhythm.beatsPerMeasure" :key="beat"></div>
+        <div v-for="beat in rhythm.beatsPerMeasure" :key="beat" class="rhythm-beat"></div>
       </div>
-      <div class="play" @click="play" :class="{ pause: disabled }"></div>
+      <div class="play" :class="{ pause: disabled }" @click="play"></div>
     </div>
   </div>
 </template>
@@ -40,20 +40,20 @@ const ding = useTemplateRef<HTMLAudioElement>('ding');
 const rhythms = [
   {
     name: '八分音符',
-    beatsPerMeasure: 2
+    beatsPerMeasure: 2,
   },
   {
     name: '三连音',
-    beatsPerMeasure: 3
+    beatsPerMeasure: 3,
   },
   {
     name: '八分音符',
-    beatsPerMeasure: 2
+    beatsPerMeasure: 2,
   },
   {
     name: '十六分音符',
-    beatsPerMeasure: 4
-  }
+    beatsPerMeasure: 4,
+  },
 ];
 const currentRhythmIndex = ref(0);
 
@@ -76,8 +76,7 @@ const play = () => {
         const interval = 500 / currentRhythm.value.beatsPerMeasure;
         timer(0, interval)
           .pipe(take(currentRhythm.value.beatsPerMeasure))
-          .subscribe((v) => {
-            console.log(`~🚀~ ${currentRhythm.value.name}$第${v + 1}拍`);
+          .subscribe(() => {
             ding.value?.pause();
             ding.value!.currentTime = 0;
             ding.value?.play();
@@ -93,10 +92,10 @@ const play = () => {
   height: 100%;
   width: 100%;
   overflow: hidden;
-  --block-size: 200px;
+  --block-size: 15vmin;
   --stroke-width: 1em;
   .sidebar {
-    width: 200px;
+    width: 15vmin;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -191,9 +190,9 @@ const play = () => {
         height: 0;
         left: 51%;
         transform: translate(-50%, -50%);
-        border-top: 60px solid transparent;
-        border-bottom: 60px solid transparent;
-        border-left: 100px solid #f5f5f5;
+        border-top: calc((var(--block-size) - var(--stroke-width) * 3) * 0.5) solid transparent;
+        border-bottom: calc((var(--block-size) - var(--stroke-width) * 3) * 0.5) solid transparent;
+        border-left: calc(var(--block-size) - var(--stroke-width) * 3) solid #f5f5f5;
         background: unset;
         border-radius: unset;
       }

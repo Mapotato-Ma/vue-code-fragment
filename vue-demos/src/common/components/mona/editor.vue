@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
-  <div class="editor" ref="container"></div>
+  <div ref="container" class="editor"></div>
 </template>
 <script lang="ts" setup>
 import { ref, onMounted, watch, onUnmounted } from 'vue';
@@ -15,7 +15,7 @@ self.MonacoEnvironment = {
       return new JsonWorker();
     }
     return new EditorWorker();
-  }
+  },
 };
 const container = ref<HTMLElement>();
 
@@ -30,7 +30,7 @@ const stopWatch = watch(
     if (!container.value?.contains(document.activeElement)) {
       editor.setValue(props.data ?? '');
     }
-  }
+  },
 );
 onUnmounted(() => {
   stopWatch();
@@ -43,11 +43,11 @@ onMounted(async () => {
     automaticLayout: true,
     scrollBeyondLastLine: false,
     fontSize: 20,
-    fontWeight: '900'
+    fontWeight: '900',
   });
   monaEditor.defineTheme(
     'monokai',
-    (await import('monaco-themes/themes/Monokai.json')) as monaEditor.IStandaloneThemeData
+    (await import('monaco-themes/themes/Monokai.json')) as monaEditor.IStandaloneThemeData,
   );
   monaEditor.setTheme('monokai');
 

@@ -1,6 +1,5 @@
 {
   "css.customData": ["./.vscode/custom-css.json"],
-  "editor.formatOnSave": true,
   "cSpell.words": [
     "beian",
     "Biao",
@@ -14,5 +13,11 @@
     "yaohaixiao",
     "Zheng"
   ],
-  "typescript.tsdk": "node_modules\\typescript\\lib"
+  "typescript.tsdk": "node_modules\\typescript\\lib",
+  "eslint.experimental.useFlatConfig": true,
+  "eslint.validate": ["vue", "typescript", "javascript"],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "editor.formatOnSave": false
 }

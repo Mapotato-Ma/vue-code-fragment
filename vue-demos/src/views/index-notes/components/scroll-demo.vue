@@ -1,16 +1,16 @@
 <template>
   <div class="box">
     <div class="col-position">列/行</div>
-    <div class="scroll-demo" @scroll.passive="onScroll" ref="container">
+    <div ref="container" class="scroll-demo" @scroll.passive="onScroll">
       <div class="row row-sticky">
         <div class="col col-sticky" :style="{ transform: calcTranslateX }"></div>
-        <div class="col" v-for="(_, colIndex) in data" :key="colIndex">第{{ colIndex + 1 }}列</div>
+        <div v-for="(_, colIndex) in data" :key="colIndex" class="col">第{{ colIndex + 1 }}列</div>
       </div>
-      <div class="row" v-for="(row, rowIndex) in data" :key="rowIndex">
+      <div v-for="(row, rowIndex) in data" :key="rowIndex" class="row">
         <div class="col col-sticky" :style="{ transform: calcTranslateX }">
           第{{ rowIndex + 1 }}行
         </div>
-        <div class="col" v-for="(col, colIndex) in row" :key="colIndex">{{ col }}</div>
+        <div v-for="(col, colIndex) in row" :key="colIndex" class="col">{{ col }}</div>
       </div>
     </div>
   </div>
@@ -20,7 +20,7 @@
 import { computed, onMounted, ref } from 'vue';
 
 defineOptions({
-  name: 'scroll-demo'
+  name: 'ScrollDemo',
 });
 
 const data = new Array(10)
@@ -36,13 +36,13 @@ const calcTranslateX = computed(
   () =>
     `translateX(${
       criticalScrollWidth.value - scrollX.value > 0 ? 0 : scrollX.value - criticalScrollWidth.value
-    }px)`
+    }px)`,
 );
 onMounted(() => {
   containerScrollWidth.value = container.value!.scrollWidth - container.value!.clientWidth;
 });
-const onScroll = (e: any) => {
-  scrollX.value = e.target.scrollLeft;
+const onScroll = (e: Event) => {
+  scrollX.value = (e.target as HTMLElement)?.scrollLeft;
 };
 </script>
 

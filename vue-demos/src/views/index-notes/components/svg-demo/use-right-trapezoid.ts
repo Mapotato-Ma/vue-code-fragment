@@ -32,7 +32,7 @@ export const useRightTrapezoid = (
   pointBottomLeft: IPoint,
   pointBottomRight: IPoint,
   radius: number,
-  fill: string
+  fill: string,
 ): IShape => {
   const { x: x1, y: y1 } = pointTopLeft;
   const { x: x2, y: y2 } = pointTopRight;
@@ -84,9 +84,9 @@ export const useRightTrapezoid = (
       E,
       F,
       G,
-      H
+      H,
     },
-    fill
+    fill,
   };
 };
 
@@ -95,7 +95,7 @@ export const generateRightTrapezoid = (
   x: number,
   y: number,
   hBase: number = 50,
-  wBase: number = 30
+  wBase: number = 30,
 ) => {
   const y1 = Math.ceil(Math.abs(Math.random() * 100)) + y;
   const y2 = Math.ceil(Math.abs(Math.random() * 10)) + y1 + hBase;
@@ -108,6 +108,6 @@ export const generateRightTrapezoid = (
     { x: x1, y: y2 },
     { x: x3, y: y2 },
     Math.floor(Math.abs(Math.random() * 10)),
-    `rgb(${Math.random() * 255},${Math.random() * 255}, ${Math.random() * 255})`
+    `rgb(${Math.random() * 255},${Math.random() * 255}, ${Math.random() * 255})`,
   );
 };

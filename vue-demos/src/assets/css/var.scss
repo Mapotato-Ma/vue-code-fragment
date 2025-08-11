@@ -1,6 +1,7 @@
 :root {
-  --font-fallback: BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
-    'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  --font-fallback:
+    BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
+    'Droid Sans', 'Helvetica Neue', sans-serif;
   --font-body: Inter, var(--font-fallback);
   --font-f: 'NNN', Inter, var(--font-fallback);
   --header-h: 3em;

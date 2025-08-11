@@ -49,6 +49,7 @@ export const useModelUtil = () => {
         .fill(0)
         .map((_, i) => new Big(start).plus(new Big(interval).times(i)).toNumber());
     } catch (error) {
+      console.log('🚀 ~  ~ ', error);
       return [];
     }
   };

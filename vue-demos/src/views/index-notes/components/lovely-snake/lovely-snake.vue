@@ -1,5 +1,5 @@
 <template>
-  <div class="lovely-snake" ref="layoutRef" tabindex="0">
+  <div ref="layoutRef" class="lovely-snake" tabindex="0">
     <fieldset class="info">
       <legend>贪吃蛇</legend>
       <div>
@@ -11,7 +11,7 @@
       </div>
       <label>当前得分：</label>
       <Transition name="slide-up">
-        <div class="score" :key="snakeLength">{{ snakeLength }}</div>
+        <div :key="snakeLength" class="score">{{ snakeLength }}</div>
       </Transition>
     </fieldset>
     <div v-for="(row, i) in grids" :key="i" class="row">
@@ -23,7 +23,7 @@
           isBody: snakeJSON.includes(`[${[i, j]}]`),
           gameOver,
           isReward: `${currentRewardJSON}`.includes(`[${i},${j}]`),
-          isWall: i === 0 || i === grids.length - 1 || j === 0 || j === row.length - 1
+          isWall: i === 0 || i === grids.length - 1 || j === 0 || j === row.length - 1,
         }"
         :title="`${i},${j}`"
       ></div>

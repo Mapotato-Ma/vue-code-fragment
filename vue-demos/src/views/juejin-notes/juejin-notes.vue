@@ -3,11 +3,11 @@
     <div class="jn-directory">
       <div class="jn-container">
         <a
+          v-for="(_, index) in articles"
+          :key="titleList[index]"
           class="jn-article-title"
           :href="`${BASE_URL}/juejin-notes#${titleList[index]}`"
           :class="{ active: `#${titleList[index]}` === hash }"
-          v-for="(_, index) in articles"
-          :key="titleList[index]"
           :title="titleList[index]"
         >
           {{ titleList[index] }}
@@ -17,20 +17,20 @@
     <div class="jn-content">
       <div class="jn-container">
         <use-fullscreen
+          v-for="(article, index) in articles"
+          :id="titleList[index]"
+          v-slot="{ isFullscreen, toggle }"
+          :key="index"
           class="jn-article"
           :class="{ active: `#${titleList[index]}` === hash }"
-          v-slot="{ isFullscreen, toggle }"
-          v-for="(article, index) in articles"
-          :key="index"
-          :id="titleList[index]"
         >
           <vue-showdown :markdown="article" flavor="allOn" :title="titleList[index]"></vue-showdown>
           <bs-fullscreen-exit
+            v-if="isFullscreen"
             class="jn-icon"
             @click="toggle"
-            v-if="isFullscreen"
           ></bs-fullscreen-exit>
-          <ep-full-screen class="jn-icon" @click="toggle" v-else></ep-full-screen>
+          <ep-full-screen v-else class="jn-icon" @click="toggle"></ep-full-screen>
         </use-fullscreen>
       </div>
     </div>
@@ -50,11 +50,11 @@ const route = useRoute();
 const hash = computed(() => route.hash);
 const articles = Object.freeze(
   Object.values(
-    import.meta.glob<true, string, { markdown: string }>('./articles/*.md', { eager: true })
-  ).map((file) => file.markdown)
+    import.meta.glob<true, string, { markdown: string }>('./articles/*.md', { eager: true }),
+  ).map(file => file.markdown),
 );
 const titleList = Object.freeze(
-  articles.map((article) => article.split('\n')[0]?.replace('#', '').trim())
+  articles.map(article => article.split('\n')[0]?.replace('#', '').trim()),
 );
 </script>
 

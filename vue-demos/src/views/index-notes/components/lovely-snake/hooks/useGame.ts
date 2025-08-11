@@ -17,7 +17,7 @@ export const useGame = () => {
     remake,
     move,
     extendSnake,
-    validatePointsInSnakeBody
+    validatePointsInSnakeBody,
   } = useSnake();
   const { DIRECTION_KEY_CODE, GAME_CONTROL_KEY_CODE, ALL_KEY_CODE, isReverseDirection } =
     useDirection();
@@ -28,16 +28,16 @@ export const useGame = () => {
   const registerEvent = (container: HTMLElement) => {
     // 总事件
     const allEvent = fromEvent<KeyboardEvent>(container, 'keydown').pipe(
-      tap((v) => v.preventDefault()),
-      filter((e) => ALL_KEY_CODE.includes(e.code))
+      tap(v => v.preventDefault()),
+      filter(e => ALL_KEY_CODE.includes(e.code)),
     );
 
     // 方向事件
-    const directionEvent = allEvent.pipe(filter((e) => DIRECTION_KEY_CODE.includes(e.code)));
+    const directionEvent = allEvent.pipe(filter(e => DIRECTION_KEY_CODE.includes(e.code)));
     // 游戏控制事件
-    const gameControlEvent = allEvent.pipe(filter((e) => GAME_CONTROL_KEY_CODE.includes(e.code)));
+    const gameControlEvent = allEvent.pipe(filter(e => GAME_CONTROL_KEY_CODE.includes(e.code)));
 
-    gameControlEvent.subscribe((e) => {
+    gameControlEvent.subscribe(e => {
       // 开始游戏
       if (e.code === 'Space' && !gaming) {
         gaming = interval(10).pipe(throttleTime(speed.value)).subscribe(move);
@@ -53,7 +53,7 @@ export const useGame = () => {
       }
     });
 
-    directionEvent.subscribe((e) => {
+    directionEvent.subscribe(e => {
       // 游戏未开始，禁用方向键
       if (!gaming) return;
       // 禁止掉头
@@ -69,7 +69,7 @@ export const useGame = () => {
     });
 
     // 监听游戏失败
-    gameEvent.subscribe((e) => {
+    gameEvent.subscribe(e => {
       if (e === 'fail') {
         gaming?.unsubscribe();
       }
@@ -101,7 +101,7 @@ export const useGame = () => {
   // 生成小奖励
   const generateSmallReward = (
     xLimit: [number, number],
-    yLimit: [number, number]
+    yLimit: [number, number],
   ): [number, number] => {
     const point: [number, number] = [getRandomInt(...xLimit), getRandomInt(...yLimit)];
     if (validatePointsInSnakeBody([point]).isIn) {
@@ -118,7 +118,7 @@ export const useGame = () => {
       point,
       [point[0], point[1] + 1],
       [point[0] + 1, point[1]],
-      [point[0] + 1, point[1] + 1]
+      [point[0] + 1, point[1] + 1],
     ];
     if (validatePointsInSnakeBody(points).allOut) {
       return points;
@@ -161,6 +161,6 @@ export const useGame = () => {
     snakeLength,
     gameOver,
     currentRewardJSON,
-    registerEvent
+    registerEvent,
   };
 };

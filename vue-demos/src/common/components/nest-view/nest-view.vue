@@ -1,9 +1,9 @@
 <template>
   <VueDraggable
+    v-if="isArray"
     v-model="data as Array<any>"
     :animation="500"
     class="nest-view array"
-    v-if="isArray"
     group="json-view"
   >
     <div v-for="(item, index) in data" :key="item" class="array-item">
@@ -14,7 +14,7 @@
       <NestView v-else v-model:data="data[index]" />
     </div>
   </VueDraggable>
-  <div class="nest-view" v-else>
+  <div v-else class="nest-view">
     <CollapsePanel
       v-for="(item, index) in Object.entries(data)"
       :key="index"
@@ -35,6 +35,7 @@ import { CollapsePanel, NestView } from '@/common/components';
 import { VueDraggable } from 'vue-draggable-plus';
 import { isSimpleData } from '@/utils';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const data = defineModel<Array<any> | Record<string, any>>('data', { default: [] });
 
 const isArray = computed(() => Array.isArray(data.value));

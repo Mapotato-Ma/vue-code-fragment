@@ -33,7 +33,7 @@ export class Point implements IPoint {
   public get getCenterPosition() {
     return {
       top: this.top + this.radius,
-      left: this.left + this.radius
+      left: this.left + this.radius,
     };
   }
 
@@ -44,10 +44,10 @@ export class Point implements IPoint {
 
   dispose() {
     this.startPoints.forEach(
-      (point) => (point.endPoints = point.endPoints.filter((ep) => ep.pointId !== this.pointId))
+      point => (point.endPoints = point.endPoints.filter(ep => ep.pointId !== this.pointId)),
     );
     this.endPoints.forEach(
-      (point) => (point.startPoints = point.startPoints.filter((ep) => ep.pointId !== this.pointId))
+      point => (point.startPoints = point.startPoints.filter(ep => ep.pointId !== this.pointId)),
     );
     return this.startPoints;
   }

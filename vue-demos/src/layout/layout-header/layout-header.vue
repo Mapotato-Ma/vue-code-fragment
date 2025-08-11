@@ -5,9 +5,9 @@
         <img src="@/assets/img/icon/camera.png" alt="" />
       </router-link>
       <router-link
-        :value="String(menu.name)"
         v-for="menu in MENULIST"
         :key="menu.name"
+        :value="String(menu.name)"
         :to="{ path: menu.path }"
         class="h-li"
         :class="{ active: $route.path === menu.path }"
@@ -24,32 +24,32 @@
 const MENULIST = Object.freeze([
   {
     path: '/home',
-    name: 'Home'
+    name: 'Home',
   },
   {
     path: '/index-notes',
-    name: 'Demo'
+    name: 'Demo',
   },
   {
     path: '/codepen-notes',
-    name: 'Codepen'
+    name: 'Codepen',
   },
   {
     path: '/juejin-notes',
-    name: 'Notes'
+    name: 'Notes',
   },
   {
     path: '/json-viewer',
-    name: 'JSON'
+    name: 'JSON',
   },
   {
     path: '/rhythmic',
-    name: 'Beat'
+    name: 'Beat',
   },
   {
     path: '/earth',
-    name: 'Earth'
-  }
+    name: 'Earth',
+  },
 ]);
 </script>
 

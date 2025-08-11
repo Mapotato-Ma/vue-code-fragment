@@ -8,6 +8,8 @@
   </div>
 </template>
 
+<script lang="ts" setup></script>
+
 <style lang="scss" scoped>
 .main {
   height: var(--main-h);

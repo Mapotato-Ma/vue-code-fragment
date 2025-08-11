@@ -6,7 +6,7 @@ export type PointList = [number, number][];
 export const useSnake = () => {
   const { directionMap, DIRECTION_KEY_CODE } = useDirection();
   const snake = ref([[1, 1]]);
-  const snakeJSON = computed(() => `[${snake.value.map((v) => `[${v}]`)}]`);
+  const snakeJSON = computed(() => `[${snake.value.map(v => `[${v}]`)}]`);
   const snakeLength = computed(() => snake.value.length);
   const snakeFoot = computed(() => snake.value[snakeLength.value - 1]);
 
@@ -54,7 +54,7 @@ export const useSnake = () => {
   };
 
   const validatePointsInSnakeBody = (points: number[][]) => {
-    const validResult = points.map((point) => {
+    const validResult = points.map(point => {
       const reg = new RegExp(`(\\[${point}\\])`, 'g');
       if ((snakeJSON.value.match(reg)?.length ?? 0) > 1) {
         return true;
@@ -63,10 +63,10 @@ export const useSnake = () => {
       }
     });
     return {
-      allIn: validResult.every((v) => v),
-      isIn: validResult.some((v) => v),
-      allOut: validResult.every((v) => !v),
-      isOut: validResult.some((v) => !v)
+      allIn: validResult.every(v => v),
+      isIn: validResult.some(v => v),
+      allOut: validResult.every(v => !v),
+      isOut: validResult.some(v => !v),
     };
   };
 
@@ -85,6 +85,6 @@ export const useSnake = () => {
     remake,
     extendSnake,
     move,
-    validatePointsInSnakeBody
+    validatePointsInSnakeBody,
   };
 };

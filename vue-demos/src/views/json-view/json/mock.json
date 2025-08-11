@@ -10,11 +10,7 @@
     {
       "nestedKey": "nestedValue"
     },
-    [
-      1,
-      2,
-      3
-    ]
+    [1, 2, 3]
   ],
   "objectValue": {
     "subObject": {

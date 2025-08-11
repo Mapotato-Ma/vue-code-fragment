@@ -3,6 +3,6 @@ export const useChild = (prop: { id: number }) => {
     return prop.id;
   };
   return {
-    getChildId
+    getChildId,
   };
 };

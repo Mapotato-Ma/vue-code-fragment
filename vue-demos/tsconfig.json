@@ -1,20 +1,27 @@
 {
-  "files": [],
   "compilerOptions": {
     "strict": true,
+    "baseUrl": ".",
+    "module": "esnext",
+    "target": "esnext",
+    "moduleResolution": "bundler",
     "paths": {
-      "@/*": ["/src/*"]
+      "@/*": ["src/*"]
     },
+    "noEmit": true,
+    "skipLibCheck": true,
     "jsx": "preserve",
     "jsxImportSource": "vue",
-    "types": ["node"]
+    "types": ["node", "web-bluetooth"],
+    "typeRoots": ["./node_modules/@types", "./types"]
   },
-  "references": [
-    {
-      "path": "./tsconfig.node.json"
-    },
-    {
-      "path": "./tsconfig.app.json"
-    }
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "tests/**/*.ts",
+    "tests/**/*.tsx",
+    "vite.config.ts",
+    "src/vite-env.d.ts"
   ]
 }

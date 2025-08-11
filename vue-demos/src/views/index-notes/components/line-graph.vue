@@ -4,8 +4,8 @@
       <span
         v-for="left in selectList"
         :key="left"
-        @click="selectLeft(left)"
         :class="{ active: left === currentLeft }"
+        @click="selectLeft(left)"
       >
         <span
           v-for="right in selectedList"
@@ -38,7 +38,7 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue';
 defineOptions({
-  name: 'line-graph'
+  name: 'LineGraph',
 });
 
 const selectList = reactive([1, 2, 3, 4, 5, 6]);

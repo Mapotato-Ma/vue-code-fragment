@@ -1,6 +1,6 @@
 <template>
   <transition>
-    <div class="popover" v-if="message.length > 0">
+    <div v-if="message.length > 0" class="popover">
       {{ message }}
     </div>
   </transition>
@@ -11,7 +11,7 @@ import { installMessage } from '@/common/plugins/message';
 import { getCurrentInstance, onMounted, ref, nextTick } from 'vue';
 import type { LPopover } from '..';
 const message = ref('');
-let timer: number | null;
+let timer: NodeJS.Timeout | null = null;
 defineExpose({
   message: (msg: string, duration: number = 2000) => {
     const showMessage = () => {
@@ -28,10 +28,10 @@ defineExpose({
     } else {
       showMessage();
     }
-  }
+  },
 });
 onMounted(() => {
-  const instance = getCurrentInstance()?.exposed!;
+  const instance = getCurrentInstance()?.exposed;
   installMessage(instance as InstanceType<typeof LPopover>);
 });
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <div class="directed-graph" :draggable="false" ref="elDrawContainer">
+  <div ref="elDrawContainer" class="directed-graph" :draggable="false">
     <!-- 箭头 -->
     <svg class="dg-draw-container">
       <defs>
@@ -19,18 +19,18 @@
     </svg>
     <!-- Points -->
     <div
-      class="dg-point"
       v-for="point in points"
       :key="point.value.pointId"
+      class="dg-point"
       :draggable="false"
       :style="{
         top: numberToPx(point.value.top),
         left: numberToPx(point.value.left),
         width: numberToPx(point.value.radius * 2),
-        height: numberToPx(point.value.radius * 2)
+        height: numberToPx(point.value.radius * 2),
       }"
-      @mousedown="draggingPoint = point.value"
       :title="`Point${point.value.pointName}`"
+      @mousedown="draggingPoint = point.value"
     >
       <span>{{ point.value.pointName }}</span>
       <!-- Link Lines -->
@@ -50,21 +50,21 @@
         <fieldset>
           <legend size="small">AddLine</legend>
           <select v-model="pointSelectStartValue">
-            <option :value="option.value" v-for="option in pointSelectOptions" :key="option.value">
+            <option v-for="option in pointSelectOptions" :key="option.value" :value="option.value">
               {{ option.label }}
             </option>
           </select>
           <hr />
           <select v-model="pointSelectEndValue">
-            <option :value="option.value" v-for="option in pointSelectOptions" :key="option.value">
+            <option v-for="option in pointSelectOptions" :key="option.value" :value="option.value">
               {{ option.label }}
             </option>
           </select>
-          <button @click="confirmConnect" class="dg-add-connect">添加连接</button>
+          <button class="dg-add-connect" @click="confirmConnect">添加连接</button>
         </fieldset>
         <fieldset>
           <legend size="small">AddPoint</legend>
-          <button @click="addPoint" block>+ AddPoint</button>
+          <button block @click="addPoint">+ AddPoint</button>
         </fieldset>
       </CollapsePanel>
       <CollapsePanel
@@ -74,10 +74,10 @@
         init-collapse
       >
         <div
-          class="dg-panel-point"
-          :span="3"
           v-for="point in points"
           :key="point.value.pointId"
+          class="dg-panel-point"
+          :span="3"
           @click="removePoint(point.value)"
         >
           Point {{ point.value.pointName }}
@@ -85,10 +85,10 @@
       </CollapsePanel>
       <CollapsePanel class="dg-panel-item" title="Lines" init-collapse>
         <div
-          class="dg-panel-line"
-          :span="3"
           v-for="(item, index) in connections"
           :key="item.startPoint.pointName + '-' + item.endPoint.pointName"
+          class="dg-panel-line"
+          :span="3"
         >
           <div class="dg-cs">Point {{ item.startPoint.pointName }}</div>
           <div class="dg-remove-line" @click="removeConnection(item, index)"></div>
@@ -107,7 +107,7 @@ import {
   ref,
   type ComponentInternalInstance,
   type Ref,
-  toRef
+  toRef,
 } from 'vue';
 import { Point, type IPoint, type IConnection } from './usePoint';
 import { numberToPx } from '@/utils';
@@ -121,16 +121,16 @@ const elDrawContainer = ref<HTMLElement>();
 const pointSelectStartValue = ref('1');
 const pointSelectEndValue = ref('1');
 const pointSelectStart = computed(() =>
-  points.value.find((point) => point.value.pointName === pointSelectStartValue.value)
+  points.value.find(point => point.value.pointName === pointSelectStartValue.value),
 );
 const pointSelectEnd = computed(() =>
-  points.value.find((point) => point.value.pointName === pointSelectEndValue.value)
+  points.value.find(point => point.value.pointName === pointSelectEndValue.value),
 );
 const pointSelectOptions = computed(() =>
-  points.value.map((point) => ({
+  points.value.map(point => ({
     value: point.value.pointName,
-    label: `Point ${point.value.pointName}`
-  }))
+    label: `Point ${point.value.pointName}`,
+  })),
 );
 
 let currentInstance: ComponentInternalInstance | null;
@@ -139,7 +139,7 @@ const addPoint = () => {
   const { width, height } = elDrawContainer.value!.getBoundingClientRect();
   let findIndex = points.value.length + 1;
   const indexSet = new Set();
-  points.value.forEach((point) => {
+  points.value.forEach(point => {
     indexSet.add(Number(point.value.pointName));
   });
   for (let i = 1; i <= points.value.length + 1; i++) {
@@ -153,9 +153,9 @@ const addPoint = () => {
       new Point(
         Math.floor(Math.abs(Math.random() * (width - 500))),
         Math.floor(Math.abs(Math.random() * height - 100)),
-        `${findIndex}`
-      )
-    )
+        `${findIndex}`,
+      ),
+    ),
   );
 };
 
@@ -168,10 +168,10 @@ const confirmConnect = () => {
 
 const removeConnection = (connection: IConnection, index: number) => {
   const endPointIndex = connection.startPoint.endPoints.findIndex(
-    (point: IPoint) => point.pointName === connection.endPoint.pointName
+    (point: IPoint) => point.pointName === connection.endPoint.pointName,
   );
   const startPointIndex = connection.endPoint.startPoints.findIndex(
-    (point: IPoint) => point.pointName === connection.startPoint.pointName
+    (point: IPoint) => point.pointName === connection.startPoint.pointName,
   );
   connection.startPoint.endPoints.splice(endPointIndex, 1);
   connection.endPoint.startPoints.splice(startPointIndex, 1);
@@ -200,10 +200,10 @@ const addConnection = (startPoint: IPoint, endPoint: IPoint) => {
 const removePoint = (point: IPoint) => {
   // 移除点
   connections.value = connections.value.filter(
-    (connect) =>
-      !(connect.startPoint.pointId === point.pointId || connect.endPoint.pointId === point.pointId)
+    connect =>
+      !(connect.startPoint.pointId === point.pointId || connect.endPoint.pointId === point.pointId),
   );
-  const index = points.value.findIndex((p) => p.value.pointId === point.pointId);
+  const index = points.value.findIndex(p => p.value.pointId === point.pointId);
   points.value.splice(index, 1);
   // 断开连线
   point.dispose();
@@ -236,7 +236,7 @@ onMounted(() => {
   document.addEventListener('mouseup', () => {
     draggingPoint.value = undefined;
   });
-  document.addEventListener('mousemove', (event) => {
+  document.addEventListener('mousemove', event => {
     if (draggingPoint.value) {
       draggingPoint.value.top += event.movementY;
       draggingPoint.value.left += event.movementX;
@@ -253,14 +253,14 @@ const getLineStyle = (startPoint: Ref<IPoint>, endPoint: IPoint) => {
     x1: String(M.x),
     x2: String(N.x),
     y1: String(M.y),
-    y2: String(N.y)
+    y2: String(N.y),
   };
 };
 
 const findPointsOnLine = (
   A: { x: number; y: number },
   B: { x: number; y: number },
-  k: number
+  k: number,
 ): { M: { x: number; y: number }; N: { x: number; y: number } } => {
   // 计算AB向量的x和y分量
   const dx = B.x - A.x;
@@ -281,12 +281,12 @@ const findPointsOnLine = (
   // 使用线性插值计算M和N点的坐标
   const M = {
     x: A.x + dx * ratio,
-    y: A.y + dy * ratio
+    y: A.y + dy * ratio,
   };
 
   const N = {
     x: B.x - dx * ratio,
-    y: B.y - dy * ratio
+    y: B.y - dy * ratio,
   };
 
   return { M, N };

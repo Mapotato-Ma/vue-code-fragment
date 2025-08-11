@@ -15,7 +15,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import { VueDraggable } from 'vue-draggable-plus';
-defineOptions({ name: 'flexible-layouts' });
+defineOptions({ name: 'FlexibleLayouts' });
 
 const randomEmojis = [
   '😓',
@@ -77,17 +77,17 @@ const randomEmojis = [
   '😜',
   '😊',
   '😭',
-  '😢'
+  '😢',
 ];
 const list = ref<{ id: number; name: string }[]>(
   new Array(36).fill(0).map((_, i) => ({
     id: i,
-    name: String(randomEmojis[i])
-  }))
+    name: String(randomEmojis[i]),
+  })),
 );
 
 const onSort = () => {
-  console.log('🚀 ~ 最新序号 ~ 46行', list.value.map((item) => item.name).join('-'));
+  console.log('🚀 ~ 最新序号 ~ 46行', list.value.map(item => item.name).join('-'));
 };
 </script>
 

@@ -1,14 +1,14 @@
 <template>
   <div class="main">
-    <div class="m-select" v-for="item in 5" :key="item">
+    <div v-for="item in 5" :key="item" class="m-select">
       <span>{{ selected }}</span>
-      <div class="m-overlay" ref="overlay" @mouseover.stop>
+      <div ref="overlay" class="m-overlay" @mouseover.stop>
         <TransitionGroup name="fade">
           <span
-            v-for="(item, index) in currentList"
-            :key="item"
-            @click="selectItem(item, index)"
+            v-for="(option, index) in currentList"
+            :key="option"
             :class="{ active: index === 2 }"
+            @click="selectItem(option, index)"
           >
             {{ item }}
           </span>
@@ -22,13 +22,13 @@
 import { fromEvent } from 'rxjs';
 import { computed, onMounted, ref } from 'vue';
 
-defineOptions({ name: 'select-box' });
+defineOptions({ name: 'SelectBox' });
 
 const overlay = ref<HTMLElement>();
 const currentList = ref(['苹果', '香蕉', '橘子', '橙子', '甘蔗', '凑数的']);
 const selected = computed(() => currentList.value[2]);
 onMounted(() => {
-  fromEvent<WheelEvent>(overlay.value!, 'wheel').subscribe((e) => {
+  fromEvent<WheelEvent>(overlay.value!, 'wheel').subscribe(e => {
     e.preventDefault();
     if (e.deltaY < 0) {
       currentList.value.unshift(currentList.value.pop()!);
@@ -40,7 +40,7 @@ onMounted(() => {
 
 const selectItem = (item: string, index: number) => {
   const move = () => {
-    if (currentList.value.findIndex((value) => value === item) === 2) return;
+    if (currentList.value.findIndex(value => value === item) === 2) return;
     if (index < 2) {
       currentList.value.unshift(currentList.value.pop()!);
     } else {

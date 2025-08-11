@@ -5,7 +5,7 @@
         <tres-model-loader :loop-callback="modelInitAnimate" />
       </template>
     </Suspense>
-    <div class="hs-text" ref="welcomeRef">WELCOME</div>
+    <div ref="welcomeRef" class="hs-text">WELCOME</div>
   </div>
 </template>
 
@@ -26,7 +26,7 @@ const onResolve = () => {
     ['left', 'unset'],
     ['right', '0'],
     ['scale', '0.5'],
-    ['opacity', '0.7']
+    ['opacity', '0.7'],
   ];
   propertyValue.forEach(([property, value]) => {
     welcomeRef.value?.style.setProperty(property, value);

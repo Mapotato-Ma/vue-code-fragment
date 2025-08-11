@@ -1,4 +1,3 @@
-import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import vueJsx from '@vitejs/plugin-vue-jsx';
@@ -9,6 +8,7 @@ import topLevelAwait from 'vite-plugin-top-level-await';
 import { templateCompilerOptions } from '@tresjs/core';
 // 分析打包大小
 // import { analyzer } from 'vite-bundle-analyzer';
+import path from 'node:path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -19,20 +19,27 @@ export default defineConfig({
     wasm(),
     topLevelAwait(),
     vue({
-      ...templateCompilerOptions
+      ...templateCompilerOptions,
     }),
     ViteEjsPlugin(),
     vueJsx(),
     plugin({
-      mode: [Mode.MARKDOWN]
-    })
+      mode: [Mode.MARKDOWN],
+    }),
   ],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
-    }
+      '@': path.resolve(__dirname, './src'),
+    },
   },
   build: {
-    outDir: 'mapotato'
-  }
+    outDir: 'mapotato',
+    sourcemap: true,
+    rollupOptions: {
+      output: {
+        sourcemap: true,
+        sourcemapExcludeSources: false,
+      },
+    },
+  },
 });

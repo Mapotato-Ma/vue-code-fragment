@@ -1,5 +1,5 @@
 <template>
-  <div class="layout" v-if="!isPhone">
+  <div v-if="!isPhone" class="layout">
     <!-- header -->
     <LHeader />
     <!-- main -->
@@ -14,7 +14,7 @@
 <script setup lang="ts">
 import { LFooter, LHeader, LMain, LPopover } from './layout';
 const isPhone = navigator.userAgent.match(
-  /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i
+  /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i,
 );
 </script>
 

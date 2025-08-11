@@ -1,6 +1,6 @@
 <template>
   <div class="collapse-panel" :class="{ collapse }">
-    <div class="header" @click="collapse = !collapse" :title="title">
+    <div class="header" :title="title" @click="collapse = !collapse">
       <slot name="header">{{ title }}</slot>
     </div>
     <div class="body" :class="[bodyClass]">
