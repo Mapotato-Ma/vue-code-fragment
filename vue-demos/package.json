@@ -32,7 +32,6 @@
     "rxjs": "^7.8.1",
     "three": "^0.173.0",
     "vite-plugin-ejs": "^1.7.0",
-    "vite-plugin-top-level-await": "^1.4.4",
     "vite-plugin-wasm": "^3.4.1",
     "vue": "^3.4.21",
     "vue-draggable-plus": "^0.3.5",
