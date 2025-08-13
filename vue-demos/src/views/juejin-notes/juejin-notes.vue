@@ -93,7 +93,7 @@ const titleList = Object.freeze(
       background: #292929;
 
       &:hover {
-        filter: brightness(0.6);
+        filter: brightness(1.6);
       }
 
       &.active {
