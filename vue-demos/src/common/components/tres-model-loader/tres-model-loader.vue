@@ -4,36 +4,27 @@
     <TresPerspectiveCamera :position="[0, 0, 3]" :look-at="[0, 2, 1]" />
     <!-- 控制器 -->
     <OrbitControls />
-    <Suspense>
-      <!-- 模型加载 组件 -->
-      <primitive :object="model" />
-    </Suspense>
+    <!-- 模型加载 组件 -->
+    <GltfModelLoader
+      :model-name="modelName"
+      :texture-options="textureOptions"
+      :bloom-options="bloomOptions"
+      @ready="modelReady = true"
+    />
     <!-- 灯光 -->
     <TresDirectionalLight color="#a5a5a5" :position="[10, 10, 3]" :intensity="5" />
     <!-- 环境光 -->
     <TresAmbientLight :intensity="2" />
-    <!-- 辉光混合器 -->
-    <effect-composer-pmndrs
-      v-if="bloomOptions?.showBloom"
-      v-bind="bloomOptions.effectComposerProps"
-    >
-      <!-- 辉光（自发光） -->
-      <bloom-pmndrs v-bind="bloomOptions.bloomProps"></bloom-pmndrs>
-    </effect-composer-pmndrs>
   </TresCanvas>
 </template>
 
 <script lang="ts" setup>
-import { TresCanvas, useRenderLoop } from '@tresjs/core';
-import { OrbitControls, useGLTF } from '@tresjs/cientos';
-import {
-  BloomPmndrs,
-  EffectComposerPmndrs,
-  type BloomPmndrsProps,
-  type EffectComposerPmndrsProps,
-} from '@tresjs/post-processing';
+import { TresCanvas } from '@tresjs/core';
+import { OrbitControls } from '@tresjs/cientos';
 import { BasicShadowMap, SRGBColorSpace, LinearToneMapping, Scene } from 'three';
-
+import GltfModelLoader from './gltf-model-loader.vue';
+import { onMounted, ref } from 'vue';
+import { BloomPmndrsProps, EffectComposerPmndrsProps } from '@tresjs/post-processing';
 /**
  * 模型纹理配置项详见：
  * https://docs.tresjs.org/zh/api/composables.html#use-texture
@@ -76,27 +67,21 @@ interface Props {
   loadCallback?: (model: Scene) => void;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+const modelReady = ref(false);
+
+const props=withDefaults(defineProps<Props>(), {
   modelName: 'mapotato-v1.glb',
   textureOptions: () => ({}),
 });
-
-const { scene: model } = await useGLTF(`mapotato/models/${props.modelName}`, {
-  draco: true,
-  decoderPath: 'mapotato/models/',
+onMounted(() => {
+  console.log('🚀 ~  ~ ', props.bloomOptions);
 });
 
-props.loadCallback?.(model);
+// props.loadCallback?.(model.value);
 
 // const onClick = (e: any) => {
 //   console.log('click', e);
 // };
-
-const { onLoop } = useRenderLoop();
-
-onLoop(() => {
-  props.loopCallback?.(model);
-});
 
 const gl = {
   clearColor: '#1a1a1a',

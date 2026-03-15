@@ -20,8 +20,8 @@
   },
   "dependencies": {
     "@mapotato-pkg/hello-wasm": "^0.2.0",
-    "@tresjs/cientos": "^4.3.1",
-    "@tresjs/core": "^4.3.6",
+    "@tresjs/cientos": "^5.0.0",
+    "@tresjs/core": "^5.0.2",
     "@tresjs/post-processing": "^2.4.0",
     "@vueuse/components": "^13.6.0",
     "@vueuse/core": "^13.6.0",
