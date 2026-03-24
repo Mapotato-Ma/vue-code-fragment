@@ -42,6 +42,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/earth',
     component: () => import('@/views/earth-model/earth-model.vue'),
   },
+  {
+    name: 'EasyChartBuilder',
+    path: '/easy-chart-builder',
+    component: () => import('@/views/easy-chart-builder/easy-chart-builder.vue'),
+  },
 ];
 
 export const router = createRouter({

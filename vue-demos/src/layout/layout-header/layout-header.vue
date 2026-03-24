@@ -50,6 +50,10 @@ const MENULIST = Object.freeze([
     path: '/earth',
     name: 'Earth',
   },
+  {
+    path: '/easy-chart-builder',
+    name: 'Charts',
+  },
 ]);
 </script>
 
