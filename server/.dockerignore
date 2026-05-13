@@ -1,0 +1,8 @@
+node_modules
+dist
+.git
+.env
+.env.docker.deploy
+scripts
+*.md
+.DS_Store

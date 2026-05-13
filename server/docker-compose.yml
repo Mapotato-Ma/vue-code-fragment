@@ -1,0 +1,13 @@
+services:
+  mapotato-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: mapotato-api:local
+    ports:
+      - "${HOST_PORT:-3638}:3638"
+    environment:
+      PORT: "3638"
+    # 取消下行注释后，改主机 ./data/pens.json 可立即生效且无需重建镜像
+    # volumes:
+    #   - ./data:/app/data:ro

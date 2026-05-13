@@ -26,10 +26,12 @@ import { computed, onMounted, ref } from 'vue';
 import { useFullscreen } from '@vueuse/core';
 import { message } from '@/common/plugins/message';
 
+const codePensUrl = '/api/code-pens';
+
 onMounted(async () => {
   try {
-    const res = await (await fetch('/api/getPens', { method: 'POST' })).json();
-    if (typeof res === 'object') {
+    const res = await (await fetch(codePensUrl)).json();
+    if (Array.isArray(res)) {
       components.value = res;
     } else {
       message.message('获取组件失败！');

@@ -40,6 +40,11 @@ lerna-debug.log*
 
 # dotenv environment variable files
 .env
+.env.deploy
+.env.docker.deploy
+
+# docker-deploy 临时产物
+mapotato-api.tar
 .env.development.local
 .env.test.local
 .env.production.local
