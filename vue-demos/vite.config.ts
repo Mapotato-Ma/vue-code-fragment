@@ -10,33 +10,54 @@ import { analyzer } from 'vite-bundle-analyzer';
 import path from 'node:path';
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
-  // 配置静态资源根路径
-  base: '/mapotato',
-  plugins: [
-    wasm(),
-    vue({
-      ...templateCompilerOptions,
-    }),
-    ViteEjsPlugin(),
-    vueJsx(),
-    plugin({
-      mode: [Mode.MARKDOWN],
-    }),
-    mode === 'analyze' &&
+export default defineConfig(({ mode, command }) => {
+  /** 任何非 development 的 build（含 production、analyze）都走 Vue 生产裁剪 */
+  const prodLikeBuild = command === 'build' && mode !== 'development';
+
+  return {
+    // 配置静态资源根路径
+    base: '/mapotato',
+    define: prodLikeBuild
+      ? {
+        __VUE_PROD_DEVTOOLS__: false,
+      }
+      : {},
+    plugins: [
+      wasm(),
+      vue({
+        ...templateCompilerOptions,
+      }),
+      ViteEjsPlugin(),
+      vueJsx(),
+      plugin({
+        mode: [Mode.MARKDOWN],
+      }),
+      mode === 'analyze' &&
       analyzer({
         analyzerMode: 'static',
         fileName: 'bundle-report.html',
         openAnalyzer: true,
       }),
-  ],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
+    ],
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, './src'),
+      },
+      // 避免多份 vue 解析到 dev/runtime 与 prod 混用，导致控制台「development build of Vue」
+      dedupe: ['vue', 'vue-router'],
     },
-  },
-  build: {
-    outDir: 'mapotato',
-    sourcemap: false,
-  },
-}));
+    build: {
+      outDir: 'mapotato',
+      sourcemap: false,
+      emptyOutDir: true,
+    },
+    server: {
+      proxy: {
+        '/api': {
+          target: 'http://127.0.0.1:3638',
+          changeOrigin: true,
+        },
+      },
+    },
+  };
+});
