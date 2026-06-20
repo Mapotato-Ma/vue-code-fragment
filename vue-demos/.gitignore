@@ -14,8 +14,6 @@ mapotato.zip
 coverage
 *.local
 
-package-lock.json
-
 /cypress/videos/
 /cypress/screenshots/
 
