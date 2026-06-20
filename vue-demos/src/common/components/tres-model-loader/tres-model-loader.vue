@@ -1,15 +1,15 @@
 <template>
-  <TresCanvas v-bind="gl">
+  <TresCanvas v-bind="gl" @loop="handleLoop">
     <!-- 摄像机 -->
     <TresPerspectiveCamera :position="[0, 0, 3]" :look-at="[0, 2, 1]" />
     <!-- 控制器 -->
-    <OrbitControls />
+    <orbit-controls />
     <!-- 模型加载 组件 -->
-    <GltfModelLoader
+    <gltf-model-loader
       :model-name="modelName"
       :texture-options="textureOptions"
       :bloom-options="bloomOptions"
-      @ready="modelReady = true"
+      @ready="handleModelReady"
     />
     <!-- 灯光 -->
     <TresDirectionalLight color="#a5a5a5" :position="[10, 10, 3]" :intensity="5" />
@@ -21,10 +21,10 @@
 <script lang="ts" setup>
 import { TresCanvas } from '@tresjs/core';
 import { OrbitControls } from '@tresjs/cientos';
-import { BasicShadowMap, SRGBColorSpace, LinearToneMapping, Scene } from 'three';
+import { BasicShadowMap, LinearToneMapping, SRGBColorSpace, type Scene } from 'three';
 import GltfModelLoader from './gltf-model-loader.vue';
-import { onMounted, ref } from 'vue';
-import { BloomPmndrsProps, EffectComposerPmndrsProps } from '@tresjs/post-processing';
+import { shallowRef } from 'vue';
+import type { BloomPmndrsProps, EffectComposerPmndrsProps } from '@tresjs/post-processing';
 /**
  * 模型纹理配置项详见：
  * https://docs.tresjs.org/zh/api/composables.html#use-texture
@@ -67,17 +67,22 @@ interface Props {
   loadCallback?: (model: Scene) => void;
 }
 
-const modelReady = ref(false);
+const loadedModel = shallowRef<Scene>();
 
-const props=withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   modelName: 'mapotato-v1.glb',
   textureOptions: () => ({}),
 });
-onMounted(() => {
-  console.log('🚀 ~  ~ ', props.bloomOptions);
-});
 
-// props.loadCallback?.(model.value);
+const handleModelReady = (model: Scene) => {
+  loadedModel.value = model;
+  props.loadCallback?.(model);
+};
+
+const handleLoop = () => {
+  if (!loadedModel.value) return;
+  props.loopCallback?.(loadedModel.value);
+};
 
 // const onClick = (e: any) => {
 //   console.log('click', e);

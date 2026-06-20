@@ -10,9 +10,9 @@
         重玩
       </div>
       <label>当前得分：</label>
-      <Transition name="slide-up">
+      <transition name="slide-up">
         <div :key="snakeLength" class="score">{{ snakeLength }}</div>
-      </Transition>
+      </transition>
     </fieldset>
     <div v-for="(row, i) in grids" :key="i" class="row">
       <div

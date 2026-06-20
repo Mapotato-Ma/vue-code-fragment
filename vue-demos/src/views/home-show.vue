@@ -1,16 +1,16 @@
 <template>
   <div class="home-show">
-    <Suspense @resolve="onResolve">
+    <suspense @resolve="onResolve">
       <template #default>
-        <tres-model-loader :loop-callback="modelInitAnimate" />
+        <model-loader :loop-callback="modelInitAnimate" />
       </template>
-    </Suspense>
+    </suspense>
     <div ref="welcomeRef" class="hs-text">WELCOME</div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { TresModelLoader } from '@/common/components';
+import { TresModelLoader as ModelLoader } from '@/common/components';
 import { useModelUtil } from '@/common/hooks/useModelUtil';
 import type { Scene } from 'three';
 import { ref } from 'vue';

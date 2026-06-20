@@ -1,14 +1,14 @@
 <template>
   <div class="json-view">
     <div class="left" :style="{ flex: leftDiv }">
-      <Editor :data="jsonStr" @update:data="updateData"></Editor>
+      <editor :data="jsonStr" @update:data="updateData"></editor>
     </div>
     <div class="right" :style="{ flex: rightDiv }" tabindex="0">
       <div class="operation">
         <button @click="importJson">导入JSON</button>
         <button @click="exportJson">导出JSON</button>
       </div>
-      <NestView v-model:data="data" is-root></NestView>
+      <nest-view v-model:data="data" is-root></nest-view>
     </div>
     <div class="layout">
       <div

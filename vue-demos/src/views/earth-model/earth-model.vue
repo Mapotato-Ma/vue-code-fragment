@@ -1,23 +1,23 @@
 <template>
   <div class="earth-model">
-    <Suspense>
+    <suspense>
       <template #default>
-        <tres-model-loader
+        <model-loader
           :loop-callback="modelLoopAnimate"
           :load-callback="modelLoadCallback"
           model-name="earth.gltf"
           :bloom-options="{ showBloom: true, bloomProps: { intensity: 4 } }"
-        ></tres-model-loader>
+        ></model-loader>
       </template>
       <template #fallback>
         <span class="em-loading">Loading</span>
       </template>
-    </Suspense>
+    </suspense>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { TresModelLoader } from '@/common/components';
+import { TresModelLoader as ModelLoader } from '@/common/components';
 import { useModelUtil } from '@/common/hooks/useModelUtil';
 import type { Scene } from 'three';
 

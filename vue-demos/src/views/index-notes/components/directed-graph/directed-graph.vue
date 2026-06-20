@@ -46,7 +46,7 @@
     </div>
     <!-- 右侧卡片面板 -->
     <div class="dg-panel">
-      <CollapsePanel class="dg-panel-item dg-panel-operation" title="Operation" init-collapse>
+      <collapse-panel class="dg-panel-item dg-panel-operation" title="Operation" init-collapse>
         <fieldset>
           <legend size="small">AddLine</legend>
           <select v-model="pointSelectStartValue">
@@ -66,8 +66,8 @@
           <legend size="small">AddPoint</legend>
           <button block @click="addPoint">+ AddPoint</button>
         </fieldset>
-      </CollapsePanel>
-      <CollapsePanel
+      </collapse-panel>
+      <collapse-panel
         class="dg-panel-item"
         title="Points"
         body-class="dg-panel-points"
@@ -82,8 +82,8 @@
         >
           Point {{ point.value.pointName }}
         </div>
-      </CollapsePanel>
-      <CollapsePanel class="dg-panel-item" title="Lines" init-collapse>
+      </collapse-panel>
+      <collapse-panel class="dg-panel-item" title="Lines" init-collapse>
         <div
           v-for="(item, index) in connections"
           :key="item.startPoint.pointName + '-' + item.endPoint.pointName"
@@ -94,7 +94,7 @@
           <div class="dg-remove-line" @click="removeConnection(item, index)"></div>
           <div class="dg-cn">Point {{ item.endPoint.pointName }}</div>
         </div>
-      </CollapsePanel>
+      </collapse-panel>
     </div>
   </div>
 </template>

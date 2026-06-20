@@ -14,7 +14,7 @@ interface ChartItem {
 }
 
 const isEditMode = ref(false);
-const cellSize = 350
+const cellSize = 350;
 
 const charts = ref<ChartItem[]>([
   { name: '销售趋势', w: 2, h: 1, type: 'line', id: 'chart-1' },
@@ -169,7 +169,7 @@ function getPieData() {
 
       <div class="grid-container" :class="{ 'edit-mode': isEditMode }">
         <div class="chart-grid-wrapper">
-          <VueDraggable
+          <vue-draggable
             v-model="charts"
             class="chart-grid"
             :animation="500"
@@ -193,12 +193,12 @@ function getPieData() {
                 <span>{{ chart.name }}</span>
               </div>
               <div class="card-content">
-                <VueUiXy v-if="chart.type === 'line'" :dataset="getLineData()" />
-                <VueUiVerticalBar v-else-if="chart.type === 'bar'" :dataset="getBarData()" />
-                <VueUiDonut v-else :dataset="getPieData()" />
+                <vue-ui-xy v-if="chart.type === 'line'" :dataset="getLineData()" />
+                <vue-ui-vertical-bar v-else-if="chart.type === 'bar'" :dataset="getBarData()" />
+                <vue-ui-donut v-else :dataset="getPieData()" />
               </div>
             </div>
-          </VueDraggable>
+          </vue-draggable>
         </div>
       </div>
     </div>

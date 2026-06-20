@@ -3,7 +3,7 @@
     <div v-for="item in 5" :key="item" class="m-select">
       <span>{{ selected }}</span>
       <div ref="overlay" class="m-overlay" @mouseover.stop>
-        <TransitionGroup name="fade">
+        <transition-group name="fade">
           <span
             v-for="(option, index) in currentList"
             :key="option"
@@ -12,7 +12,7 @@
           >
             {{ item }}
           </span>
-        </TransitionGroup>
+        </transition-group>
       </div>
     </div>
   </div>

@@ -6,6 +6,7 @@ import {
   type EffectComposerPmndrsProps,
 } from '@tresjs/post-processing';
 import { useLoader } from '@tresjs/core';
+import type { Scene } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { computed, watch } from 'vue';
@@ -25,7 +26,9 @@ interface Props {
   };
 }
 
-const emits = defineEmits(['ready']);
+const emits = defineEmits<{
+  ready: [scene: Scene];
+}>();
 
 const props = withDefaults(defineProps<Props>(), {
   modelName: 'mapotato-v1.glb',
@@ -45,8 +48,9 @@ const { state: model, isReady } = useLoader(GLTFLoader, `mapotato/models/${props
 
 watch(
   () => isReady.value,
-  () => {
-    emits('ready');
+  ready => {
+    if (!ready || !scene.value) return;
+    emits('ready', scene.value as unknown as Scene);
   },
 );
 
@@ -58,7 +62,10 @@ const scene = computed(() => model.value?.scene);
   <!-- Render the Cube node if it exists -->
   <primitive v-if="scene" :object="scene" />
   <!-- 辉光混合器 -->
-  <effect-composer-pmndrs v-if="isReady && bloomOptions?.showBloom" v-bind="bloomOptions.effectComposerProps">
+  <effect-composer-pmndrs
+    v-if="isReady && bloomOptions?.showBloom"
+    v-bind="bloomOptions.effectComposerProps"
+  >
     <!-- 辉光（自发光） -->
     <bloom-pmndrs v-bind="bloomOptions.bloomProps"></bloom-pmndrs>
   </effect-composer-pmndrs>

@@ -1,5 +1,5 @@
 <template>
-  <VueDraggable ref="el" v-model="list" class="flexible-layouts" :animation="500" @sort="onSort">
+  <vue-draggable ref="el" v-model="list" class="flexible-layouts" :animation="500" @sort="onSort">
     <div v-for="(item, index) in list" :key="item.id" class="fl-box scale-in-out">
       <div
         class="fl-text"
@@ -9,7 +9,7 @@
         {{ item.name }}
       </div>
     </div>
-  </VueDraggable>
+  </vue-draggable>
 </template>
 
 <script lang="ts" setup>

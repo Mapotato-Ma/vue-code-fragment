@@ -1,13 +1,13 @@
 <template>
   <div v-if="!isPhone" class="layout">
     <!-- header -->
-    <LHeader />
+    <l-header />
     <!-- main -->
-    <LMain />
+    <l-main />
     <!-- footer -->
-    <LFooter />
+    <l-footer />
     <!-- dialog -->
-    <LPopover />
+    <l-popover />
   </div>
   <div v-else class="no-support">请前往chrome桌面浏览器</div>
 </template>

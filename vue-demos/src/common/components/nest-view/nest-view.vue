@@ -1,5 +1,5 @@
 <template>
-  <VueDraggable
+  <vue-draggable
     v-if="isArray"
     v-model="data as Array<any>"
     :animation="500"
@@ -7,15 +7,15 @@
     group="json-view"
   >
     <div v-for="(item, index) in data" :key="item" class="array-item">
-      <CollapsePanel v-if="isSimpleData(item)" :title="`index: ${index}`">
+      <collapse-panel v-if="isSimpleData(item)" :title="`index: ${index}`">
         <div>type: {{ typeof item }}</div>
         <div>value: {{ item }}</div>
-      </CollapsePanel>
-      <NestView v-else v-model:data="data[index]" />
+      </collapse-panel>
+      <nest-view v-else v-model:data="(data as Array<any>)[Number(index)]" />
     </div>
-  </VueDraggable>
+  </vue-draggable>
   <div v-else class="nest-view">
-    <CollapsePanel
+    <collapse-panel
       v-for="(item, index) in Object.entries(data)"
       :key="index"
       :title="`key: ${item[0]}`"
@@ -24,8 +24,8 @@
       <span v-if="isSimpleData(item[1])">
         {{ item[1] }}
       </span>
-      <NestView v-else v-model:data="(data as Record<string, any>)[item[0]]" />
-    </CollapsePanel>
+      <nest-view v-else v-model:data="(data as Record<string, any>)[item[0]]" />
+    </collapse-panel>
   </div>
 </template>
 

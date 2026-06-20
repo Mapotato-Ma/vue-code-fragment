@@ -42,6 +42,12 @@ export default defineConfig(({ mode, command }) => {
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),
+        // monaco-themes 的 package.json exports 未暴露 ./themes/*，Vite 7 严格模式下无法解析
+        // 用别名直接指向实际文件绕过 exports 限制
+        'monaco-themes/themes/Monokai.json': path.resolve(
+          __dirname,
+          './node_modules/monaco-themes/themes/Monokai.json',
+        ),
       },
       // 避免多份 vue 解析到 dev/runtime 与 prod 混用，导致控制台「development build of Vue」
       dedupe: ['vue', 'vue-router'],
