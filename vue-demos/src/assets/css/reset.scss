@@ -77,12 +77,6 @@ button {
   border-radius: 0.2rem;
   font-weight: bolder;
   transition: all 0.2s;
-  &:hover {
-    box-shadow: 0 0 10px 2px lch(from var(--apple-music-primary) l c h / 0.77);
-  }
-  &:active {
-    box-shadow: 0 0 10px 2px lch(from var(--apple-music-primary) calc(l - 10) c h / 0.77);
-  }
   &[block] {
     display: block;
     width: 100%;

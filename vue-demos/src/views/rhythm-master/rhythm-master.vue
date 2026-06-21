@@ -1,222 +1,89 @@
 <template>
-  <div class="rhythm-master">
-    <audio ref="ding" preload="auto">
-      <source src="/audios/da.mp3" type="audio/mpeg" />
-    </audio>
-    <audio ref="dong" preload="auto">
-      <source src="/audios/dong.mp3" type="audio/mpeg" />
-    </audio>
-    <div class="sidebar">
-      <div
-        v-for="beat in 4"
-        :key="beat"
-        class="beat"
-        :class="{ active: beat === currentRhythmIndex + 1 }"
-      ></div>
-    </div>
-    <div class="content">
-      <div
-        v-for="(rhythm, index) in rhythms"
-        :key="index"
-        :class="['rhythm', `rhythm-${index + 1}`, { active: index === currentRhythmIndex }]"
-        :style="{
-          gridArea: `rhythm-${index + 1}`,
-        }"
-      >
-        <div v-for="beat in rhythm.beatsPerMeasure" :key="beat" class="rhythm-beat"></div>
-      </div>
-      <div class="play" :class="{ pause: disabled }" @click="play"></div>
+  <div class="rhythm-master" @click.capture="onFirstInteraction">
+    <rhythm-toolbar
+      :is-playing="isPlaying"
+      :bpm="current.bpm"
+      :patterns="patterns"
+      :current-id="currentId"
+      :current-name="current.name"
+      @toggle-play="onTogglePlay"
+      @bpm-change="v => (current.bpm = v)"
+      @clear="clearSteps"
+      @rename="saveCurrentName"
+      @new="newPattern"
+      @switch="switchPattern"
+      @delete="deletePattern"
+      @export="exportJSON"
+      @import="importJSON"
+    />
+    <div class="grid-wrapper">
+      <rhythm-grid
+        :measure="current.measures[0]"
+        :current-step="currentStep"
+        @step-change="setStep"
+      />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { filter, Subscription, take, timer } from 'rxjs';
-import { computed, ref, useTemplateRef } from 'vue';
+import { computed, onMounted, onUnmounted } from 'vue';
+import RhythmToolbar from './components/rhythm-toolbar.vue';
+import RhythmGrid from './components/rhythm-grid.vue';
+import { useSequencer } from './hooks/useSequencer';
+import { useScheduler } from './hooks/useScheduler';
+import { initAudio, resumeCtx } from './hooks/useAudioEngine';
 
-const dong = useTemplateRef<HTMLAudioElement>('dong');
-const ding = useTemplateRef<HTMLAudioElement>('ding');
+const { patterns, currentId, current, switchPattern, saveCurrentName, newPattern, deletePattern, setStep, clearSteps, exportJSON, importJSON } =
+  useSequencer();
 
-const rhythms = [
-  {
-    name: '八分音符',
-    beatsPerMeasure: 2,
-  },
-  {
-    name: '三连音',
-    beatsPerMeasure: 3,
-  },
-  {
-    name: '八分音符',
-    beatsPerMeasure: 2,
-  },
-  {
-    name: '十六分音符',
-    beatsPerMeasure: 4,
-  },
-];
-const currentRhythmIndex = ref(0);
+const measure = computed(() => current.value.measures[0]);
+const bpm = computed(() => current.value.bpm);
 
-const currentRhythm = computed(() => rhythms[currentRhythmIndex.value]);
+const { currentStep, isPlaying, toggle, stop } = useScheduler(measure, bpm);
 
-let subscription: Subscription | undefined;
+let audioReady = false;
 
-let disabled = ref(false);
+async function onFirstInteraction() {
+  if (audioReady) return;
+  audioReady = true;
+  await resumeCtx();
+  const samples = [...new Set(measure.value.tracks.map(t => t.sample))];
+  await initAudio(samples);
+}
 
-const play = () => {
-  disabled.value = !disabled.value;
-  if (!subscription) {
-    subscription = timer(0, 500)
-      .pipe(filter(() => disabled.value))
-      .subscribe(() => {
-        currentRhythmIndex.value = (currentRhythmIndex.value + 1) % rhythms.length;
-        dong.value?.pause();
-        dong.value!.currentTime = 0;
-        dong.value?.play();
-        const interval = 500 / currentRhythm.value.beatsPerMeasure;
-        timer(0, interval)
-          .pipe(take(currentRhythm.value.beatsPerMeasure))
-          .subscribe(() => {
-            ding.value?.pause();
-            ding.value!.currentTime = 0;
-            ding.value?.play();
-          });
-      });
-  }
-};
+async function onTogglePlay() {
+  await onFirstInteraction();
+  toggle();
+}
+
+function onKeydown(e: KeyboardEvent) {
+  if (e.code !== 'Space') return;
+  if (document.activeElement?.tagName === 'INPUT') return;
+  e.preventDefault();
+  onTogglePlay();
+}
+
+onMounted(() => window.addEventListener('keydown', onKeydown));
+onUnmounted(() => { window.removeEventListener('keydown', onKeydown); stop(); });
 </script>
 
 <style lang="scss" scoped>
 .rhythm-master {
   display: flex;
+  flex-direction: column;
   height: 100%;
   width: 100%;
   overflow: hidden;
-  --block-size: 15vmin;
-  --stroke-width: 1em;
-  .sidebar {
-    width: 15vmin;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    align-items: center;
-    justify-content: center;
-    .beat {
-      width: 100%;
-      height: 24%;
-      background-color: #e05d5d;
-      transition: background-color 100ms ease-in-out;
-      &.active {
-        background-color: #fdfdfd;
-      }
-    }
-  }
-  .content {
-    flex: 1;
-    display: grid;
-    gap: 10px;
-    align-items: center;
-    justify-content: center;
-    align-content: center;
-    grid-template-areas:
-      '. rhythm-1 .'
-      'rhythm-2 play rhythm-4'
-      '. rhythm-3 .';
-    .rhythm {
-      display: flex;
-      justify-content: space-evenly;
-      align-items: center;
-      width: var(--block-size);
-      background-color: #e05d5d90;
-      border: var(--stroke-width) solid #e05d5d;
-      border-radius: 10px;
-      overflow: hidden;
-      transition: background-color 100ms ease-in-out;
-      &.active {
-        background-color: #f0781d90;
-        border: var(--stroke-width) solid #f0781d;
-      }
-      &-1,
-      &-3 {
-        flex-direction: column;
-        aspect-ratio: 0.5;
-        .rhythm-beat {
-          width: 80%;
-          height: 20%;
-        }
-      }
-      &-2,
-      &-4 {
-        width: unset;
-        height: var(--block-size);
-        aspect-ratio: 2;
-        .rhythm-beat {
-          width: 20%;
-          height: 80%;
-        }
-      }
+  background: var(--bg-page);
+}
 
-      .rhythm-beat {
-        background-color: #f5f5f5;
-        border-radius: 9999999em;
-      }
-    }
-    .play {
-      cursor: pointer;
-      position: relative;
-      width: var(--block-size);
-      aspect-ratio: 1;
-      border-radius: 10px;
-      background-color: #276af090;
-      border: var(--stroke-width) solid #276af0;
-      grid-area: play;
-      &::after,
-      &::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 10%;
-        width: 30%;
-        height: 80%;
-        transform: translate(0, -50%);
-        border-radius: 9999999em;
-        background-color: #f5f5f5;
-      }
-      &::after {
-        opacity: 0;
-      }
-      &::before {
-        width: 0;
-        height: 0;
-        left: 51%;
-        transform: translate(-50%, -50%);
-        border-top: calc((var(--block-size) - var(--stroke-width) * 3) * 0.5) solid transparent;
-        border-bottom: calc((var(--block-size) - var(--stroke-width) * 3) * 0.5) solid transparent;
-        border-left: calc(var(--block-size) - var(--stroke-width) * 3) solid #f5f5f5;
-        background: unset;
-        border-radius: unset;
-      }
-      &.pause {
-        &::after,
-        &::before {
-          top: 50%;
-          left: 10%;
-          width: 30%;
-          height: 80%;
-          transform: translate(0, -50%);
-          border-top: unset;
-          border-bottom: unset;
-          border-left: unset;
-          border-radius: 9999999em;
-          background-color: #f5f5f5;
-        }
-        &::after {
-          opacity: 1;
-          left: unset;
-          right: 10%;
-        }
-      }
-    }
-  }
+.grid-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 24px;
+  overflow: hidden;
 }
 </style>
