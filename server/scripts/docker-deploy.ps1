@@ -50,9 +50,11 @@ Write-Host '>>> scp tar ...'
 scp $tarLocal ('{0}:{1}/' -f $remote, $remoteDir)
 
 $runCmd = 'docker run -d --name ''{0}'' --restart unless-stopped -p {1}:3638' -f $containerName, $hostPort
+$logsDir = '{0}/logs' -f $remoteDir.TrimEnd('/')
 if ($dataVol) {
   $runCmd += (' -v ''{0}'':/app/data:ro' -f $dataVol)
 }
+$runCmd += (' -v ''{0}'':/app/logs' -f $logsDir)
 $runCmd += ' mapotato-api:local'
 
 $loadPath = '{0}/{1}' -f $remoteDir.TrimEnd('/'), $tarName
@@ -60,6 +62,8 @@ $shLines = @(
   '#!/bin/bash',
   'set -euo pipefail',
   ('mkdir -p ''{0}''' -f $remoteDir),
+  ('mkdir -p ''{0}''' -f $logsDir),
+  ('chown 1000:1000 ''{0}''' -f $logsDir),
   ('cd ''{0}''' -f $remoteDir),
   ('docker load -i ''{0}''' -f $loadPath),
   ('docker stop ''{0}'' 2>/dev/null || true' -f $containerName),

@@ -2,6 +2,7 @@ import http from 'node:http';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { initAccessLogger, logAccess } from './logger.js';
 
 /** 与 `vue-demos` Codepen 页约定一致 */
 export interface CodePenItem {
@@ -26,6 +27,15 @@ function readRequestPathname(req: http.IncomingMessage, host: string): string {
   }
   const raw = req.url ?? '/';
   return new URL(raw, `http://${host}`).pathname;
+}
+
+/** 经 Nginx 反代时优先用 X-Real-IP / X-Forwarded-For */
+function readClientIp(req: http.IncomingMessage): string {
+  const realIp = req.headers['x-real-ip'];
+  if (typeof realIp === 'string' && realIp) return realIp.split(',')[0].trim();
+  const forwarded = req.headers['x-forwarded-for'];
+  if (typeof forwarded === 'string' && forwarded) return forwarded.split(',')[0].trim();
+  return req.socket.remoteAddress ?? '-';
 }
 
 function normalizePathname(pathname: string): string {
@@ -63,9 +73,21 @@ const server = http.createServer((req, res) => {
 });
 
 async function handleRequest(req: http.IncomingMessage, res: http.ServerResponse): Promise<void> {
+  const startedAt = Date.now();
   const host = req.headers.host ?? 'localhost';
   const rawPath = readRequestPathname(req, host);
   const pathname = normalizePathname(rawPath);
+  const method = req.method ?? 'GET';
+  const clientIp = readClientIp(req);
+
+  res.on('finish', () => {
+    // /health 通常被探活高频调用，跳过以免日志膨胀
+    if (pathname === '/health') return;
+    logAccess(
+      `${new Date().toISOString()} ${method} ${pathname} ${res.statusCode} ${Date.now() - startedAt}ms ${clientIp}`,
+    );
+  });
+
   if (process.env.DEBUG_PATH === '1') {
     console.error('[http]', req.method, 'url=', req.url, 'x-original-uri=', req.headers['x-original-uri'], 'rawPath=', rawPath, 'norm=', pathname);
   }
@@ -115,6 +137,8 @@ async function handleRequest(req: http.IncomingMessage, res: http.ServerResponse
   res.end(JSON.stringify({ error: 'Not Found' }));
 }
 
-server.listen(PORT, () => {
-  console.log(`code-pens API listening on http://127.0.0.1:${PORT}`);
+void initAccessLogger().then(() => {
+  server.listen(PORT, () => {
+    console.log(`code-pens API listening on http://127.0.0.1:${PORT}`);
+  });
 });
