@@ -1,11 +1,11 @@
 <template>
   <div class="home-show">
-    <suspense @resolve="onResolve">
+    <suspense>
       <template #default>
-        <model-loader :loop-callback="modelInitAnimate" />
+        <model-loader :loop-callback="modelInitAnimate" :load-callback="onModelLoaded" />
       </template>
     </suspense>
-    <div ref="welcomeRef" class="hs-text">WELCOME</div>
+    <div class="hs-text" :class="{ 'is-ready': isTextReady }">WELCOME</div>
   </div>
 </template>
 
@@ -15,22 +15,13 @@ import { useModelUtil } from '@/common/hooks/useModelUtil';
 import type { Scene } from 'three';
 import { ref } from 'vue';
 
-const welcomeRef = ref<HTMLElement>();
+const isTextReady = ref(false);
 
-const onResolve = () => {
-  const propertyValue = [
-    ['transform', 'skew(0deg, 0deg)'],
-    ['translate', 'unset'],
-    ['top', 'unset'],
-    ['bottom', '0'],
-    ['left', 'unset'],
-    ['right', '0'],
-    ['scale', '0.5'],
-    ['opacity', '0.7'],
-  ];
-  propertyValue.forEach(([property, value]) => {
-    welcomeRef.value?.style.setProperty(property, value);
-  });
+/** 模型加载完成后触发 WELCOME 文字位移动画（略等入场 skew 结束，避免两段动画打架） */
+const onModelLoaded = () => {
+  window.setTimeout(() => {
+    isTextReady.value = true;
+  }, 220);
 };
 
 const { loopScaleList, loopScaleIndex } = useModelUtil();
@@ -47,6 +38,7 @@ const modelInitAnimate = (model: Scene) => {
   width: 100%;
   height: 100%;
   position: relative;
+  container-type: size;
 
   .hs-iframe {
     width: 100%;
@@ -55,18 +47,29 @@ const modelInitAnimate = (model: Scene) => {
 
   .hs-text {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    translate: -50% -50%;
+    right: 0;
+    bottom: 0;
     font-size: 200px;
     font-weight: lighter;
-    transform: skew(0deg, 0deg);
-    transition: all 0.5s;
+    transform-origin: 100% 100%;
+    /* 锚定在右下角，用 transform 拉到视觉中心 */
+    transform: translate(calc(-50cqw + 50%), calc(-50cqh + 50%)) scale(1) skew(0deg, 0deg);
+    opacity: 1;
+    transition:
+      transform 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.65s cubic-bezier(0.4, 0, 0.2, 1) 0.08s,
+      color 0.85s cubic-bezier(0.22, 1, 0.36, 1);
     user-select: none;
     color: var(--apple-music-primary);
 
     @starting-style {
-      transform: skew(-45deg, 0deg);
+      transform: translate(calc(-50cqw + 50%), calc(-50cqh + 50%)) scale(1) skew(-45deg, 0deg);
+    }
+
+    &.is-ready {
+      transform: translate(-2.5vw, 0) scale(0.5) skew(0deg, 0deg);
+      opacity: 1;
+      color: #fff;
     }
 
     &::after {
@@ -74,7 +77,7 @@ const modelInitAnimate = (model: Scene) => {
       content: '';
       background-color: var(--bg-page);
       inset: 1em;
-      transition: inset 0.5s;
+      transition: inset 0.65s cubic-bezier(0.22, 1, 0.36, 1);
 
       @starting-style {
         inset: 0 0;

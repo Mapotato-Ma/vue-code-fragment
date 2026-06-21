@@ -34,7 +34,6 @@
     "vite-plugin-ejs": "^1.7.0",
     "vite-plugin-wasm": "^3.5.0",
     "vue": "^3.5.18",
-    "vue-data-ui": "^3.15.12",
     "vue-draggable-plus": "^0.6.0",
     "vue-icons-plus": "^0.1.8",
     "vue-router": "^4.5.1",
