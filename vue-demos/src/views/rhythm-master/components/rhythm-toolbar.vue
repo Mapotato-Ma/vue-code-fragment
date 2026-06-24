@@ -25,6 +25,40 @@
         <button class="bpm-step-btn" @click="stepBpm(1, $event)">+</button>
       </div>
 
+      <div class="measure-nav">
+        <div class="view-mode-toggle">
+          <button
+            class="view-mode-btn"
+            :class="{ active: viewMode === 'edit' }"
+            @click="emit('view-mode-change', 'edit')"
+          >
+            编辑
+          </button>
+          <button
+            class="view-mode-btn"
+            :class="{ active: viewMode === 'overview' }"
+            @click="emit('view-mode-change', 'overview')"
+          >
+            总览
+          </button>
+        </div>
+        <template v-if="viewMode === 'edit'">
+          <button class="measure-btn" :disabled="isPlaying" @click="emit('measure-prev')">◀</button>
+          <span class="measure-indicator">{{ measureIndex + 1 }} / {{ measureCount }}</span>
+          <button class="measure-btn" :disabled="isPlaying" @click="emit('measure-next')">▶</button>
+        </template>
+        <button class="measure-btn measure-btn--text" :disabled="isPlaying" @click="emit('measure-add')">
+          +小节
+        </button>
+        <button
+          class="measure-btn measure-btn--text"
+          :disabled="isPlaying || measureCount <= 1"
+          @click="emit('measure-delete')"
+        >
+          删小节
+        </button>
+      </div>
+
       <button class="btn-clear-ghost" @click="onClear">清空</button>
     </div>
 
@@ -83,6 +117,9 @@ import type { Pattern } from '../types';
 const props = defineProps<{
   isPlaying: boolean;
   bpm: number;
+  viewMode: 'edit' | 'overview';
+  measureIndex: number;
+  measureCount: number;
   patterns: Pattern[];
   currentId: string;
   currentName: string;
@@ -98,6 +135,11 @@ const emit = defineEmits<{
   (e: 'delete', id: string): void;
   (e: 'export'): void;
   (e: 'import', file: File): void;
+  (e: 'view-mode-change', mode: 'edit' | 'overview'): void;
+  (e: 'measure-prev'): void;
+  (e: 'measure-next'): void;
+  (e: 'measure-add'): void;
+  (e: 'measure-delete'): void;
 }>();
 
 const menuOpen = ref(false);
@@ -312,6 +354,88 @@ onUnmounted(() => {
   color: var(--apple-music-default);
   letter-spacing: 0.04em;
   margin-right: 2px;
+}
+
+.measure-nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 8px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.view-mode-toggle {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.2);
+  margin-right: 4px;
+}
+
+.view-mode-btn {
+  height: 26px;
+  padding: 0 10px;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  color: #999;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 120ms ease,
+    color 120ms ease;
+
+  &.active {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+  }
+
+  &:hover:not(.active) {
+    color: #ccc;
+  }
+}
+
+.measure-btn {
+  height: 28px;
+  min-width: 28px;
+  padding: 0 6px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: #ccc;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 120ms ease;
+
+  &:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  &--text {
+    padding: 0 10px;
+    font-size: 12px;
+  }
+}
+
+.measure-indicator {
+  font-size: 13px;
+  font-weight: 600;
+  color: #e0e0e0;
+  min-width: 44px;
+  text-align: center;
+  user-select: none;
 }
 
 .btn-clear-ghost {
