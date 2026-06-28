@@ -1,53 +1,88 @@
 <template>
-  <vue-draggable
-    v-model="localMeasures"
+  <div
     class="rhythm-overview"
-    :class="{ 'rhythm-overview--playing': isPlaying }"
-    item-key="id"
-    :animation="200"
-    :disabled="isPlaying"
-    @start="onDragStart"
-    @end="onDragEnd"
+    :class="{ 'rhythm-overview--playing': isPlaying, 'rhythm-overview--readonly': readonly }"
   >
-    <div
-      v-for="(measure, mi) in localMeasures"
-      :key="measure.id"
-      class="measure-card"
-      :class="cardClasses(mi)"
-      @click="onActivate(mi)"
-      @dblclick="onEdit(mi)"
+    <vue-draggable
+      v-model="localMeasures"
+      class="measure-list"
+      item-key="id"
+      :animation="200"
+      :disabled="isPlaying || readonly"
+      @start="onDragStart"
+      @end="onDragEnd"
     >
-      <div class="measure-label">小节 {{ mi + 1 }}</div>
-      <div class="measure-grid">
-        <div
-          v-for="(track, ti) in measure.tracks"
-          :key="ti"
-          class="track-row"
-          :class="`track-row--${track.sample}`"
+      <div
+        v-for="(measure, mi) in localMeasures"
+        :key="measure.id"
+        class="measure-card"
+        :class="cardClasses(mi)"
+        @click="onActivate(mi)"
+        @dblclick="onEdit(mi)"
+      >
+        <button
+          v-if="canDelete"
+          type="button"
+          class="measure-delete-btn"
+          aria-label="删除小节"
+          @click.stop="onDelete(mi)"
         >
-          <div class="steps">
-            <template v-for="beat in measure.beatsPerMeasure" :key="beat">
-              <div
-                v-for="sub in measure.subdivision"
-                :key="sub"
-                class="step"
-                :class="[
-                  `step--${track.steps[(beat - 1) * measure.subdivision + (sub - 1)]}`,
-                  {
-                    'step--active':
-                      isPlaying &&
-                      mi === playingMeasureIndex &&
-                      currentStep === (beat - 1) * measure.subdivision + (sub - 1),
-                  },
-                ]"
-              ></div>
-              <div v-if="beat < measure.beatsPerMeasure" class="beat-gap"></div>
-            </template>
+          ×
+        </button>
+        <div class="measure-label">小节 {{ mi + 1 }}</div>
+        <div class="measure-grid">
+          <div
+            v-for="(track, ti) in measure.tracks"
+            :key="ti"
+            class="track-row"
+            :class="`track-row--${track.sample}`"
+          >
+            <div class="steps">
+              <template v-for="beat in measure.beatsPerMeasure" :key="beat">
+                <div
+                  v-for="sub in measure.subdivision"
+                  :key="sub"
+                  class="step"
+                  :class="[
+                    `step--${track.steps[(beat - 1) * measure.subdivision + (sub - 1)]}`,
+                    {
+                      'step--active':
+                        isPlaying &&
+                        mi === playingMeasureIndex &&
+                        currentStep === (beat - 1) * measure.subdivision + (sub - 1),
+                    },
+                  ]"
+                ></div>
+                <div v-if="beat < measure.beatsPerMeasure" class="beat-gap"></div>
+              </template>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </vue-draggable>
+    </vue-draggable>
+    <button
+      v-if="canAdd"
+      type="button"
+      class="measure-add-card"
+      aria-label="添加小节"
+      @click="emit('measure-add')"
+    >
+      <div class="measure-add-sizer" aria-hidden="true">
+        <div class="measure-label">&nbsp;</div>
+        <div class="measure-grid">
+          <div v-for="ti in sizerTrackCount" :key="ti" class="track-row">
+            <div class="steps">
+              <template v-for="beat in sizerBeats" :key="beat">
+                <div v-for="sub in sizerSubdivision" :key="sub" class="step step--0"></div>
+                <div v-if="beat < sizerBeats" class="beat-gap"></div>
+              </template>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="measure-add-icon">+</span>
+    </button>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -61,12 +96,15 @@ const props = defineProps<{
   playingMeasureIndex: number;
   currentStep: number;
   isPlaying: boolean;
+  readonly?: boolean;
 }>();
 
 const emit = defineEmits<{
   (e: 'update-measures', measures: Measure[]): void;
   (e: 'activate-measure', index: number): void;
   (e: 'edit-measure', index: number): void;
+  (e: 'measure-add'): void;
+  (e: 'delete-measure', index: number): void;
 }>();
 
 const isDragging = ref(false);
@@ -75,6 +113,14 @@ const localMeasures = computed({
   get: () => props.measures,
   set: (val: Measure[]) => emit('update-measures', val),
 });
+
+const canAdd = computed(() => !props.readonly && !props.isPlaying);
+const canDelete = computed(() => canAdd.value && props.measures.length > 1);
+
+const sizerMeasure = computed(() => props.measures[0]);
+const sizerTrackCount = computed(() => sizerMeasure.value?.tracks.length ?? 5);
+const sizerBeats = computed(() => sizerMeasure.value?.beatsPerMeasure ?? 4);
+const sizerSubdivision = computed(() => sizerMeasure.value?.subdivision ?? 4);
 
 function cardClasses(mi: number) {
   return {
@@ -94,13 +140,18 @@ function onDragEnd() {
 }
 
 function onActivate(mi: number) {
-  if (props.isPlaying || isDragging.value) return;
+  if (props.readonly || props.isPlaying || isDragging.value) return;
   emit('activate-measure', mi);
 }
 
 function onEdit(mi: number) {
-  if (props.isPlaying) return;
+  if (props.readonly || props.isPlaying) return;
   emit('edit-measure', mi);
+}
+
+function onDelete(mi: number) {
+  if (!canDelete.value) return;
+  emit('delete-measure', mi);
 }
 </script>
 
@@ -118,9 +169,22 @@ function onEdit(mi: number) {
     pointer-events: none;
     cursor: default;
   }
+
+  &--readonly {
+    opacity: 0.55;
+
+    .measure-card {
+      cursor: default;
+    }
+  }
+}
+
+.measure-list {
+  display: contents;
 }
 
 .measure-card {
+  position: relative;
   width: 100%;
   min-width: 0;
   padding: 10px;
@@ -138,6 +202,10 @@ function onEdit(mi: number) {
     background: rgba(255, 255, 255, 0.05);
   }
 
+  &:hover .measure-delete-btn {
+    opacity: 1;
+  }
+
   &--active {
     border-color: var(--apple-music-primary);
   }
@@ -146,6 +214,76 @@ function onEdit(mi: number) {
     border-color: rgba(255, 255, 255, 0.35);
     background: rgba(255, 255, 255, 0.06);
   }
+}
+
+.measure-delete-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 1;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.45);
+  color: #ccc;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  transition:
+    opacity 120ms ease,
+    background 120ms ease,
+    color 120ms ease;
+
+  &:hover {
+    background: rgba(220, 50, 60, 0.85);
+    color: #fff;
+  }
+}
+
+.measure-add-card {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  padding: 10px;
+  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+  cursor: pointer;
+  transition:
+    border-color 120ms ease,
+    background 120ms ease;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+
+    .measure-add-icon {
+      color: #fff;
+    }
+  }
+}
+
+.measure-add-sizer {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.measure-add-icon {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 64px;
+  font-weight: 200;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.45);
+  transition: color 120ms ease;
+  user-select: none;
+  pointer-events: none;
 }
 
 :deep(.sortable-ghost) {

@@ -1,5 +1,5 @@
 <template>
-  <div class="rhythm-grid">
+  <div class="rhythm-grid" :class="{ 'rhythm-grid--readonly': readonly }">
     <div
       v-for="(track, ti) in measure.tracks"
       :key="ti"
@@ -36,6 +36,7 @@ import { triggerNow } from '../hooks/useAudioEngine';
 const props = defineProps<{
   measure: Measure;
   currentStep: number;
+  readonly?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -50,6 +51,7 @@ function cycleState(s: StepState): StepState {
 }
 
 function onMouseDown(ti: number, si: number, e: MouseEvent) {
+  if (props.readonly) return;
   isDragging = true;
   const cur = props.measure.tracks[ti].steps[si];
 
@@ -67,7 +69,7 @@ function onMouseDown(ti: number, si: number, e: MouseEvent) {
 }
 
 function onMouseEnter(ti: number, si: number) {
-  if (!isDragging) return;
+  if (props.readonly || !isDragging) return;
   const cur = props.measure.tracks[ti].steps[si];
   if (cur === dragTargetState) return;
   emit('step-change', ti, si, dragTargetState);
@@ -90,6 +92,11 @@ onUnmounted(() => window.removeEventListener('mouseup', onMouseUp));
   width: 100%;
   padding: 0 8px;
   box-sizing: border-box;
+
+  &--readonly {
+    opacity: 0.55;
+    pointer-events: none;
+  }
 }
 
 .track-row {

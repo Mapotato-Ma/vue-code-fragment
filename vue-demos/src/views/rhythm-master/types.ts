@@ -1,5 +1,25 @@
 export type StepState = 0 | 1 | 2; // 0=灭 1=普通 2=重音
 
+/** 生成唯一 id（兼容非安全上下文等缺少 crypto.randomUUID 的环境） */
+export function createId(): string {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  if (typeof crypto !== 'undefined' && typeof crypto.getRandomValues === 'function') {
+    const bytes = new Uint8Array(16);
+    crypto.getRandomValues(bytes);
+    bytes[6] = (bytes[6] & 0x0f) | 0x40;
+    bytes[8] = (bytes[8] & 0x3f) | 0x80;
+    const hex = [...bytes].map(b => b.toString(16).padStart(2, '0')).join('');
+    return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+  }
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
 export interface Track {
   name: string;
   sample: string;
@@ -73,13 +93,13 @@ export function ensureMeasureTracks(measure: Measure): void {
 /** 确保 measure 有 id（旧数据迁移） */
 export function ensureMeasureId(measure: Measure): void {
   if (!measure.id) {
-    measure.id = crypto.randomUUID();
+    measure.id = createId();
   }
 }
 
 export function cloneMeasure(m: Measure): Measure {
   return {
-    id: crypto.randomUUID(),
+    id: createId(),
     beatsPerMeasure: m.beatsPerMeasure,
     subdivision: m.subdivision,
     tracks: m.tracks.map(t => ({
@@ -92,7 +112,7 @@ export function cloneMeasure(m: Measure): Measure {
 
 export function createDefaultMeasure(): Measure {
   return {
-    id: crypto.randomUUID(),
+    id: createId(),
     beatsPerMeasure: 4,
     subdivision: 4,
     tracks: DEFAULT_TRACK_DEFS.map(def => ({
@@ -105,9 +125,18 @@ export function createDefaultMeasure(): Measure {
 
 export function createPattern(name = '新建谱子'): Pattern {
   return {
-    id: crypto.randomUUID(),
+    id: createId(),
     name,
     bpm: DEFAULT_BPM,
     measures: [createDefaultMeasure()],
+  };
+}
+
+export function clonePattern(p: Pattern, name?: string): Pattern {
+  return {
+    id: createId(),
+    name: name ?? p.name,
+    bpm: p.bpm,
+    measures: p.measures.map(m => cloneMeasure(m)),
   };
 }

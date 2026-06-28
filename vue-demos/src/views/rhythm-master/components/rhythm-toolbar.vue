@@ -1,65 +1,64 @@
 <template>
   <div class="rhythm-toolbar">
     <div class="toolbar-left">
-      <button class="btn-play-pill" :class="{ playing: isPlaying }" @click="emit('toggle-play')">
-        <span v-if="!isPlaying" class="play-icon">▶</span>
-        <span v-else class="stop-icon">■</span>
-        <span>{{ isPlaying ? '停止' : '播放' }}</span>
-      </button>
+      <div class="toolbar-group">
+        <button class="btn-play-pill" :class="{ playing: isPlaying }" @click="emit('toggle-play')">
+          <span v-if="!isPlaying" class="play-icon">▶</span>
+          <span v-else class="stop-icon" aria-hidden="true"></span>
+          <span>{{ isPlaying ? '停止' : '播放' }}</span>
+        </button>
 
-      <div class="bpm-chip">
-        <button class="bpm-step-btn" @click="stepBpm(-1, $event)">−</button>
-        <input
-          v-if="bpmEditing"
-          ref="bpmInputRef"
-          class="bpm-input"
-          type="number"
-          min="40"
-          max="240"
-          :value="bpm"
-          @blur="onBpmInputBlur"
-          @keydown="onBpmInputKeydown"
-        />
-        <span v-else class="bpm-value" @dblclick="startBpmEdit">{{ bpm }}</span>
-        <span class="bpm-unit">BPM</span>
-        <button class="bpm-step-btn" @click="stepBpm(1, $event)">+</button>
+        <div class="bpm-chip" :class="{ 'bpm-chip--readonly': isBuiltin }">
+          <button class="bpm-step-btn" :disabled="isBuiltin" @click="stepBpm(-1, $event)">−</button>
+          <input
+            v-if="bpmEditing && !isBuiltin"
+            ref="bpmInputRef"
+            class="bpm-input"
+            type="number"
+            min="40"
+            max="240"
+            :value="bpm"
+            @blur="onBpmInputBlur"
+            @keydown="onBpmInputKeydown"
+          />
+          <span
+            v-else
+            class="bpm-value"
+            :class="{ 'bpm-value--readonly': isBuiltin }"
+            @dblclick="startBpmEdit"
+          >
+            {{ bpm }}
+          </span>
+          <span class="bpm-unit">BPM</span>
+          <button class="bpm-step-btn" :disabled="isBuiltin" @click="stepBpm(1, $event)">+</button>
+        </div>
       </div>
 
-      <div class="measure-nav">
-        <div class="view-mode-toggle">
-          <button
-            class="view-mode-btn"
-            :class="{ active: viewMode === 'edit' }"
-            @click="emit('view-mode-change', 'edit')"
-          >
-            编辑
-          </button>
-          <button
-            class="view-mode-btn"
-            :class="{ active: viewMode === 'overview' }"
-            @click="emit('view-mode-change', 'overview')"
-          >
-            总览
-          </button>
-        </div>
-        <template v-if="viewMode === 'edit'">
-          <button class="measure-btn" :disabled="isPlaying" @click="emit('measure-prev')">◀</button>
-          <span class="measure-indicator">{{ measureIndex + 1 }} / {{ measureCount }}</span>
-          <button class="measure-btn" :disabled="isPlaying" @click="emit('measure-next')">▶</button>
-        </template>
-        <button class="measure-btn measure-btn--text" :disabled="isPlaying" @click="emit('measure-add')">
-          +小节
+      <div class="toolbar-divider" aria-hidden="true"></div>
+
+      <div class="view-mode-toggle">
+        <button
+          class="view-mode-btn"
+          :class="{ active: viewMode === 'edit' }"
+          :disabled="isBuiltin"
+          @click="emit('view-mode-change', 'edit')"
+        >
+          编辑
         </button>
         <button
-          class="measure-btn measure-btn--text"
-          :disabled="isPlaying || measureCount <= 1"
-          @click="emit('measure-delete')"
+          class="view-mode-btn"
+          :class="{ active: viewMode === 'overview' }"
+          @click="emit('view-mode-change', 'overview')"
         >
-          删小节
+          总览
         </button>
       </div>
 
-      <button class="btn-clear-ghost" @click="onClear">清空</button>
+      <div class="toolbar-divider" aria-hidden="true"></div>
+
+      <div class="toolbar-group">
+        <button class="btn-clear-ghost" :disabled="isBuiltin" @click="onClear">清空</button>
+      </div>
     </div>
 
     <div class="toolbar-right">
@@ -72,28 +71,44 @@
           <div class="pattern-name-row">
             <input
               class="pattern-name-input"
+              :class="{ 'pattern-name-input--readonly': isBuiltin }"
               :value="currentName"
               maxlength="24"
               placeholder="谱子名称"
+              :disabled="isBuiltin"
               @change="emit('rename', ($event.target as HTMLInputElement).value)"
             />
           </div>
+          <p v-if="isBuiltin" class="builtin-hint">内置谱只读，复制后可编辑</p>
           <div class="pattern-list">
             <div
-              v-for="p in patterns"
+              v-for="p in userPatternList"
               :key="p.id"
               class="pattern-item"
               :class="{ active: p.id === currentId }"
               @click="onSwitchPattern(p.id)"
             >
-              <span>{{ p.name }}</span>
-              <button
-                v-if="patterns.length > 1"
-                class="btn-delete"
-                @click.stop="emit('delete', p.id)"
-              >
-                ×
-              </button>
+              <span class="pattern-item-name">{{ p.name }}</span>
+              <div class="pattern-item-actions">
+                <button class="btn-copy" @click.stop="onCopyPattern(p.id)">复制</button>
+                <button class="btn-delete" @click.stop="emit('delete', p.id)">×</button>
+              </div>
+            </div>
+            <div v-if="userPatternList.length && builtinPatternList.length" class="pattern-divider">
+              内置谱
+            </div>
+            <div
+              v-for="p in builtinPatternList"
+              :key="p.id"
+              class="pattern-item"
+              :class="{ active: p.id === currentId }"
+              @click="onSwitchPattern(p.id)"
+            >
+              <span class="pattern-item-name">{{ p.name }}</span>
+              <span class="builtin-badge">内置</span>
+              <div class="pattern-item-actions">
+                <button class="btn-copy" @click.stop="onCopyPattern(p.id)">复制</button>
+              </div>
             </div>
           </div>
           <div class="pattern-actions">
@@ -111,18 +126,18 @@
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted, onUnmounted, ref } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
+import { isBuiltinPattern } from '../presets';
 import type { Pattern } from '../types';
 
 const props = defineProps<{
   isPlaying: boolean;
   bpm: number;
   viewMode: 'edit' | 'overview';
-  measureIndex: number;
-  measureCount: number;
   patterns: Pattern[];
   currentId: string;
   currentName: string;
+  isBuiltin: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -133,14 +148,14 @@ const emit = defineEmits<{
   (e: 'new'): void;
   (e: 'switch', id: string): void;
   (e: 'delete', id: string): void;
+  (e: 'copy', id: string): void;
   (e: 'export'): void;
   (e: 'import', file: File): void;
   (e: 'view-mode-change', mode: 'edit' | 'overview'): void;
-  (e: 'measure-prev'): void;
-  (e: 'measure-next'): void;
-  (e: 'measure-add'): void;
-  (e: 'measure-delete'): void;
 }>();
+
+const userPatternList = computed(() => props.patterns.filter(p => !isBuiltinPattern(p.id)));
+const builtinPatternList = computed(() => props.patterns.filter(p => isBuiltinPattern(p.id)));
 
 const menuOpen = ref(false);
 const bpmEditing = ref(false);
@@ -152,11 +167,13 @@ function clamp(v: number) {
 }
 
 function stepBpm(delta: number, e: MouseEvent) {
+  if (props.isBuiltin) return;
   const step = e.shiftKey ? 5 : 1;
   emit('bpm-change', clamp(props.bpm + delta * step));
 }
 
 async function startBpmEdit() {
+  if (props.isBuiltin) return;
   bpmEditing.value = true;
   await nextTick();
   bpmInputRef.value?.focus();
@@ -182,11 +199,17 @@ function onBpmInputKeydown(e: KeyboardEvent) {
 }
 
 function onClear() {
+  if (props.isBuiltin) return;
   if (confirm('确定清空当前谱子？')) emit('clear');
 }
 
 function onSwitchPattern(id: string) {
   emit('switch', id);
+  menuOpen.value = false;
+}
+
+function onCopyPattern(id: string) {
+  emit('copy', id);
   menuOpen.value = false;
 }
 
@@ -237,7 +260,20 @@ onUnmounted(() => {
 .toolbar-left {
   display: flex;
   align-items: center;
+  gap: 12px;
+}
+
+.toolbar-group {
+  display: flex;
+  align-items: center;
   gap: 16px;
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
 }
 
 .btn-play-pill {
@@ -271,13 +307,17 @@ onUnmounted(() => {
   }
 
   .play-icon {
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1;
   }
 
   .stop-icon {
-    font-size: 10px;
-    line-height: 1;
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    background: currentColor;
+    border-radius: 2px;
+    flex-shrink: 0;
   }
 }
 
@@ -371,20 +411,19 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 2px;
-  padding: 2px;
-  border-radius: 14px;
+  padding: 3px;
+  border-radius: 17px;
   background: rgba(0, 0, 0, 0.2);
-  margin-right: 4px;
 }
 
 .view-mode-btn {
-  height: 26px;
-  padding: 0 10px;
+  height: 34px;
+  padding: 0 14px;
   border: none;
-  border-radius: 12px;
+  border-radius: 17px;
   background: transparent;
   color: #999;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition:
@@ -396,46 +435,14 @@ onUnmounted(() => {
     color: #fff;
   }
 
-  &:hover:not(.active) {
+  &:hover:not(.active):not(:disabled) {
     color: #ccc;
-  }
-}
-
-.measure-btn {
-  height: 28px;
-  min-width: 28px;
-  padding: 0 6px;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.04);
-  color: #ccc;
-  font-size: 12px;
-  cursor: pointer;
-  transition: background 120ms ease;
-
-  &:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.12);
-    color: #fff;
   }
 
   &:disabled {
     opacity: 0.35;
     cursor: not-allowed;
   }
-
-  &--text {
-    padding: 0 10px;
-    font-size: 12px;
-  }
-}
-
-.measure-indicator {
-  font-size: 13px;
-  font-weight: 600;
-  color: #e0e0e0;
-  min-width: 44px;
-  text-align: center;
-  user-select: none;
 }
 
 .btn-clear-ghost {
@@ -449,9 +456,14 @@ onUnmounted(() => {
     color 120ms ease,
     text-decoration 120ms ease;
 
-  &:hover {
+  &:hover:not(:disabled) {
     color: #fff;
     text-decoration: underline;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
   }
 }
 
@@ -530,6 +542,29 @@ onUnmounted(() => {
   &:focus {
     border-color: var(--apple-music-primary);
   }
+
+  &--readonly {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+.builtin-hint {
+  margin: 0;
+  padding: 16px 8px;
+  font-size: 12px;
+  color: #888;
+  line-height: 1.4;
+}
+
+.pattern-divider {
+  padding: 8px 16px 4px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #666;
+  letter-spacing: 0.06em;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  margin-top: 4px;
 }
 
 .pattern-list {
@@ -573,6 +608,45 @@ onUnmounted(() => {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+}
+
+.pattern-item-name {
+  flex: 1;
+  min-width: 0;
+}
+
+.pattern-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.builtin-badge {
+  flex-shrink: 0;
+  margin-left: 6px;
+  padding: 1px 6px;
+  font-size: 10px;
+  line-height: 1.4;
+  color: #888;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+}
+
+.btn-copy {
+  background: none;
+  border: none;
+  color: #777;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 2px 6px;
+  flex-shrink: 0;
+  border-radius: 4px;
+
+  &:hover {
+    color: #ccc;
+    background: rgba(255, 255, 255, 0.06);
   }
 }
 
