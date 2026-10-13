@@ -52,15 +52,18 @@ import {
   SRGBColorSpace,
   TorusGeometry,
   Vector3,
+  type Material,
+  type MeshStandardMaterial,
   type Object3D,
 } from 'three';
-import { onMounted, ref, shallowRef } from 'vue';
+import { onBeforeUnmount, onMounted, ref, shallowRef } from 'vue';
 
 /**
  * 首屏 3D：TresJS 5
  * - 主模型 mapotato-v1.glb，加载完按包围盒自动取景
  * - 装饰全程序化生成（星尘贴图也是运行时画的），不引入任何额外文件
  * - 交互：OrbitControls 只开「拖动旋转」，关掉缩放/平移 —— 否则满屏场景会抢走滚轮
+ * - 微动画：入场回弹 + 呼吸浮动 + 轻微摇摆 + 鼠标视差 + 滚动联动 + 材质呼吸发光
  */
 const BASE = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
@@ -145,6 +148,30 @@ const shell = new Mesh(
 const decor = new Group();
 decor.add(stars, ringA, ringB, shell);
 
+/* ---------------- 微动画状态 ---------------- */
+const startedAt = performance.now();
+let lastFrameAt = startedAt;
+// 用对象持有：TS 不跟踪回调里的赋值，写成 let 会被收窄成 never
+const model = { node: null as Object3D | null, baseY: 0, enterAt: 0 };
+
+/** 阻尼跟随的鼠标位置，取值 -1..1 */
+const pointer = { x: 0, y: 0 };
+const smooth = { x: 0, y: 0 };
+
+/** 需要做呼吸发光的材质 */
+const glowMaterials: MeshStandardMaterial[] = [];
+
+const easeOutBack = (p: number) => {
+  const c1 = 1.70158;
+  const c3 = c1 + 1;
+  return 1 + c3 * Math.pow(p - 1, 3) + c1 * Math.pow(p - 1, 2);
+};
+
+const onPointerMove = (e: PointerEvent) => {
+  pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
+  pointer.y = (e.clientY / window.innerHeight) * 2 - 1;
+};
+
 /* ---------------- 模型加载 ---------------- */
 const draco = new DRACOLoader();
 draco.setDecoderPath(`${BASE}models/`);
@@ -155,14 +182,52 @@ const { state, isReady } = useLoader(GLTFLoader, MODEL, {
   },
 });
 
+/* ---------------- 每帧动画 ---------------- */
 const onLoop = () => {
-  stars.rotation.y += 0.0007;
-  ringA.rotation.z += 0.0016;
-  ringB.rotation.z -= 0.0011;
-  shell.rotation.y -= 0.0004;
+  const now = performance.now();
+  const dt = Math.min((now - lastFrameAt) / 1000, 0.05);
+  lastFrameAt = now;
+  const time = (now - startedAt) / 1000;
+
+  // 装饰层：匀速自转（用 dt 保证不同帧率下速度一致）
+  stars.rotation.y += dt * 0.045;
+  ringA.rotation.z += dt * 0.1;
+  ringB.rotation.z -= dt * 0.07;
+  shell.rotation.y -= dt * 0.022;
+
+  // 鼠标阻尼跟随
+  const k = Math.min(1, dt * 3.2);
+  smooth.x += (pointer.x - smooth.x) * k;
+  smooth.y += (pointer.y - smooth.y) * k;
+
+  const wordmark = model.node;
+  if (!wordmark) return;
+
+  const scrollP = Math.min(1, Math.max(0, window.scrollY / window.innerHeight));
+  const enterP = Math.min(1, Math.max(0, (now - model.enterAt) / 900));
+  const enter = easeOutBack(enterP);
+
+  // 自转：平时很慢，往下滚的时候加速转走
+  wordmark.rotation.y += dt * (0.16 + scrollP * 0.55);
+  // 低频摇摆 + 朝鼠标方向轻微倾斜
+  wordmark.rotation.x = Math.sin(time * 0.55) * 0.045 + smooth.y * 0.14;
+  wordmark.rotation.z = Math.cos(time * 0.42) * 0.03 - smooth.x * 0.045;
+  // 左右跟随鼠标 + 上下呼吸 + 滚动时上移
+  wordmark.position.x = smooth.x * 0.2;
+  wordmark.position.y = model.baseY + Math.sin(time * 1.05) * 0.055 + scrollP * 0.85;
+
+  const breath = 1 + Math.sin(time * 0.85) * 0.012;
+  const s = enter * breath * (1 - scrollP * 0.2);
+  if (Number.isFinite(s) && s > 0.001) wordmark.scale.setScalar(s);
+
+  // 材质呼吸发光
+  const intensity = 0.08 + (Math.sin(time * 1.5) * 0.5 + 0.5) * 0.3;
+  for (const mat of glowMaterials) mat.emissiveIntensity = intensity;
 };
 
 onMounted(() => {
+  window.addEventListener('pointermove', onPointerMove, { passive: true });
+
   const timer = setInterval(() => {
     if (!isReady.value) return;
     clearInterval(timer);
@@ -173,14 +238,38 @@ onMounted(() => {
     const center = box.getCenter(new Vector3());
     root.position.sub(center);
     const maxDim = Math.max(size.x, size.y, size.z) || 1;
-    // 按竖直视角算距离；1.05 让它几乎顶满画面
-    const dist = (maxDim / 2 / Math.tan(((45 * Math.PI) / 180) / 2)) * 1.05;
+    // 按竖直视角算距离；1.02 让它几乎顶满画面
+    const dist = (maxDim / 2 / Math.tan(((45 * Math.PI) / 180) / 2)) * 1.02;
     camPos.value = [0, 0, +dist.toFixed(2)];
+
+    // 收集可发光的材质：把自身颜色当作自发光色，才能「亮起来」而不是整片糊白
+    root.traverse(obj => {
+      const mesh = obj as Mesh;
+      if (!mesh.isMesh) return;
+      const mats: Material[] = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+      for (const mat of mats) {
+        const std = mat as MeshStandardMaterial;
+        if (std && (std as { emissive?: unknown }).emissive) {
+          std.emissive = std.color.clone();
+          std.emissiveIntensity = 0.1;
+          glowMaterials.push(std);
+        }
+      }
+    });
+
+    model.baseY = root.position.y;
+    model.node = root;
+    model.enterAt = performance.now();
     scene.value = root;
   }, 100);
+
   setTimeout(() => {
     if (!isReady.value) error.value = '3D 加载超时';
   }, 20000);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('pointermove', onPointerMove);
 });
 </script>
 
