@@ -82,10 +82,11 @@ const makeDotTexture = () => {
   const ctx = canvas.getContext('2d');
   if (ctx) {
     const g = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+    // 金色：芯白 → 暖金 → 琥珀
     g.addColorStop(0, 'rgba(255,255,255,1)');
-    g.addColorStop(0.28, 'rgba(196,228,255,0.9)');
-    g.addColorStop(0.65, 'rgba(140,200,255,0.28)');
-    g.addColorStop(1, 'rgba(120,180,255,0)');
+    g.addColorStop(0.3, 'rgba(255,228,158,0.92)');
+    g.addColorStop(0.66, 'rgba(255,196,86,0.32)');
+    g.addColorStop(1, 'rgba(255,168,36,0)');
     ctx.fillStyle = g;
     ctx.beginPath();
     ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
