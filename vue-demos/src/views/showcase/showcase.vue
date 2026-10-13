@@ -4,7 +4,13 @@
     <header class="sc-top">
       <span class="sc-brand"><span class="sc-dot"></span>mapotato</span>
       <nav class="sc-nav">
-        <a v-for="item in navItems" :key="item.id" @click="go(item.id)">{{ item.label }}</a>
+        <a
+          v-for="item in navItems"
+          :key="item.id"
+          :class="{ 'is-active': activeId === item.id }"
+          @click="go(item.id)"
+          >{{ item.label }}</a
+        >
       </nav>
     </header>
 
@@ -70,7 +76,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineAsyncComponent, ref } from 'vue';
+import { defineAsyncComponent, onBeforeUnmount, onMounted, ref } from 'vue';
 
 // 3D 场景懒加载：three.js 单独成 chunk，首屏 JS 不被它拖慢
 const HeroScene = defineAsyncComponent(() => import('./components/hero-scene.vue'));
@@ -96,6 +102,55 @@ const go = (id: string) => {
   if (!el) return;
   el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 };
+
+/**
+ * 滚动到哪里，URL 的锚点就跟着变（scrollspy）：
+ * 用 replaceState 而不是给 location.hash 赋值 —— 后者会触发浏览器跳转，
+ * 一边滚一边跳页面就废了。首屏不写 hash，URL 保持干净。
+ */
+const activeId = ref('');
+let ticking = false;
+
+const syncHash = () => {
+  ticking = false;
+  if (window.scrollY < window.innerHeight * 0.5) {
+    if (activeId.value !== '') {
+      activeId.value = '';
+      history.replaceState(history.state, '', location.pathname + location.search);
+    }
+    return;
+  }
+  let current = '';
+  for (const item of navItems) {
+    const el = document.getElementById(item.id);
+    if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.34) current = item.id;
+  }
+  // 最后一个区块贴着页底，永远滚不到那条线，到底就直接认它
+  const atBottom =
+    window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+  if (atBottom && navItems.length) current = navItems[navItems.length - 1].id;
+  if (current && current !== activeId.value) {
+    activeId.value = current;
+    history.replaceState(history.state, '', `#${current}`);
+  }
+};
+
+const onScroll = () => {
+  if (ticking) return;
+  ticking = true;
+  requestAnimationFrame(syncHash);
+};
+
+onMounted(() => {
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll, { passive: true });
+  syncHash();
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', onScroll);
+  window.removeEventListener('resize', onScroll);
+});
 
 const activePen = ref<Pen | null>(null);
 const tab = ref<'html' | 'css' | 'js'>('css');
@@ -156,6 +211,10 @@ const openPen = (pen: Pen) => {
   50% {
     opacity: 0.35;
   }
+}
+
+.sc-nav a.is-active {
+  color: var(--ink);
 }
 
 .sc-nav {

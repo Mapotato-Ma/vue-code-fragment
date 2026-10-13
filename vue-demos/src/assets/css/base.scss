@@ -57,3 +57,14 @@ body {
 *::-webkit-scrollbar-corner {
   background: transparent;
 }
+
+/* 滚动吸附：只在区块起点附近才吸（proximity），不会把整页锁死 */
+html {
+  scroll-snap-type: y proximity;
+}
+
+#hero,
+#works,
+#content {
+  scroll-snap-align: start;
+}
