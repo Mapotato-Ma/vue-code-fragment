@@ -1,12 +1,8 @@
 <template>
   <div class="showcase">
-    <!-- 顶部：极简，只有身份 + 锚点 -->
+    <!-- 顶栏：只有站名和锚点 -->
     <header class="sc-top">
-      <span class="sc-brand">
-        <span class="sc-dot"></span>
-        mapotato
-        <span class="sc-brand-sub">/ front-end · 3d · automation</span>
-      </span>
+      <span class="sc-brand"><span class="sc-dot"></span>mapotato</span>
       <nav class="sc-nav">
         <a href="#works">作品</a>
         <a href="#stack">技术</a>
@@ -14,55 +10,24 @@
       </nav>
     </header>
 
-    <!-- 首屏 -->
+    <!-- 首屏：只放 3D -->
     <section id="hero" class="sc-hero">
       <div class="sc-hero-canvas">
         <hero-scene />
-      </div>
-      <div class="sc-hero-meta">
-        <p class="sc-kicker">// 个人作品集 · 2026</p>
-        <h1 class="sc-title">
-          把想法做成<br />
-          <span class="sc-title-em">能跑的东西</span>
-        </h1>
-        <p class="sc-lead">
-          前端 / 三维 / 自动化。这里放着这些年做过的效果与实验 ——
-          全部代码内联在本站，不依赖任何第三方嵌入。
-        </p>
-        <div class="sc-hero-stat">
-          <div><b>{{ pens.length }}</b><span>个效果可交互</span></div>
-          <div><b>0</b><span>个外部嵌入</span></div>
-          <div><b>1</b><span>页面</span></div>
-        </div>
-        <a class="sc-scroll" href="#works">向下滚动 <span>↓</span></a>
       </div>
     </section>
 
     <!-- 作品墙 -->
     <section id="works" class="sc-section">
-      <div class="sc-sec-head">
-        <span class="sc-idx">01</span>
-        <h2>作品</h2>
-        <span class="sc-sec-note">{{ pens.length }} 个可交互效果 · 进入视野才启动</span>
-      </div>
+      <h2 class="sc-sec-title">作品</h2>
       <div class="sc-grid">
-        <work-card
-          v-for="(pen, i) in pens"
-          :key="pen.id"
-          :pen="pen"
-          :index="i"
-          @open="openPen"
-        />
+        <work-card v-for="(pen, i) in pens" :key="pen.id" :pen="pen" :index="i" @open="openPen" />
       </div>
     </section>
 
     <!-- 技术栈 -->
     <section id="stack" class="sc-section">
-      <div class="sc-sec-head">
-        <span class="sc-idx">02</span>
-        <h2>技术栈</h2>
-        <span class="sc-sec-note">日常在用的</span>
-      </div>
+      <h2 class="sc-sec-title">技术栈</h2>
       <ul class="sc-pills">
         <li v-for="t in stack" :key="t">{{ t }}</li>
       </ul>
@@ -70,17 +35,10 @@
 
     <!-- 内容入口 -->
     <section id="content" class="sc-section">
-      <div class="sc-sec-head">
-        <span class="sc-idx">03</span>
-        <h2>内容</h2>
-        <span class="sc-sec-note">踩过的坑与记录都放在知识库</span>
-      </div>
+      <h2 class="sc-sec-title">内容</h2>
       <a class="sc-entry" :href="KB_URL" target="_blank" rel="noreferrer noopener">
-        <div class="sc-entry-main">
-          <span class="sc-entry-label">探索档案</span>
-          <span class="sc-entry-desc">前端踩坑、设备折腾、自建服务的完整记录</span>
-        </div>
-        <span class="sc-entry-go">进入 →</span>
+        <span class="sc-entry-label">探索档案</span>
+        <span class="sc-entry-go">→</span>
       </a>
     </section>
 
@@ -160,7 +118,6 @@ const openPen = (pen: Pen) => {
   activePen.value = pen;
   tab.value = pen.css ? 'css' : 'html';
 };
-
 </script>
 
 <style lang="scss" scoped>
@@ -171,7 +128,7 @@ const openPen = (pen: Pen) => {
   overflow-x: hidden;
 }
 
-/* ---------- 顶部 ---------- */
+/* ---------- 顶栏 ---------- */
 .sc-top {
   position: fixed;
   top: 0;
@@ -194,11 +151,6 @@ const openPen = (pen: Pen) => {
   align-items: center;
   gap: 8px;
   color: var(--ink);
-  letter-spacing: 0.04em;
-}
-
-.sc-brand-sub {
-  color: var(--ink-faint);
 }
 
 .sc-dot {
@@ -235,25 +187,22 @@ const openPen = (pen: Pen) => {
   }
 }
 
-/* ---------- 首屏 ---------- */
+/* ---------- 首屏：一块 3D ---------- */
 .sc-hero {
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  display: flex;
   align-items: center;
+  justify-content: center;
   min-height: 100vh;
   padding: calc(var(--header-h) + 4vh) var(--page-pad) 8vh;
-  gap: 4vw;
 }
 
 .sc-hero-canvas {
   position: relative;
-  height: 66vh;
+  width: min(1120px, 100%);
+  height: min(72vh, 660px);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background:
-    radial-gradient(80% 60% at 50% 40%, rgba(110, 231, 255, 0.08), transparent 70%),
-    var(--bg-sunken);
+  background: var(--bg-sunken);
   overflow: hidden;
 
   &::after {
@@ -271,120 +220,19 @@ const openPen = (pen: Pen) => {
   }
 }
 
-.sc-kicker {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  color: var(--accent);
-  margin: 0 0 18px;
-}
-
-.sc-title {
-  margin: 0;
-  font-size: clamp(38px, 5.2vw, 76px);
-  line-height: 1.06;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-}
-
-.sc-title-em {
-  background: linear-gradient(96deg, var(--accent), var(--accent-2));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.sc-lead {
-  max-width: 34em;
-  margin: 22px 0 30px;
-  color: var(--ink-dim);
-  line-height: 1.85;
-}
-
-.sc-hero-stat {
-  display: flex;
-  gap: 34px;
-  padding: 18px 0;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-
-  div {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  b {
-    font-size: 24px;
-    font-family: var(--font-mono);
-    color: var(--accent);
-  }
-
-  span {
-    font-size: 12px;
-    color: var(--ink-faint);
-  }
-}
-
-.sc-scroll {
-  display: inline-block;
-  margin-top: 26px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--ink-faint);
-  text-decoration: none;
-
-  span {
-    display: inline-block;
-    animation: bob 1.8s ease-in-out infinite;
-  }
-
-  &:hover {
-    color: var(--accent);
-  }
-}
-
-@keyframes bob {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(5px);
-  }
-}
-
 /* ---------- 分区 ---------- */
 .sc-section {
-  padding: 9vh var(--page-pad);
+  padding: 8vh var(--page-pad);
   scroll-margin-top: var(--header-h);
 }
 
-.sc-sec-head {
-  display: flex;
-  align-items: baseline;
-  gap: 14px;
-  padding-bottom: 16px;
-  margin-bottom: 30px;
+.sc-sec-title {
+  margin: 0 0 26px;
+  padding-bottom: 14px;
   border-bottom: 1px solid var(--line);
-
-  h2 {
-    margin: 0;
-    font-size: 22px;
-    letter-spacing: 0.02em;
-  }
-}
-
-.sc-idx {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  color: var(--accent);
-}
-
-.sc-sec-note {
-  margin-left: auto;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--ink-faint);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0;
 }
 
 .sc-grid {
@@ -423,12 +271,10 @@ const openPen = (pen: Pen) => {
   display: flex;
   align-items: center;
   gap: 20px;
-  padding: 26px;
+  padding: 22px 26px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background:
-    radial-gradient(120% 160% at 0% 0%, rgba(167, 139, 250, 0.1), transparent 60%),
-    var(--glass);
+  background: var(--glass);
   text-decoration: none;
   color: inherit;
   transition: all 0.35s var(--ease-out);
@@ -444,27 +290,15 @@ const openPen = (pen: Pen) => {
   }
 }
 
-.sc-entry-main {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
 .sc-entry-label {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--accent-2);
-}
-
-.sc-entry-desc {
-  color: var(--ink-dim);
+  font-size: 15px;
 }
 
 .sc-entry-go {
   margin-left: auto;
   font-family: var(--font-mono);
-  font-size: 13px;
-  color: var(--ink);
+  font-size: 14px;
+  color: var(--ink-dim);
   transition: transform 0.3s var(--ease-out);
 }
 
