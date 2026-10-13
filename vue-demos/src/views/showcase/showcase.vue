@@ -101,14 +101,13 @@ const stack = [
   'Vite',
   'TypeScript',
   'Sass',
+  'TresJS',
   'Three.js',
   'WebGL',
-  'Monaco',
-  'RxJS',
   'Node.js',
   'Alpine / iSH',
-  'Git',
   'Nginx',
+  'Git',
 ];
 
 const activePen = ref<Pen | null>(null);
