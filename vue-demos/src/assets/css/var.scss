@@ -1,25 +1,55 @@
+// 新站设计令牌（深空玻璃骨架 + 数据流细节）
+// 2026-10-13 重构：去掉旧的 Apple Music 红 + 全局 2px 字距
+
 :root {
   --font-fallback:
     BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
     'Droid Sans', 'Helvetica Neue', sans-serif;
   --font-body: Inter, var(--font-fallback);
   --font-f: 'NNN', Inter, var(--font-fallback);
+  --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', monospace;
+
+  /* 底色：近黑，带一点冷调 */
+  --bg-page: #06070b;
+  --bg-raise: #0b0e15;
+  --bg-sunken: #040507;
+
+  /* 文字 */
+  --ink: #e9edf6;
+  --ink-dim: rgba(233, 237, 246, 0.62);
+  --ink-faint: rgba(233, 237, 246, 0.34);
+
+  /* 玻璃与发丝线 */
+  --glass: rgba(255, 255, 255, 0.045);
+  --glass-strong: rgba(255, 255, 255, 0.075);
+  --line: rgba(255, 255, 255, 0.09);
+  --line-strong: rgba(255, 255, 255, 0.18);
+
+  /* 强调色（数据流那一支：青 + 紫） */
+  --accent: #6ee7ff;
+  --accent-soft: rgba(110, 231, 255, 0.16);
+  --accent-2: #a78bfa;
+  --glow: 0 0 0 1px rgba(110, 231, 255, 0.25), 0 12px 40px rgba(110, 231, 255, 0.12);
+
+  /* 尺寸 */
   --header-h: 3em;
   --footer-h: 2em;
-  --main-h: calc(100% - var(--footer-h));
-  --bg-page: #1a1a1a;
-  --msg-zi: 9999;
-  --popover-bg: rgba(72, 80, 85, 0.8);
-  --color-border: rgba(255, 255, 255, 0.7);
-  --color-border-light: rgba(255, 255, 255, 0.2);
-  --color-brand-bg: rgb(100, 75, 75);
-  --color-brand-bg-light: rgba(100, 75, 75, 0.5);
-  --color-brand-bg-hover: rgba(100, 75, 75, 0.8);
-  --color-brand-bg-active: rgba(100, 75, 75, 0.6);
-  --color-brand-fill: rgb(125, 125, 125);
-  --apple-music-primary: #fa2d48;
-  --apple-music-primary-darken: #fa2d485e;
+  --radius: 14px;
+  --radius-sm: 8px;
+  --page-max: 1440px;
+  --page-pad: 4vw;
+
+  /* 动效 */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 0.55s;
+
+  /* 兼容旧组件还在引用的变量 */
+  --apple-music-primary: #6ee7ff;
   --apple-music-default: #7e7d7d;
-  --apple-music-bg-darken: #060605;
-  --apple-music-bg-lighten: #242528;
+  --apple-music-bg-darken: #040507;
+  --apple-music-bg-lighten: #14181f;
+  --msg-zi: 9999;
+  --popover-bg: rgba(20, 24, 31, 0.86);
+  --color-border: rgba(255, 255, 255, 0.35);
+  --color-border-light: rgba(255, 255, 255, 0.12);
 }
