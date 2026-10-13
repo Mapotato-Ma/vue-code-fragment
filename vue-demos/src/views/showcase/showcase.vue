@@ -15,26 +15,15 @@
 
     <!-- 效果墙 -->
     <section id="works" class="sc-section">
-      <h2 class="sc-sec-title">怀旧demo</h2>
       <div class="sc-grid">
         <work-card v-for="(pen, i) in pens" :key="pen.id" :pen="pen" :index="i" @open="openPen" />
       </div>
     </section>
 
-    <!-- 技术栈 -->
-    <section id="stack" class="sc-section">
-      <h2 class="sc-sec-title">技术栈</h2>
-      <ul class="sc-pills">
-        <li v-for="t in stack" :key="t">{{ t }}</li>
-      </ul>
-    </section>
-
     <!-- 内容入口 -->
     <section id="content" class="sc-section">
-      <h2 class="sc-sec-title">内容</h2>
       <a class="sc-entry" :href="KB_URL" target="_blank" rel="noreferrer noopener">
         <span class="sc-entry-label">探索档案</span>
-        <span class="sc-entry-go">→</span>
       </a>
     </section>
 
@@ -92,23 +81,8 @@ import { pens, type Pen } from './data/pens';
 /** 知识库地址：要换目标只改这一行 */
 const KB_URL = 'https://mapotato.fun/exp/';
 
-const stack = [
-  'Vue 3',
-  'Vite',
-  'TypeScript',
-  'Sass',
-  'TresJS',
-  'Three.js',
-  'WebGL',
-  'Node.js',
-  'Alpine / iSH',
-  'Nginx',
-  'Git',
-];
-
 const navItems = [
   { id: 'works', label: '怀旧demo' },
-  { id: 'stack', label: '技术' },
   { id: 'content', label: '内容' },
 ];
 
@@ -205,6 +179,23 @@ const openPen = (pen: Pen) => {
   height: 100vh;
   min-height: 620px;
 
+  /* 底部渐变，收住 3D 的硬边 */
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 240px;
+    background: linear-gradient(
+      180deg,
+      rgba(6, 7, 11, 0) 0%,
+      rgba(6, 7, 11, 0.55) 55%,
+      var(--bg) 100%
+    );
+    pointer-events: none;
+  }
+
   /* 整屏 3D：不要边框和留白，只留极细的扫描线做质感 */
   &::after {
     content: '';
@@ -221,21 +212,12 @@ const openPen = (pen: Pen) => {
   }
 }
 
-
 /* ---------- 分区 ---------- */
 .sc-section {
-  padding: 8vh var(--page-pad);
+  padding: 6vh var(--page-pad);
   scroll-margin-top: var(--header-h);
 }
 
-.sc-sec-title {
-  margin: 0 0 26px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--line);
-  font-size: 18px;
-  font-weight: 600;
-  letter-spacing: 0;
-}
 
 .sc-grid {
   display: grid;
@@ -243,31 +225,6 @@ const openPen = (pen: Pen) => {
   gap: 18px;
 }
 
-.sc-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-
-  li {
-    padding: 8px 14px;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    color: var(--ink-dim);
-    background: var(--glass);
-    transition: all 0.3s var(--ease-out);
-
-    &:hover {
-      color: var(--ink);
-      border-color: rgba(110, 231, 255, 0.4);
-      transform: translateY(-2px);
-    }
-  }
-}
 
 .sc-entry {
   display: flex;
@@ -286,9 +243,6 @@ const openPen = (pen: Pen) => {
     transform: translateY(-3px);
     box-shadow: 0 16px 50px rgba(167, 139, 250, 0.12);
 
-    .sc-entry-go {
-      transform: translateX(4px);
-    }
   }
 }
 
