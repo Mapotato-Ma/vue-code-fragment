@@ -14,5 +14,14 @@ export const router = createRouter({
       meta: { title: 'Mapotato · 作品' },
     },
   ],
-  scrollBehavior: (_to, _from, saved) => saved ?? { top: 0 },
+  /**
+   * 关键：顶栏那几个是页内锚点（#works / #stack / #content）。
+   * vue-router 会把它们当成一次导航，如果这里不认 hash 就会被兜回页面顶部
+   * —— 表现就是「点了没反应」。
+   */
+  scrollBehavior: (to, _from, saved) => {
+    if (saved) return saved;
+    if (to.hash) return { el: to.hash, top: 72, behavior: 'smooth' };
+    return { top: 0 };
+  },
 });

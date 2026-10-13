@@ -4,9 +4,7 @@
     <header class="sc-top">
       <span class="sc-brand"><span class="sc-dot"></span>mapotato</span>
       <nav class="sc-nav">
-        <a href="#works">怀旧demo</a>
-        <a href="#stack">技术</a>
-        <a href="#content">内容</a>
+        <a v-for="item in navItems" :key="item.id" @click="go(item.id)">{{ item.label }}</a>
       </nav>
     </header>
 
@@ -107,6 +105,23 @@ const stack = [
   'Nginx',
   'Git',
 ];
+
+const navItems = [
+  { id: 'works', label: '怀旧demo' },
+  { id: 'stack', label: '技术' },
+  { id: 'content', label: '内容' },
+];
+
+/**
+ * 页内跳转自己来，不用 href：
+ * 页面里有 <base href="/mapotato">，#works 会被解析成 /mapotato#works，
+ * 变成整页跳转，点上去就像「没反应」。
+ */
+const go = (id: string) => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
 
 const activePen = ref<Pen | null>(null);
 const tab = ref<'html' | 'css' | 'js'>('css');
