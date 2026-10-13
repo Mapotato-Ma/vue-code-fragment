@@ -36,8 +36,15 @@
     <footer class="sc-foot">
       <span>© 2024–2026 Mapotato</span>
       <span class="sc-foot-beian">
-        <img src="@/assets/beian.png" alt="" />
-        苏ICP备2024113879号-1 · 苏公网安备32011402011730号
+        <a href="https://beian.miit.gov.cn/" target="_blank" rel="noreferrer">苏ICP备2024113879号-1</a>
+        <span class="sc-foot-sep">·</span>
+        <a
+          href="https://beian.mps.gov.cn/#/query/webSearch?code=32011402011730"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <img src="@/assets/beian.png" alt="" />苏公网安备32011402011730号
+        </a>
       </span>
     </footer>
 
@@ -318,6 +325,30 @@ const openPen = (pen: Pen) => {
 }
 
 /* ---------- 页脚 ---------- */
+.sc-foot-beian a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s;
+
+  &:hover {
+    color: var(--ink);
+    text-decoration: underline;
+  }
+}
+
+.sc-foot-beian img {
+  width: 1em;
+  height: 1em;
+}
+
+.sc-foot-sep {
+  opacity: 0.5;
+  margin: 0 0.2em;
+}
+
 .sc-foot {
   display: flex;
   align-items: center;
