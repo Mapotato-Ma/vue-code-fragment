@@ -12,9 +12,7 @@
 
     <!-- 首屏：只放 3D -->
     <section id="hero" class="sc-hero">
-      <div class="sc-hero-canvas">
-        <hero-scene />
-      </div>
+      <hero-scene />
     </section>
 
     <!-- 效果墙 -->
@@ -188,36 +186,26 @@ const openPen = (pen: Pen) => {
 
 /* ---------- 首屏：一块 3D ---------- */
 .sc-hero {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  padding: calc(var(--header-h) + 4vh) var(--page-pad) 8vh;
-}
-
-.sc-hero-canvas {
   position: relative;
-  width: min(1120px, 100%);
-  height: min(72vh, 660px);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--bg-sunken);
-  overflow: hidden;
+  height: 100vh;
+  min-height: 620px;
 
+  /* 整屏 3D：不要边框和留白，只留极细的扫描线做质感 */
   &::after {
     content: '';
     position: absolute;
     inset: 0;
     background: repeating-linear-gradient(
       0deg,
-      rgba(255, 255, 255, 0.028) 0px,
-      rgba(255, 255, 255, 0.028) 1px,
+      rgba(255, 255, 255, 0.022) 0px,
+      rgba(255, 255, 255, 0.022) 1px,
       transparent 1px,
       transparent 3px
     );
     pointer-events: none;
   }
 }
+
 
 /* ---------- 分区 ---------- */
 .sc-section {
