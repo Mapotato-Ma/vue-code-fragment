@@ -4,7 +4,7 @@
     <header class="sc-top">
       <span class="sc-brand"><span class="sc-dot"></span>mapotato</span>
       <nav class="sc-nav">
-        <a href="#works">作品</a>
+        <a href="#works">怀旧demo</a>
         <a href="#stack">技术</a>
         <a href="#content">内容</a>
       </nav>
@@ -17,9 +17,9 @@
       </div>
     </section>
 
-    <!-- 作品墙 -->
+    <!-- 效果墙 -->
     <section id="works" class="sc-section">
-      <h2 class="sc-sec-title">作品</h2>
+      <h2 class="sc-sec-title">怀旧demo</h2>
       <div class="sc-grid">
         <work-card v-for="(pen, i) in pens" :key="pen.id" :pen="pen" :index="i" @open="openPen" />
       </div>
